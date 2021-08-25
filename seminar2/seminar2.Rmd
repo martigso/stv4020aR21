@@ -32,7 +32,7 @@ Last ned et av aid-datasettene i [denne mappen](https://github.com/liserodland/s
 ```{r}
 library(tidyverse)
 library(haven)
-aid <-  read_dta("../../data/aid.dta")
+aid <-  read_dta("aid.dta")
 
 ```
 
