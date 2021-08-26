@@ -9,10 +9,10 @@ I uke 37 setter vi endelig i gang med R-seminarer! R er et programmeringsspråk 
 
 Vi er så heldige at innføringsseminarene i uke 37 vil gå fysisk (med unntak av seminargruppe 1), men R-prøven 20. september blir digital. Vi kommer ofte til å ha seminarundervisning i rom uten PC-er så alle må ha med egen laptop med R og Rstudio installert på seminar. Fordypningsseminarene i uke 38 går digitalt og er for de som ønsker å lære mer om bruk av R. Det blir ingen prøve etter fordypnignsseminarene, men forhåpentligvis har dere lært mye dere kan bruke i hjemme- og/eller masteroppgaven. 
 
-Dere har sikkert mange spørsmål om seminaret så her skal jeg prøve å svare ut noen av dem. Men først, for at seminarene skal gå så smidig som mulig så er det viktig at du:
+Dere har sikkert mange spørsmål om seminaret så her skal jeg prøve å svare på noen av dem. Men først, for at seminarene skal gå så smidig som mulig, er det viktig at du:
 
 - møter opp på seminar.
-- jobber med å løse oppgaver innimellom seminarene.
+- jobber med å løse oppgaver mellom seminarene.
 
 For noen kan R virke skummelt ved første øyekast, men erfaringsmessig så går dette veldig fint så lenge du legger ned litt innsats underveis :)
 
@@ -23,9 +23,9 @@ Før første seminar må du:
 - Lese installasjonsguiden [sett inn oppdatert lenke] og denne [introduksjonen til R](https://github.com/liserodland/stv4020aR/blob/master/H20-seminarer/Innf%C3%B8ringsseminarer/docs/installasjonsguide_R.md).
 - Laste ned og installere R og Rstudio (se installasjonsguide over).
 - Dersom du har R og Rstudio installert fra før så sjekk hvilken versjon du har og om du bør oppdatere (se installasjonsguide over). 
-- Bli gjerne med i facebookgruppen [R for statsvitenskap ved UiO](https://www.facebook.com/groups/427792970608618) og (discord-serveren "R-stv")[https://discord.com/invite/CAP9TbdWFa?fbclid=IwAR2Jw5cjuJND3MZUr7QLbJ2NRC2gYkkRfYqyiH0LwEimceBi0gBldfM_Uwg] (dette gjelder spesielt de som skal bruke R i hjemmeoppgaven).
+- Bli gjerne med i facebookgruppen [R for statsvitenskap ved UiO](https://www.facebook.com/groups/427792970608618) og [discord-serveren "R-stv"](https://discord.gg/CAP9TbdWFa) (dette gjelder spesielt de som skal bruke R i hjemmeoppgaven).
 
-Om du har problemer med installasjonen kan du melde deg opp til installasjonshjelp på dato X eller Y her[sett inn lenke til påmeldingsskjema]. Vi har lite tid på seminar og kommer derfor ikke til å kunne hjelpe med installasjonsproblemer der. Dersom du har mac og har problemer med installasjonen så prøv å oppdatere macen først.
+Om du har problemer med installasjonen kan du [melde deg opp til installasjonshjelp på dato mandag 6.9 eller onsdag 8.9 her](https://nettskjema.no/a/212858#/page/1). Vi har lite tid på seminar og kommer derfor ikke til å kunne hjelpe med installasjonsproblemer der. Dersom du har mac og har problemer med installasjonen så prøv å oppdatere macen først.
 
 *Hva gjør jeg om jeg blir syk?*
 
