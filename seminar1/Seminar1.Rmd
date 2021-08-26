@@ -7,6 +7,8 @@ output:
     keep_md: yes
     self_contained: no
     keep_html: no
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -51,6 +53,7 @@ Jeg vil lenke til undervisningsmateriell på Canvas. Selve opplegget blir lastet
 - [R-ladies Oslo](https://www.meetup.com/rladies-oslo/) og [Oslo UseR! group](https://www.meetup.com/Oslo-useR-Group)  inviterer til spennende R-temamøter
 - [Guide til ggplot2](http://docs.ggplot2.org/current/)
 - [Facebookgruppe for R for statsvitere på UiO - bruk denne!](https://www.facebook.com/groups/427792970608618/)
+- [Discord-serveren "R-stv"](https://discord.gg/CAP9TbdWFa)
 - [Stilguide for R](https://google.github.io/styleguide/Rguide.xml)
 - [Bruke prosjekter i R](https://support.rstudio.com/hc/en-us/articles/200526207-Using-Projects)
 - [Quick-R - et bra sted å søke etter ting, lett å forstå for nybegynnere](https://www.statmethods.net/)
@@ -65,14 +68,15 @@ Du kan også finne videoer, flere gratis bøker m.m. hvis du googler/søker på 
 #### Mål for i dag: 
 
 1. Bli kjent med hverandre
-2. Få R og Rstudio til å virke på egen PC 
+<!-- 2. Få R og Rstudio til å virke på egen PC  fixme: regner med dette ikke lenger er relevant-->
 3. Forstå hvordan Rstudio er satt opp og hvordan man kjører kode
 4. Forstå grunnleggende konsepter i R: indeksering, objekter, funksjoner og pakker
 5. Løse noen oppgaver på egenhånd
 
-Dersom du enda ikke har gjennomført installasjonsguiden[**sett inn oppdatert lenke**], ta en titt på den etterpå. I mellomtiden, finn deg en person som har R og Rstudio installert, og sett deg sammen med den personen med ok korona-avstand.
+<!-- fixme: Samme som over.
+Dersom du enda ikke har gjennomført installasjonsguiden[**sett inn oppdatert lenke**], ta en titt på den etterpå. I mellomtiden, finn deg en person som har R og Rstudio installert, og sett deg sammen med den personen med ok korona-avstand. -->
 
-Dersom du har gjennomført installasjonsguiden, uten å ha fått Rstudio til å virke, så ser vi på dette etterpå.
+<!-- Dersom du har gjennomført installasjonsguiden, uten å ha fått Rstudio til å virke, så ser vi på dette etterpå. -->
 
 Det første vi skal gjøre er å lage et lite datasett. Snakk med personen ved siden av deg og finn ut: 
 
@@ -84,10 +88,10 @@ Det første vi skal gjøre er å lage et lite datasett. Snakk med personen ved s
 Etterpå tar vi en runde og da skal du presentere personen ved siden av deg. Informasjonen skal vi bruke til å lage et lite datasett. Bruk tre minutter.
 
 # Rstudio
-Først litt helt grunnleggende om R og Rstudio. I Rstudio skriver vi kode i script. Scriptene kan lagres og gjør arbeidet vårt reproduserbart. Etter at vi har skrevet kode i script, sender vi koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script). 
+Først litt helt grunnleggende om R og Rstudio. I Rstudio skriver vi kode i script. Scriptene kan lagres og gjør arbeidet vårt reproduserbart. Opprett et nytt script med enten å trykke på arket oppe til venstre med et grønt plusstegn, gå på file > new file > R script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i script, kan vi sende koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script).
 
 # Objekter
-For å bli kjent med R så skal vi bruke informasjonen fra bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å lage objekter av en type som heter vektor. Vektorene skal inneholder informasjon om navn, alder og hvor dere tok bachelorgraden deres. I R kan en vektor defineres som en ordnet lise av verdier, dvs. at man lagrer verdier en bestemt rekkefølge. Når verdiene er i en bestemt rekkefølge så kan vi slå vektorene sammen for å lage et datasett. I dette kurset kan dere for det meste tenke på vektorer som variabler fra et datasett. Vi lager objekter ved hjelp av assignment operatoren ´<-´.  
+For å bli kjent med R så skal vi bruke informasjonen fra bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å lage objekter av en type som heter vektor. Vektorene skal inneholder informasjon om navn, alder og hvor dere tok bachelorgraden deres. I R kan en vektor defineres som en ordnet lise av verdier, dvs. at man lagrer verdier en bestemt rekkefølge. Når verdiene er i en bestemt rekkefølge så kan vi slå vektorene sammen for å lage et datasett. I dette kurset kan dere for det meste tenke på vektorer som variabler fra et datasett. Vi lager objekter ved hjelp av assignment operatoren  `<-`.  
 
 ```{r}
 # Her ser dere et eksempel på R-kode
@@ -169,6 +173,7 @@ R kan evaluere logiske utsdagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 #  kableExtra::kable_styling(full_width = F,
 #                            position = "left")
 ```
+
 **Oversikt over logiske operatorer:**
 
 ```{r, eval = FALSE, include = FALSE}
@@ -204,6 +209,7 @@ library(pakkenavn)            # Tilgjengeliggjør pakken i R-sesjonen, må gjør
 Vi skal for det meste bruke kode som kommer fra pakker i [tidyverse](https://www.tidyverse.org/learn/). La oss installere disse pakkene:
 
 ```{r, echo = TRUE, eval = FALSE}
+# fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC
 install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
 install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
 library(tidyverse)
@@ -389,7 +395,7 @@ setwd("~/R/der/du/vil/jobbe/fra")               # For mac/linux
 ```
 
 Et annet alternativ er å starte et nytt prosjekt i R, ved å trykke på *File* og deretter *New Project* i menyen øverst til venstre i Rstudio. Da får du muligheten til å lage en ny mappe på pcen din som blir satt til working directory. Senere kan du sette denne mappen til working directory med Open project fra menyen (jeg anbefaler å bruke prosjekter, særlig til hjemmeoppgaven).
-
+<!-- fixme: kanskje vi bare skal lage et R-prosjekt for seminarene når vi er her? -->
 
 Datasett kommer i mange ulike filformater. Noen vanlige formater er csv, dta (Stata-datasett), sav (SPSS-datasett) og Rdata. Hvilket format dataene dine har bestemmer hvilken funksjon du må bruke for å laste inn datasettet. Her er eksempler på noen funksjoner for å laste inn data: 
 
