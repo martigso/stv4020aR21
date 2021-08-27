@@ -39,6 +39,17 @@ Har du R og Rstudio installert?
 6. Klikk på lenken som matcher din versjon og lagre filen på maskinen. Når nedlastningen er ferdig så åpner du filen og følger installasjonsveiledningen. 
 7. Nå kan du laste ned Rstudio. 
 
+*Linux (Ubuntu)*
+1. Installere dependencies:
+    - `sudo apt install dirmngr gnupg apt-transport-https ca-certificates software-properties-common`
+2. Legge til CRAN i listen over repositories:
+    - `sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9`
+    - `sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/'`
+3. Installere R:
+    - `sudo apt install r-base r-base-dev`
+4. Sjekk om det virker:
+    - `R --version`
+
 ##### Installere Rstudio
 
 1. Gå til [www.rstudio.com](https://www.rstudio.com). 
