@@ -21,7 +21,7 @@ I dag skal vi plotte resultatene og gjøre regresjonsdiagnostikk på modellen fr
 library(tidyverse)
 
 # Laster inn data
-load("../../data/aid.RData")
+load("./aid.RData")
 
 # Gjør de nødvendige omkodingene som dere gjorde i oppgaven
 aid <- aid %>% 

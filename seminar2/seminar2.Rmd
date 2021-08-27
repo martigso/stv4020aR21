@@ -364,10 +364,10 @@ ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
 ```{r include=FALSE}
 library(ggplot2)
 ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
-ggsave("../../bilder/seminar1_1.png")
+ggsave("./bilder/seminar2_1.png")
 ```
 ```{r, echo = F}
-knitr::include_graphics("../../bilder/seminar1_1.png")
+knitr::include_graphics("./bilder/seminar2_1.png")
 ```
 
 Med et boxplot får du raskt oversikt over fordelingen til variabler innenfor ulike grupper.
@@ -380,10 +380,10 @@ ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid))
 ```{r include=FALSE}
 library(ggplot2)
 ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid)) # lager histogram
-ggsave("../../bilder/seminar1_2.png")
+ggsave("./bilder/seminar2_2.png")
 ```
 ```{r, echo = F}
-knitr::include_graphics("../../bilder/seminar1_2.png")
+knitr::include_graphics("./bilder/seminar2_2.png")
 ```
 **Oppgave:** Lag boxplot som viser fordelingen til variablene `policy` og `elrgpdg` innenfor hver region.
 
@@ -399,10 +399,10 @@ library(ggplot2)
 ggplot(aid) + geom_line(aes(x = period, y = gdp_growth, col = country)) +
   theme(legend.title = element_blank(),
         legend.key.size = unit(0.5,"line"))
-ggsave("../../bilder/seminar1_3.png")
+ggsave("./bilder/seminar2_3.png")
 ```
 ```{r, echo = F}
-knitr::include_graphics("../../bilder/seminar1_3.png")
+knitr::include_graphics("./bilder/seminar2_3.png")
 ```
 
 Et problem med dette plottet, er at det blir vanskelig å se veksten til forskjellige land klart, det er for mye informasjon. Dersom vi har lyst til å sammenligne et par land om gangen, kan vi bruke `%in%` til å indeksere. Denne operatorene lar deg velge alt innholdet i en vektor - f.eks. variabelnavn eller ulike verdier på en variabel. Her viser jeg hvordan du kan kombinere `dplyr`, `%in%` og `ggplot()` for å sammenligne et par land om gangen:
@@ -420,10 +420,10 @@ library(ggplot2)
 aid %>% 
   filter(region == "Sub-Saharan Africa") %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))# lager histogram
-ggsave("../../bilder/seminar1_4.png")
+ggsave("./bilder/seminar2_4.png")
 ```
 ```{r, echo = F}
-knitr::include_graphics("../../bilder/seminar1_4.png")
+knitr::include_graphics("./bilder/seminar2_4.png")
 ```
 
 ```{r, eval = F}
@@ -440,10 +440,10 @@ aid %>%
   filter(country %in% c("KEN", "ETH", "GHA", "SOM", "TZA")) %>%
   ggplot() + 
   geom_line(aes(x = period, y = gdp_growth, col = country))
-ggsave("../../bilder/seminar1_5.png")
+ggsave("./bilder/seminar2_5.png")
 ```
 ```{r, echo = F}
-knitr::include_graphics("../../bilder/seminar1_5.png")
+knitr::include_graphics("./bilder/seminar2_5.png")
 ```
 
 I tillegg til indekseringsmetodene for datasett fra første seminar, er det nyttig å lære seg `%in%`.
@@ -477,10 +477,10 @@ ggplot(aid) +
   xlab("aid") +
   ylab("growth") +
   theme_minimal()
-ggsave("../../bilder/seminar1_6.png")
+ggsave("./bilder/seminar2_6.png")
 ```
 ```{r, echo = F}
-knitr::include_graphics("../../bilder/seminar1_6.png")
+knitr::include_graphics("./bilder/seminar2_6.png")
 ```
 
 Dersom du lager et plot du er fornøyd med, kan du lagre det med `ggsave()`, som lagrer ditt siste ggplot.
@@ -562,7 +562,7 @@ stargazer(m2, m3,
 # obs. bruk .htm og ikke .html
 stargazer(m2, m4,
           type = "html",
-          out = "../../bilder/regresjonstabell.htm") 
+          out = "./bilder/regresjonstabell.htm") 
 
 # Om du skriver i Latex så kan du bruker type = "latex" og kopiere inn output direkte, eller lagre i en mappe og hente inn via latex
 stargazer(m2, m4,
