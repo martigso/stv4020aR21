@@ -60,7 +60,7 @@ Historien om datamaskiner er et eget kapittel, men utviklingen har gått fort, f
 
 Når vi jobber med data i R, går vi typisk gjennom noen vante steg, som vist i figuren under:
 
-![Hvordan jobbe med data i R](./img/data-science.png)
+![Hvordan jobbe med data i R](https://d33wubrfki0l68.cloudfront.net/571b056757d68e6df81a3e3853f54d3c76ad6efc/32d37/diagrams/data-science.png)
 https://r4ds.had.co.nz/introduction.html 
 
   1. Lese inn data til R, enten det er fra en excel-fil, en STATA-fil eller annet (import)
