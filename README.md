@@ -14,7 +14,7 @@ Repo for R-undervisning i STV4020A høsten 2021
 - [LaTex (Mac)](https://www.tug.org/mactex/)
 
 
-### **Praktisk info**
+## **Praktisk info**
 
 Velkommen til R-seminar i STV4020A!
 
@@ -49,7 +49,7 @@ Blir du syk eller får covid-19-symptomer skal du ikke møte på fysisk seminar,
 R-seminarene blir etterfulgt av en digital prøve 20. september som du må bestå for å kunne gå opp til eksamen i STV4020A. Dersom du ikke består på første forsøk så får du et nytt forsøk 29. september. Dersom du er syk på prøven må du søke om utsatt obligatorisk aktivitet [her](https://www.uio.no/studier/eksamen/obligatoriske-aktiviteter/sv-fraver-fra-obligatorisk-aktivitet.html). 
 
 
-### **Hvorfor lære R?**
+## **Hvorfor lære R?**
 
 Matematikk kan ved første øyekast virke litt fremmed for en statsviter, men statistikk står i kjernen av statsvitenskap. Begrepet "Statistik" ble introdusert av Gottfried Achenwall i 1749 for å omfatte analyse om staten, og bygger på det latinske "statisticum", som betyr "om staten". Den gangen var statistikk begrenset til å samle informasjon i et tabellformat, og kanskje regne ut noen summer eller gjennomsnitt. Slik var det lenge, og statistiske operasjoner før i tiden kunne være en tung prosess med hyllevis med ruteark og langsomme utregninger. Heldigvis er vi ikke der lenger. Inntoget av datamaskiner har endret alt.
 
