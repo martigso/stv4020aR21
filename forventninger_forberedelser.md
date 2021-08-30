@@ -32,8 +32,9 @@ går dette veldig fint så lenge du legger ned litt innsats underveis :)
 
 Før første seminar må du:
 
--   Lese installasjonsguiden \[sett inn oppdatert lenke\] og denne
-    [introduksjonen til
+-   Lese
+    [installasjonsguiden](https://github.com/martigso/stv4020aR21/blob/main/Installasjonsguide.md)
+    og denne [introduksjonen til
     R](https://github.com/liserodland/stv4020aR/blob/master/H20-seminarer/Innf%C3%B8ringsseminarer/docs/installasjonsguide_R.md).
 -   Laste ned og installere R og Rstudio (se installasjonsguide over).
 -   Dersom du har R og Rstudio installert fra før så sjekk hvilken
