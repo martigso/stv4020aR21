@@ -7,7 +7,7 @@ output: github_document
 I dagens seminar skal vi øve på å forberede og utforske data. Dette er som regel første del av enhver dataanalyse - også hjemmeoppgaven.
 Vi skal også øve på å forstå hjelpefiler til funksjoner og kjøre vår første ols-modell.
 
-Men først, var det noe dere synes var krevende i oppgavene eøøer seminaret i går? Dersom dere sliter med å forstå indeksering, funksjoner, objekter e.l., kan dere kikke på seminar 1, eller lese i boken til **Lær deg R** som er anbefalt pensum eller en tilsvarende ressurs. Vi kommer til å fortsette med å trene litt på basisferdigheter også i neste seminar.
+Men først, var det noe dere synes var krevende i oppgavene etter seminaret i går? Dersom dere sliter med å forstå indeksering, funksjoner, objekter e.l., kan dere kikke på seminar 1, eller lese i boken til **Lær deg R** eller [**R for Data Science**](https://r4ds.had.co.nz/). Vi kommer til å fortsette med å trene litt på basisferdigheter også i neste seminar.
 
 
 ### Laste inn data - read_funksjoner()
@@ -27,7 +27,7 @@ read_dta("filnavn.dta") # for .dta-filer fra stata
 
 ```
 
-Last ned et av aid-datasettene i [denne mappen](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Innf%C3%B8ringsseminarer/data) på github og lagre det i datamappen din, eller les inn data direkte fra denne lenken: https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/aid.csv. 
+Last ned et av aid-datasettene i [denne mappen](https://github.com/martigso/stv4020aR21/tree/main/seminar2) på github og lagre det i datamappen din, eller les inn data direkte fra denne lenken: https://cdn.jsdelivr.net/gh/martigso/stv4020aR21/seminar2/aid.dta.  
 
 ```{r}
 library(tidyverse)
@@ -37,7 +37,7 @@ aid <-  read_dta("aid.dta")
 ```
 
 # Forberede og manipulere data
-Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så heldig å få et analyserklart datasett som har alle variablene man ønsker, men dette hører trolig til sjeldenhetene. Veldig ofte må man jobbe litt med å forberede og manipulere data, f.eks. ved å omkode variabler, eller hente inn variabler fra andre datakilder. Forberedelse av data er ikke rutinearbeid - det innbefatter svært ofte viktige metodologiske beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en konflikt ble avsluttet eller hvordan du skal håndtere missing verdier. Forsøk derfor alltid å tenke på metodologiske implikasjoner når du forbereder data. Dersom du lager en klar slagplan for hvordan du ønsker at dataene dine skal se ut på forhånd, blir det lettere å forberede data. 
+Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så heldig å få et analyserklart datasett som har alle variablene man ønsker, men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt med å forberede og manipulere data, f.eks. ved å omkode variabler, eller hente inn variabler fra andre datakilder. Forberedelse av data er ikke rutinearbeid - det innbefatter svært ofte viktige metodologiske beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en konflikt ble avsluttet eller hvordan du skal håndtere missing verdier. Forsøk derfor alltid å tenke på metodologiske implikasjoner når du forbereder data. Dersom du lager en klar slagplan for hvordan du ønsker at dataene dine skal se ut på forhånd, blir det lettere å forberede data. 
 
 Datamanipulasjon og dataforberedelser handler derfor om å stille seg selv følgende spørsmål:
 
@@ -154,6 +154,8 @@ aid <- aid %>% # samme kode som over, men nå overskriver jeg variabelen jeg lag
 # Dette er en ryddig måte å samle alle omkodinger på!
 
 ```
+
+![](https://rladiessydney.org/img/clean1-pipe.png)
 
 Her brukte vi enkle matematiske operasjoner, `+` og `-`, kombinert med funksjonen `mean()` for å opprette nye variabler. Andre nyttige matematiske funksjoner til omkoding er funksjoner som `log()`, `exp()` og `sqrt()`. Så lenge vi jobber med variabler av klassene `integer` eller `numeric` kan vi utføre omkodinger ved hjelp av alle slags matematiske operasjoner - bare teoretiske og metodologiske hensyn setter begrensninger. For variabler som ikke inneholder tall, vil naturlig nok denne typen omkoding ikke fungere. 
 

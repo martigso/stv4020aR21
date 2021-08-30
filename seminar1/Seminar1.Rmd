@@ -23,9 +23,9 @@ De fleste seminarer vil bestå av to deler:
 1. En introduksjon om dagens emner. 
 2. Oppgaver relatert til dagens emner. For å lære seg R så er det *helt* nødvendig å anvende kunnskapen.  
 
-I år har vi fire introduksjonsseminarer som vil bli etterfulgt av en digital prøve mandag 14. august. Prøven er gjøre tilgjengelig i Canvaskl 9 og må leveres senest kl 15, men det bør ikke ta så mye mer enn to-tre timer å løse den. Vi gir dere god tid så vi kan ta høyde for tekniske problemer e.l. Dere har lov til å bruke alle hjelpemidler, men dere skal ikke samarbeide. Dere skal levere et kjørbart script som svarer på oppgavene på prøven. 
+I år har vi fire introduksjonsseminarer som vil bli etterfulgt av en digital prøve mandag 20. september. Prøven gjøres tilgjengelig i Canvas kl 9 og må leveres senest kl 15, men det bør ikke ta så mye mer enn to-tre timer å løse den. Vi gir dere god tid så vi kan ta høyde for tekniske problemer e.l. Dere har lov til å bruke alle hjelpemidler, og dere kan samarbeide. Dette gjelder *kun* R-prøven, ikke avsluttende eksamen. Dere skal levere et kjørbart script som svarer på oppgavene på prøven. 
 
-På introduksjonsseminarene skal vi lære alt fra å laste inn datasett til å kjøre egne analyser for så å plotte resultatene. Vi skal lære ting som vil være anvendbare langt utover statistisk analyse. Neste uke tilbyr vi fordypningsseminarer for de av dere som vil jobbe videre med R. Disse anbefales spesielt til dere som skal skrive en statistisk oppgave, men det er selvfølgelig ikke et krav for å delta. På fordypningsseminarene vil vi gå nærmere inn på R-kode for flernivå-analyse, faktoranalyse og paneldata. Vi håper så klart å se mange av dere der også. Det blir ikke noen prøve om innholdet i fordypningsseminarene.
+På introduksjonsseminarene skal vi lære alt fra å laste inn datasett til å kjøre egne analyser for så å plotte resultatene. Vi skal lære ting som vil være anvendbare langt utover statistisk analyse. Neste uke tilbyr vi fordypningsseminarer for de av dere som vil jobbe videre med R. Disse anbefales spesielt til dere som skal skrive en statistisk oppgave, men det er ikke et krav for å delta. På fordypningsseminarene vil vi gå nærmere inn på R-kode for forutsetninger til OLS og logistisk regresjon, flernivå-analyse og paneldata. Vi håper så klart å se mange av dere der også. Det blir ikke noen prøve om innholdet i fordypningsseminarene.
 
 # Hjemmeoppgaven
 Om du ikke allerede har bestemt deg så begyn å tenk på hjemmeoppgaven nå. Om du skal skrive en statistisk oppgave så er det fint å ha hjemmeoppgaven i bakhodet når vi går gjennom ting på seminar. Ta gjerne en titt på [Harvard dataverse](https://dataverse.harvard.edu/dataverse/harvard). Mange forskere bruker Harvard dataverse til å publisere replikasjonsdata når de skriver artikler. Du kan søke på temaer du synes er interessante eller en spesiell artikkel du syns er spennende. 
@@ -38,13 +38,15 @@ Det er noen ting som er kjekt å vite om R:
 1. Øvelse gjør mester.
 2. Å lære R er en prosess der eksponering er det beste læringsverktøyet. 
 3. Mye kan gjøres på flere måter. 
-4. Samarbeid gjør det hele mye enklere (og morsommere). 
+4. Samarbeid gjør det hele mye enklere (og morsommere).
+5. Programmering handler i stor grad om å kunne google seg frem til svar.
 
 Det betyr at for å få mest mulig ut av seminarene så må dere jobbe med oppgavene vi legger ut mellom seminarene - gjerne sammen med noen andre. I begynnelsen kan det være vanskelig å vite hvorfor en kode ikke vil kjøre, men det å søke opp løsninger på nett og i R sine hjelpefiler er en viktig del av å lære seg R. Noen av svarene dere finner er kanskje ikke prikk like på det vi har gjennomgått i seminar, men det betyr ikke at det ikke er en fin måte å løse det på. På prøven leverer dere et script for å vise at dere har brukt R for å finne svarene, men det finnes ikke noen **riktig** eller **feil** kode om svaret du kommer frem til er riktig. 
 
 I tillegg oppfordrer vi til å stille masse spørsmål - både til medstudenter og oss seminarledere. Bruk medstudenter, nettressurser og R sine hjelpefiler aktivt, samarbeid og hjelp hverandre når dere løser oppgaver så vil prøven gå veldig fint.
 
-Jeg vil lenke til undervisningsmateriell på Canvas. Selve opplegget blir lastet opp på github. Der finner dere også opplegget for tidligere år, men det er mappen H20-seminarer som gjelder. Opplegget i år er en del annerledes enn tidligere år selv om vi skal gjennom mye av det samme. 
+Jeg vil lenke til undervisningsmateriell på Canvas. Selve opplegget blir lastet opp på github, som er et sted der man kan dele kode og jobbe med prosjekter.
+
 
 ## Læringsressurser og nyttige R-lenker
 
@@ -63,6 +65,7 @@ Jeg vil lenke til undervisningsmateriell på Canvas. Selve opplegget blir lastet
 - [R-bloggers - har gode, kortfattede tutorials](https://www.r-bloggers.com/)
 
 Du kan også finne videoer, flere gratis bøker m.m. hvis du googler/søker på stackoverflow/søker på youtube. Noe av det aller viktigste er nok imidlertid å lære seg å lese og forstå hjelpefiler i R og stackoverflow. For å bli god i R er det lurt å huske noen grunnbegreper (dvs. en god del av det som du lærer i seminarene og **R for Data Science**), men ut over det bruker man hjelpefiler i R/stackoverflow som ordbøker hele tiden.
+
 
 # Første seminaropplegg
 #### Mål for i dag: 
@@ -88,10 +91,12 @@ Det første vi skal gjøre er å lage et lite datasett. Snakk med personen ved s
 Etterpå tar vi en runde og da skal du presentere personen ved siden av deg. Informasjonen skal vi bruke til å lage et lite datasett. Bruk tre minutter.
 
 # Rstudio
-Først litt helt grunnleggende om R og Rstudio. I Rstudio skriver vi kode i script. Scriptene kan lagres og gjør arbeidet vårt reproduserbart. Opprett et nytt script med enten å trykke på arket oppe til venstre med et grønt plusstegn, gå på file > new file > R script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i script, kan vi sende koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script).
+Først litt helt grunnleggende om R og Rstudio. R er et programmeringsspråk, mens RStudio er et grensesnitt vi koder i. I Rstudio skriver vi kode i script. Du kan tenke på R-script litt som en word-fil, siden scriptene kan lagres og gjør arbeidet vårt reproduserbart. Opprett et nytt script med enten å trykke på arket oppe til venstre med et grønt plusstegn, gå på file > new file > R script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i script, kan vi sende koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script).
+
+![](https://cienciapratica.files.wordpress.com/2015/07/slide2.jpg)
 
 # Objekter
-For å bli kjent med R så skal vi bruke informasjonen fra bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å lage objekter av en type som heter vektor. Vektorene skal inneholder informasjon om navn, alder og hvor dere tok bachelorgraden deres. I R kan en vektor defineres som en ordnet lise av verdier, dvs. at man lagrer verdier en bestemt rekkefølge. Når verdiene er i en bestemt rekkefølge så kan vi slå vektorene sammen for å lage et datasett. I dette kurset kan dere for det meste tenke på vektorer som variabler fra et datasett. Vi lager objekter ved hjelp av assignment operatoren  `<-`.  
+For å bli kjent med R så skal vi bruke informasjonen fra bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å lage objekter av en type som heter vektor. Vektorene skal inneholde informasjon om navn, alder og hvor dere tok bachelorgraden deres. I R kan en vektor defineres som en ordnet liste av verdier, dvs. at man lagrer verdier i en bestemt rekkefølge. Når verdiene er i en bestemt rekkefølge så kan vi slå vektorene sammen for å lage et datasett. I dette kurset kan dere for det meste tenke på vektorer som variabler fra et datasett. Vi lager objekter ved hjelp av assignment operatoren  `<-`.  
 
 ```{r}
 # Her ser dere et eksempel på R-kode
@@ -123,6 +128,7 @@ Kan du finne din rad?
 
 Det finnes flere typer objekter i R. Vektor og datasett er de to typene vi skal fokusere på idag. Vi skal straks tilbake til datasettet vi har laget, men først skal vi ta en kort intro til R og Rstudio.  
 
+
 # Intro til R
 
 I R skriver vi kode i script. Du åpner et nytt script ved å trykke på den hvite firkanten med en grønn sirkel og et plusstegn oppe til venstre i Rstudio. Etter at vi har skrevet kode i scriptet, sender vi koden til console for evaluering med ctrl/cmd + enter. Dersom output fra koden ikke er et objekt eller plot, vises resultatet i console (vinduet under script). La oss forsøke med koden `"Hello World!"`
@@ -130,6 +136,7 @@ I R skriver vi kode i script. Du åpner et nytt script ved å trykke på den hvi
 ```{r}
 "Hello world!"
 ```
+
 R Kan også brukes som en kalkulator: 
 ```{r}
 1 + 1  # addisjon
@@ -142,9 +149,10 @@ log(2) # logaritme (default er naturlig logaritme)
 2 * (4-2)/(4-2) # Parentesregler fungerer som i vanlig algebra: den innerste parentesen regnes ut først
 ```
 
+
 # Logiske tester
 
-R kan evaluere logiske utsdagn og bedømme om de er ´TRUE´ eller ´FALSE´.   
+R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.   
 ```{r}
 1 == 2                                # tester om 1 er lik 2
 2 == 2                                # tester om 2 er lik 2
@@ -156,6 +164,7 @@ R kan evaluere logiske utsdagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 1 == 2 | 1 == 1                       # Tester om en av de to påstandene 1 er lik 2 eller 1 er lik 1 er sanne
 1 == 2 & 1 == 1                       # Tester om begge de to påstandene 1 er lik 2 og 1 er lik 1 er sanne
 ```
+
 
 ### Oversikt over logiske operatorer
 ```{r, echo = FALSE, message=FALSE}
@@ -197,7 +206,8 @@ R kan evaluere logiske utsdagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 | `&`  | og                     |
 
 
-Vi kommer til å bruke disse opearterne mye, spesielt når vi gjør endringer i datasett som å lage nye variabler.  Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelse på er å øve. 
+Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør endringer i datasett som å lage nye variabler. Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelse på er å øve. 
+
 
 # Pakker 
 R er open source og mange flinke utviklere bidrar til å gjøre R bedre. Disse utviklerne deler kode (i hovedsak funksjoner) gjennom pakker. For å kunne kode fra en pakke må vi kjøre følgende kodelinjer:
@@ -215,8 +225,9 @@ install.packages("haven") # legg merke til at vi bruker "" i install.packages(),
 library(tidyverse)
 ```
 
+
 # Indeksering
-Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet i kapittel 1 i **Lær deg R** som er anbefalt pensum. 
+Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet i kapittel 1 i **Lær deg R** som er anbefalt litteratur. 
 
 Dersom vi for eksempel er interessert i å hente ut all informasjonen om Thea så kan det gjøres på mange måter: 
 ```{r, echo = FALSE, message=FALSE}
@@ -302,6 +313,12 @@ class(data$navn)
 class(data$alder)
 class(data$bachelor)
 ```
+
+Vi kan også bruke funksjonen `glimpse()` for å få en oversikt over alle variablene i data og deres format.
+```{r}
+glimpse(data)
+```
+
 Som dere ser er alder numeric, mens navn og bachelor er character. Her er det hva objektet er lagret som som teller, ikke hvordan det ser ut i datasettet. Selv om noe ser ut som tall i datasettet så er det ikke sikkert det er registrert som tall av R. Heldigvis kan dette ofte løses ved hjelp av en funksjoner som `as.numeric()`, `as.character()` og `as.factor()`.   
 
 ```{r}
@@ -333,7 +350,8 @@ Noen funksjoner er base R og vi trenger ikke gjøre noe for å bruke dem. Andre 
 
 Vi skal nå bruke noen funksjoner til å finne ut mer informasjon fra datasettet vårt:
 ```{r}
-summary(data)
+# Viser de første seks radene i datasettet
+head(data)
 # Finner minimumsverdi (den laveste alderen)
 min(data$alder, na.rm = TRUE) # na.rm = TRUE sier at missing skal droppes i beregningen
 

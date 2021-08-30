@@ -73,7 +73,7 @@ https://r4ds.had.co.nz/introduction.html
 
 ### **Hvordan finne datasett?**
 
-Velger dere en kvantitativ framgangsmåte i hjemmeoppgaven, vil dere sannsynligvis gå fram som beskrevet over. Da er en første utfordring å finne datasett. Her er noen lenker dere kan ta utgangspunkt i for å finne aktuelle datasett til hjemmeoppgaven deres. Listen er ikke uttømmende så det finnes sikkert mye bra som ikke er listet opp her også. Jeg har heller ikke brukt disse datasettene selv så dere må sette dere ned med kodebok og selv vurdere om de er relevante og av god nok kvalitet for din problemstilling. Vi begynner med instituttet og UB sine ressuser: 
+Velger dere en kvantitativ framgangsmåte i hjemmeoppgaven, vil dere sannsynligvis gå fram som beskrevet over. Da er en første utfordring å finne datasett. Her er noen lenker dere kan ta utgangspunkt i for å finne aktuelle datasett til hjemmeoppgaven deres. Listen er ikke uttømmende, og det finnes nok mye bra som ikke er listet opp her også. Dere må selv sette dere ned med kodebok og vurdere om dataene er relevante og av god nok kvalitet for din problemstilling. Vi begynner med instituttet og UB sine ressuser: 
 
 - Dere finner mange datasett sortert på tema på [ISV sin side "Statistikk, datasett og ressurser på nett"](https://www.sv.uio.no/isv/tjenester/kunnskap/datasett/)
 - [UB sin fagside med lenker til noen datasett (se nederst)](https://www.ub.uio.no/fag/samfunn-politikk/statsvit/)
@@ -98,3 +98,7 @@ For replikasjonsdata:
 - Ikke alle legger ut repliksjonsdata dessverre 
 
 
+### **Tips**
+
+ - dplyr::glimpse() -> dette betyr at du bruker funksjonen "glimpse" fra pakken "dplyr"
+ - NA betyr "Not Available" og der det samme som missingverdi. Dersom du kjører funksjoner som sum() eller mean() og får NA, husk å legge p� na.rm = TRUE, eks. mean(x, na.rm = TRUE)
