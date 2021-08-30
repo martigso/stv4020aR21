@@ -97,8 +97,3 @@ For replikasjonsdata:
 - Sjekk fotnoter i artikkelen om det står noe om hvor data er gjort tilgjenglig
 - Ikke alle legger ut repliksjonsdata dessverre 
 
-
-### **Tips**
-
- - dplyr::glimpse() -> dette betyr at du bruker funksjonen "glimpse" fra pakken "dplyr"
- - NA betyr "Not Available" og der det samme som missingverdi. Dersom du kjører funksjoner som sum() eller mean() og får NA, husk å legge p� na.rm = TRUE, eks. mean(x, na.rm = TRUE)
