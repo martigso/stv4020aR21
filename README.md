@@ -42,7 +42,7 @@ Om du har problemer med installasjonen kan du [melde deg opp til installasjonshj
 
 *Hva gjør jeg om jeg blir syk?*
 
-Blir du syk eller får covid-19-symptomer skal du ikke møte på fysisk seminar, men om du er i form til det så kan du følge det digitale innføringsseminaret. For å følge det digitale seminaret (seminargruppe 1) må du sende en e-post til lise.rodland@stv.uio.no senest klokken 12 samme dag som seminaret går for å få Zoom-lenke. Det digitale innføringsseminaret går mandag, tirsdag, torsdag og fredag kl. 14.15-16.  
+Blir du syk eller får covid-19-symptomer skal du ikke møte på fysisk seminar, men om du er i form til det så kan du følge det digitale innføringsseminaret. For å følge det digitale seminaret (seminargruppe 1) må du sende en e-post til lise.rodland@stv.uio.no senest klokken 12 samme dag som seminaret går for å få Zoom-lenke. Det digitale innføringsseminaret går mandag, tirsdag, torsdag og fredag kl. 14.15-16. Tilbudet om å delta på den digitale seminargruppen er forbeholdt de som er meldt opp i andre seminargrupper, men som ikke kan delta på eget seminar pga. sykdom.  
 
 *Når er R-prøven?*
 
