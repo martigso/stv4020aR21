@@ -1,14 +1,12 @@
 ---
 title: "Seminar 1"
-author: "Lise Rødland"
-date: "2020-08-20"
 output:
-  html_document:
-    keep_md: yes
-    self_contained: no
-    keep_html: no
-editor_options: 
-  chunk_output_type: console
+  github_document
+#    keep_md: yes
+#    self_contained: no
+#    keep_html: no
+#editor_options: 
+#  chunk_output_type: console
 ---
 
 

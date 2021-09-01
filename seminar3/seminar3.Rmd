@@ -1,10 +1,10 @@
 ---
 title: "Seminar 3"
 output:
-  html_document:
-    keep_md: yes
-    self_contained: no
-    keep_html: no
+  github_document
+#    keep_md: yes
+#    self_contained: no
+#    keep_html: no
 ---
 
 I dag skal vi fortsette med OLS og databehandling:
