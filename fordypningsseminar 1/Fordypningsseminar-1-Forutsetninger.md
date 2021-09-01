@@ -222,7 +222,7 @@ car::durbinWatsonTest(m5b)
 ```
 
     ##  lag Autocorrelation D-W Statistic p-value
-    ##    1      0.02981496      1.939984   0.418
+    ##    1      0.02981496      1.939984   0.344
     ##  Alternative hypothesis: rho != 0
 
 I utgangspunktet burde vi her kjørt Durbin-Watson-testen fra plm fordi
@@ -293,7 +293,10 @@ skewness(rstandard(m5), na.rm = TRUE)
 ### Homoskedastiske residualer:
 
 Variansen til residualene skal være konstant for ulike nivå av uavhengig
-variabel.
+variabel. Residualene skal være normalfordelte med jevn spredning over
+alle predikerte verdier av avhengig variabel. Det vil si at modellen bør
+predikere like godt når predikerte *y* er høy, som når predikerte *y* er
+lav (y = fitted values i plottet under).
 
 ### Sjekke om vi har homoskedastiske residualer i R:
 

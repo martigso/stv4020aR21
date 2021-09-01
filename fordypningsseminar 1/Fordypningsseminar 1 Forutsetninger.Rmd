@@ -166,7 +166,7 @@ kurtosis(rstandard(m5), na.rm = TRUE)
 skewness(rstandard(m5), na.rm = TRUE)
 ```
 ### Homoskedastiske residualer:
-Variansen til residualene skal være konstant for ulike nivå av uavhengig variabel.
+Variansen til residualene skal være konstant for ulike nivå av uavhengig variabel. Residualene skal være normalfordelte med jevn spredning over alle predikerte verdier av avhengig variabel. Det vil si at modellen bør predikere like godt når predikerte *y* er høy, som når predikerte *y* er lav (y = fitted values i plottet under).
 
 ### Sjekke om vi har homoskedastiske residualer i R:
 Vi kan teste for heteroskedastisitet ved hjelp av plot av studentiserte residualer mot standardiserte predikerte verdier fra modellen. Dette kan gjøres med `residualPlot()` i car. Dere kan også lage deres egen versjon med `ggplot()` i stedet. 
