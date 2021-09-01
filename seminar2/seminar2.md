@@ -99,11 +99,11 @@ bistand fører til økonomisk vekst, men bare dersom de fører en god
 makroøkonomisk politikk. Datasettet `aid` som vi lastet inn i stad, ble
 brukt i en forskningsartikkel - *Aid, policies and growth* (**Burnside
 og Dollar, 2000**, kan leses på
-[Jstor](https://www.jstor.org/stable/117311?seq=1#metadata_info_tab_contents))
-- for å teste denne hypotesen. Disse dataene har observasjoner av en
-rekke land over flere tidsperioder. Dersom dere hadde lest denne
-artikkelen og kodeboken på nett - slik vi har gjort for dere - ville
-dere også visst at vi har data som blant annet inneholder:
+[Jstor](https://www.jstor.org/stable/117311?seq=1#metadata_info_tab_contents)
+for å teste denne hypotesen. Disse dataene har observasjoner av en rekke
+land over flere tidsperioder. Dersom dere hadde lest denne artikkelen og
+kodeboken på nett - slik vi har gjort for dere - ville dere også visst
+at vi har data som blant annet inneholder:
 
 -   `gdp_growth`: økonomisk vekst i prosent av BNP
 -   `gdp_pr_capita`: BNP per innbygger
@@ -793,7 +793,9 @@ til observasjonen avhengig av verdien de har på variabelen vi
 spesifiserte. Det finnes også alternative måter å visualisere mer enn to
 variabler, som f.eks. `size = my.var3`, eller `shape = my.var3`.
 
-Vi legger til nye argumer til plottet vårt med `+`. Etter at vi har
+Filosofien til ggplot baserer seg på at et plot egentlig er en mengde
+lag av spesifikasjoner oppå hverandre. Derfor legger vi til nye
+argumenter (eller “lag”) til plottet med `+`. Etter at vi har
 spesifisert datasett, geom og aesthetics må vi ikke legge til flere
 argumenter, men det er mulig å legge til flere elementer (som en
 regresjonslinje) eller finjustere plottet i det uendelige (f.eks. angi
@@ -1071,7 +1073,11 @@ summary(m2 <- lm(gdp_growth ~ aid + policy + region, data = aid))
 
 ### Samspill
 
-Vi legger inn samspill ved å sette `*` mellom to variabler. De
+Hypotesen til artikkelforfatterne var følgende: *bistand fører til
+økonomisk vekst, men bare dersom de fører en god makroøkonomisk
+politikk*. Dette kan vi sjekke ved hjelp av samspill, som undersøker
+hvor vidt en effekt av en variabel er avhengig av en annen variabel. Vi
+legger inn samspill ved å sette `*` (gangetegn) mellom to variabler. De
 individuelle regresjonskoeffisientene til variablene vi spesifisere
 samspill mellom blir automatisk lagt til.
 
@@ -1107,12 +1113,17 @@ summary(m3 <- lm(gdp_growth ~ aid*policy + region, data = aid))
 ### Andregradsledd og andre omkodinger
 
 Vi kan legge inn andregradsledd eller andre omkodinger av variabler i
-regresjonsligningene våre. Andregradsledd legger vi inn med
-`I(uavh.var^2)`. Under har jeg lagt inn en `log()` omkoding, en
-`as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn
-førstegradsleddet separat når dere legger inn andregradsledd. Dersom en
-variabeltransformasjon krever mer enn en enkel funksjon, er det fint å
-opprette en ny variabel i datasettet.
+regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en
+variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske
+transformasjoner brukes gjerne for eksponentiell vekst eller for å
+minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig
+hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
+
+Andregradsledd legger vi inn med `I(uavh.var^2)`. Under har jeg lagt inn
+en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd.
+Merk at dere må legge inn førstegradsleddet separat når dere legger inn
+andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel
+funksjon, er det fint å opprette en ny variabel i datasettet.
 
 ``` r
 summary(m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), data = aid, na.action = "na.exclude"))
