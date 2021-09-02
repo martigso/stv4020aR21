@@ -39,7 +39,7 @@ aid <-  read_dta("aid.dta")
 ```
 
 # Forberede og manipulere data
-Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så heldig å få et analyserklart datasett som har alle variablene man ønsker, men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt med å forberede og manipulere data, f.eks. ved å omkode variabler, eller hente inn variabler fra andre datakilder. Forberedelse av data er ikke rutinearbeid - det innbefatter svært ofte viktige metodologiske beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en konflikt ble avsluttet eller hvordan du skal håndtere missing verdier. Forsøk derfor alltid å tenke på metodologiske implikasjoner når du forbereder data. Dersom du lager en klar slagplan for hvordan du ønsker at dataene dine skal se ut på forhånd, blir det lettere å forberede data. 
+Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så heldig å få et analyseklart datasett som har alle variablene man ønsker, men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt med å forberede og manipulere data, f.eks. ved å omkode variabler, eller hente inn variabler fra andre datakilder. Forberedelse av data er ikke rutinearbeid - det innbefatter svært ofte viktige metodologiske beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en konflikt ble avsluttet eller hvordan du skal håndtere missing verdier. Forsøk derfor alltid å tenke på metodologiske implikasjoner når du forbereder data. Dersom du lager en klar slagplan for hvordan du ønsker at dataene dine skal se ut på forhånd, blir det lettere å forberede data. 
 
 Datamanipulasjon og dataforberedelser handler derfor om å stille seg selv følgende spørsmål:
 
@@ -115,7 +115,7 @@ Legg merke til at disse funksjonene er logiske tester - de tester om noe er sant
 **Hvordan kan vi teste hvor mange observasjomer som _ikke_ har missing på variabelen gdp_growth?**
 
 ```{r, eval = FALSE, include = FALSE}
-table(!is.na(aid$gdp_growth)) # tester hvor mange observasjoner som _ikke_ har missing på variabelen elrdgdpg
+table(!is.na(aid$gdp_growth)) # tester hvor mange observasjoner som _ikke_ har missing på variabelen gdp_growth
 ```
 
 I noen datasett vil imidlertid missingverdier ha en fiktiv verdi som f.eks. -999, 888 o.l. Dette må avdekkes og disse verdiene må omkodes før du kan kjøre analysen din. Her er kodeboken gull verdt. 
@@ -233,7 +233,7 @@ aid %>%
 
 ``` 
 
-Resultatet er fem observasjoner heller enn de opprinnelige 331. I outputen er nivået for observasjonene endret fra land-nivå til region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå. Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`. Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny variabelen med snitt per region direkte inn i datasettet: 
+Resultatet er fem observasjoner heller enn de opprinnelige 331. <!-- fixme: er det ikke bare 4 observasjoner her eller ser jeg feil -->  I outputen er nivået for observasjonene endret fra land-nivå til region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå. Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`. Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny variabelen med snitt per region direkte inn i datasettet: 
 
 ```{r}
 # Samme kode, men lagrer som et objekt - vi får et nytt datasett der vi har lagt til variablene
@@ -303,11 +303,13 @@ table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T), aid$country)
 De fleste land har vekst både over og under medianen. Dersom det hadde vært svært lite variasjon i veksten til land, ville kontrollvariabler for land (country fixed effects) kunne ha fjernet effekten av de fleste variabler - vi ville ikke hatt veldig godt datagrunnlag for å si så mye om effekten av bistand i samspill med policy (jeg sier ikke dermed nødvendigvis at dataene er gode generelt).
 
 
-**Oppgave:** Lag et nytt datasett ved hjelp av `group_by` og `summarise()`, der du oppretter variabler som viser korrelasjon (Pearsons r) mellom:
+**Oppgave:** Lag et nytt datasett ved hjelp av `group_by()` og `summarise()`, der du oppretter variabler som viser korrelasjon (Pearsons r) mellom:
 *` aid`, og `gdp_growth`
 * `aid` og `policy`
 * `policy` og `gdp_growth` 
-separat for hver region. Er det store forskjeller i korrelasjonene mellom regionene? Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at observasjoner som har positive verdier på henholdsvis variablene `policy` og `policy2` får verdien 1, mens andre observasjoner får verdien 0. Bruk disse nye variablene som grupperingsvariabler, og lag et nytt datasett der du inkluderer en variabel som beregner korrelasjon mellom `aid` og `policy` for hver gruppe.
+separat for hver region. Er det store forskjeller i korrelasjonene mellom regionene? 
+
+Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at observasjoner som har positive verdier på henholdsvis variablene `policy` og `policy2` får verdien 1, mens andre observasjoner får verdien 0. Bruk disse nye variablene som grupperingsvariabler, og lag et nytt datasett der du inkluderer en variabel som beregner korrelasjon mellom `aid` og `policy` for hver gruppe.
 
 
 ```{r, eval = F, include=F}
@@ -389,8 +391,7 @@ ggsave("./bilder/seminar2_2.png")
 ```{r, echo = F}
 knitr::include_graphics("./bilder/seminar2_2.png")
 ```
-**Oppgave:** Lag boxplot som viser fordelingen til variablene `policy` og `elrgpdg` innenfor hver region.
-
+**Oppgave:** Lag boxplot som viser fordelingen til variablene `policy` og `gdp_growth` innenfor hver region. <!--fixme: har endret elrdgdpg til gdp_growth ettersom denne variabelen ikke finnes--> 
 
 Med `geom_line()` kan vi plotte tidsserier:
 
@@ -436,8 +437,10 @@ knitr::include_graphics("./bilder/seminar2_4.png")
 aid %>% 
   filter(country %in% c("KEN", "ETH", "MOZ", "AGO", "RWA")) %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))
-```
 
+```
+<!--fixme: det virker som "MOZ", "AGO", "RWA" er missing, skal man endre til "GHA", "SOM", "TZA" som under?-->
+ 
 ```{r include=FALSE}
 library(ggplot2)
 aid %>% 
