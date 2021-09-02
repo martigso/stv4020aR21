@@ -1,0 +1,164 @@
+---
+title: "Oppgaver seminar 4"
+output: github_document
+---
+## Introduksjon
+Datasettet «beer» består av 336 observasjoner og 10 variabler. Observasjonene er av
+amerikanske stater i tidsperioden 1982-1988. Det er ikke missing-data.
+
+## Variablene
+| Variabel| Beskrivelse                                      |
+| --------| :-----------------------------------------------:|
+| state   | state ID code                                    | 
+| year    | year                                             |
+| mrall   | traffic fatality rate (deaths per 10000)         |
+| beertax | tax on case of beer (percentage)                 |
+| mlda    | minimum legal drinking age                       |
+| jaild   | mandatory jail sentence after drunk-driving?     |
+| comserd | mandatory community service after drunk-driving? |
+| vmiles  | average miles per driver                         |
+| unrate  | unemployment rate                                |
+| perinc  | per capita personal income                       |
+
+## Oppgaver
+
+1. Importer datasettet beer.csv eller beer.Rdata fra [data-mappen på github](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Innf%C3%B8ringsseminarer/data) som et objekt i R-Studio.
+Du skal bruke dette datasettet i alle oppgavene.
+
+```{r, eval = FALSE, include = FALSE}
+library(tidyverse)
+beer <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/beer.csv") 
+```
+
+2. Hvilken klasse har variablene i datasettet? Vis hvordan du finner ut av dette med kode.
+
+
+```{r, eval = FALSE, include=FALSE}
+beer
+```
+
+3. Lag et spredningsplot (scatter-plot) med `beertax` på x-aksen, og `mrall` på y-aksen. 
+
+```{r, eval = FALSE, include = FALSE}
+library(ggplot2)
+
+ggplot(beer, aes(x = beertax, y = mrall)) +
+  geom_point() +
+  theme_minimal()
+
+```
+
+4.  Lag et nytt datasett basert på `beer`, bestående av variablene `year`, `mrall`, `beertax`,
+`vmiles`, `unrate` og `perinc.` Lag en korrelasjonsmatrise med utgangspunkt i det nye
+datasettet.
+
+```{r, include = FALSE, eval = FALSE}
+
+beer2 <- beer %>% 
+    select(year, mrall, beertax, vmiles, unrate, perinc)
+
+beer.cor <- cor(beer2, use = "pairwise")
+```
+5. Opprett et nytt datasett med alle observasjoner fra år 1982 i det opprinnelige
+datasettet, og et datasett med alle observasjoner fra år 1988 i det opprinnelige
+datasettet. Hva er gjennomsnittlig skatt på øl og gjennomsnittlig dødsrate per 10000
+innbygger i de to datasettene? Oppgi gjennomsnittene i en kommentar. 
+
+```{r, include = FALSE, eval = FALSE}
+beer1982 <- beer %>% 
+  filter(year == 1982)
+
+mean(beer1982$beertax, na.rm = TRUE)
+# 0.53
+
+mean(beer1982$mrall, na.rm = TRUE)
+# 2.09
+
+beer1988 <- beer %>% 
+  filter(year == 1988)
+
+mean(beer1988$beertax, na.rm = TRUE)
+# 0.48
+
+mean(beer1988$mrall, na.rm = TRUE)
+# 2.07
+
+```
+
+6. Kjør en lineær regresjon med `mrall` som avhengig variabel og `beertax`, `vmiles`, `unrate` og
+`perinc` som uavhengige variabler. Lagre modellen som et objekt. Indikerer modellen at
+skatt på øl reduserer dødsfall i trafikken? 
+
+
+```{r, include = FALSE, eval = FALSE}
+
+m1 <- lm(data = beer, 
+         mrall ~ beertax + vmiles + unrate + perinc, na.action = "na.exclude")
+
+stargazer::stargazer(m1, type = "text")
+
+```
+
+7. Opprett en ny variabel i datasettet ditt, `state_fac`, ved å omkode variabelen `state` til en
+factor. Lag deretter et boxplot med `state_fac` på x-aksen og `mrall` på y-aksen. Lag deretter det samme plottet som i oppgave 3, men legg til argumentet
+`facet_wrap(~state_fac)`. Hva leser du fra dette plottet?
+
+
+```{r, eval = FALSE, include = FALSE}
+beer <- beer %>% 
+  mutate(state_fac = as.factor(state))
+
+ggplot(beer, aes(x = state_fac, y = mrall)) +
+  geom_boxplot()
+
+ggplot(beer, aes(x = beertax, y = mrall)) +
+  geom_point() +
+  theme_minimal() +
+  facet_wrap(~state_fac)
+
+# Plottet viser at det er lite variasjon i beer tax innad i stater
+```
+
+8. Kjør en lineær regresjon med `mrall` som avhengig variabel og `beertax`, `vmiles`, `unrate`,
+`perinc` og `state_fac` som uavhengige variabler. Lagre modellen som et objekt. Indikerer
+modellen at skatt på øl reduserer dødsfall i trafikken? (P.S.:
+ved å legge til variabelen `state_fac` spesifiserer vi en modell med det som kalles fixed
+effects).
+
+```{r, include = FALSE, eval=FALSE}
+m2 <- lm(data = beer, 
+         mrall ~ beertax + vmiles + unrate + perinc + state_fac, na.action = "na.exclude")
+
+stargazer::stargazer(m2, type = "text",
+                     omit = c("state_fac")) # Her printer jeg ikke state fixed effects i tabellen pga. lengden
+
+
+```
+9. Lag en ny variabel `comserd_d` som tar verdien:
+
+- 1 dersom `comserd` har verdien "yes"
+
+- 0 dersom `comserd` har verdien "no"
+
+Sjekk ved hjelp av en tabell at det ble riktig. 
+```{r, eval = FALSE, include = FALSE}
+beer <- beer %>% 
+  mutate(comserd_d = ifelse(comserd == "yes", 1, 0))
+
+table(beer$comserd, beer$comserd_d, useNA = "always")
+```
+
+
+10. Kjør en binomisk logistisk regresjon med `comserd_d` som avhengig variabel og `unrate`, `perinc`, `mrall` og `mlda` som uavhengige variabler. Hva kan si om effekten av antall trafikkdødsfall? 
+
+```{r, eval = FALSE, include=FALSE}
+m3 <- glm(data = beer, 
+          comserd_d ~ unrate + perinc + mrall + mlda,
+          family = binomial(link = "logit"),
+          na.action = "na.exclude")
+
+stargazer::stargazer(m3, type = "text")
+
+# Koeffisienten er signifikant  på 1 prosentsnivå og positiv. En skalaenhets økning i dødsfall øker sannsynligheten for at staten har obligatorisk samfunnstraff om en fyllekjører. 
+```
+11. Hva er gjennomsnitt og media til variabelen beertax? Vis hvordan du kommer frem til det via kode og oppgi verdiene i en kommentar. 
