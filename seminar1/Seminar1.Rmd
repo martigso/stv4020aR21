@@ -88,6 +88,8 @@ Det første vi skal gjøre er å lage et lite datasett. Snakk med personen ved s
 
 Etterpå tar vi en runde og da skal du presentere personen ved siden av deg. Informasjonen skal vi bruke til å lage et lite datasett. Bruk tre minutter.
 
+<!-- fixme: jeg legger til en seksjon om github her. Kan gås gjennom superkjapt, men fint å ha med -->
+
 # Rstudio
 Først litt helt grunnleggende om R og Rstudio. R er et programmeringsspråk, mens RStudio er et grensesnitt vi koder i. I Rstudio skriver vi kode i script. Du kan tenke på R-script litt som en word-fil, siden scriptene kan lagres og gjør arbeidet vårt reproduserbart. Opprett et nytt script med enten å trykke på arket oppe til venstre med et grønt plusstegn, gå på file > new file > R script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i script, kan vi sende koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script).
 
@@ -187,21 +189,23 @@ R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 # fixme
 # I tabellen under blir ikke | riktig i .md-filen når man åpner den via github
 # Det ser riktig ut i pdf- og html-versjonen en får preview av når en kjører filen
+# Martin: den ser fin ut for meg på github. Men første kolonne har ikke definert alignment
+# så jeg kaster inn det nå.
 
 ```
 
 
-| Operator      | Betydning     |
-| ------------- |:-------------:|
-| `==` | er lik                 |
-| `<`  | mindre enn             |
-| `>`  | større enn             |
-| `<=` | mindre eller lik       |
-| `>=` | større eller lik       |
-| `!=` | ikke lik               |
-| `!x` | ikke x                 |
-| `|`  | eller                  |
-| `&`  | og                     |
+| Operator      | Betydning        |
+|:-------------:|:----------------:|
+| `==`          | er lik           |
+| `<`           | mindre enn       |
+| `>`           | større enn       |
+| `<=`          | mindre eller lik |
+| `>=`          | større eller lik |
+| `!=`          | ikke lik         |
+| `!x`          | ikke x           |
+| `|`           | eller            |
+| `&`           | og               |
 
 
 Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør endringer i datasett som å lage nye variabler. Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelse på er å øve. 
@@ -209,6 +213,7 @@ Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør endringer i
 
 # Pakker 
 R er open source og mange flinke utviklere bidrar til å gjøre R bedre. Disse utviklerne deler kode (i hovedsak funksjoner) gjennom pakker. For å kunne kode fra en pakke må vi kjøre følgende kodelinjer:
+
 ```{r, echo = TRUE, eval = FALSE}
 install.packages("pakkenavn") # Laster ned filene pakken består av fra nett til PC - må bare gjøres en gang
 library(pakkenavn)            # Tilgjengeliggjør pakken i R-sesjonen, må gjøres hver gang du vil bruke pakken i en ny sesjon
@@ -216,15 +221,18 @@ library(pakkenavn)            # Tilgjengeliggjør pakken i R-sesjonen, må gjør
 
 Vi skal for det meste bruke kode som kommer fra pakker i [tidyverse](https://www.tidyverse.org/learn/). La oss installere disse pakkene:
 
+<!-- fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC 
+            men vi kan også teste det på installasjonsseminaret. -->
 ```{r, echo = TRUE, eval = FALSE}
-# fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC
-install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
-install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
+# install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
+# install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
 library(tidyverse)
 ```
 
+Forskjellen på `install.packages()` og `library()` kan tenkes på som julepakker. `install.packages()` er å kjøpe pakken, mens `library()` er å pakke den opp.
 
 # Indeksering
+
 Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet i kapittel 1 i **Lær deg R** som er anbefalt litteratur. 
 
 Dersom vi for eksempel er interessert i å hente ut all informasjonen om Thea så kan det gjøres på mange måter: 
@@ -266,6 +274,8 @@ Til slutt så kan vi hente ut informasjon om en variabel for en observasjon:
 data[navn == "Thea", "alder"]
 
 data[data$navn == "Thea", "alder"]
+
+data$alder[data$navn == "Thea"]
 
 # Ved hjelp av dplyr
 data %>% 
@@ -320,18 +330,24 @@ glimpse(data)
 Som dere ser er alder numeric, mens navn og bachelor er character. Her er det hva objektet er lagret som som teller, ikke hvordan det ser ut i datasettet. Selv om noe ser ut som tall i datasettet så er det ikke sikkert det er registrert som tall av R. Heldigvis kan dette ofte løses ved hjelp av en funksjoner som `as.numeric()`, `as.character()` og `as.factor()`.   
 
 ```{r}
+<<<<<<< HEAD
 # Her lager vi en ny variabel alder_ch der vi ber R lagre alder som character
+=======
+
+# Her lager vi en ny variabel alder2 der vi ber R lagre alder som character
+>>>>>>> 3377b74299a105268cbab7f53bf058c41c0d9ca5
 data$alder_ch <- as.character(data$alder)
+
 ```
 Om vi ser på datasettet etter at vi har laget den nye variabelen så ser vi at alder og alder_ch ser helt like ut. Begge fremstår som tall vi kan gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne selv å kjøre funksjonen `mean()` som regner ut gjennomsnittet på alder_ch. 
 
-**Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?**
+<!-- fixme: kuttkandidat;
+**Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?** -->
 
-```{r, eval = FALSE, include = FALSE}
-data$alder_fa <- as.factor(data$alder_ch)
-data$alder_nu <- as.numeric(data$alder_fa)
-```
-
+<!-- ```{r, eval = FALSE, include = FALSE} -->
+<!-- data$alder_fa <- as.factor(data$alder_ch) -->
+<!-- data$alder_nu <- as.numeric(data$alder_fa) -->
+<!-- ``` -->
 
 # Funksjoner i R
 Dersom vi ønsker å gjøre noe i R, får vi som regel en funksjon til å gjøre jobben for oss. En funksjon tar i mot verdi(er), gjerne lagret i form av et R-objekt, utfører operasjoner basert på input, og produserer nye verdier. En typisk R-funksjon har følgende syntaks:
@@ -350,6 +366,7 @@ Vi skal nå bruke noen funksjoner til å finne ut mer informasjon fra datasettet
 ```{r}
 # Viser de første seks radene i datasettet
 head(data)
+
 # Finner minimumsverdi (den laveste alderen)
 min(data$alder, na.rm = TRUE) # na.rm = TRUE sier at missing skal droppes i beregningen
 
@@ -390,7 +407,6 @@ kurtosis(data$alder, na.rm = TRUE)
 table(data$bachelor, useNA = "always") # useNA = "always" betyr at vi også vil ha med antall "missing" 
 
 ```
-
 
 # Laste inn data
 Til slutt så skal vi laste inn dataene dere skal bruke i oppgavene i etterpå. Dersom dere skal gjøre statistisk analyse, er som regel den første seksjonen import og forberedelse av data. En styrke ved R, er at det er mulig å importere mange ulike filtyper, både fra en mappe på pcen din og fra en url på internett. Jeg går gjennom import av filer fra excel, stata, spss og R, men vit at det finnes mange andre muligheter.

@@ -1,6 +1,8 @@
 ---
 title: "Seminar 2"
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Dagens seminar: En første dataanalyse med R  
@@ -20,7 +22,7 @@ datasett <- read_filtype("filnavn.filtype")
 read_csv("filnavn.csv") # for .csv, sjekk også read.table
 load("") # For filer i R-format.
 
-library(haven)
+library(haven) # filformat fra andre statistiske pakker (SAS, SPSS og STATA)
 # Fra haven-pakken - dette skal vi se på i senere seminar
 read_spss("filnavn.sav")  # for .sav-filer fra spss
 read_dta("filnavn.dta") # for .dta-filer fra stata
