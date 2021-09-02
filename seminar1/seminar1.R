@@ -331,11 +331,11 @@ glimpse(data)
 #' 
 ## ----------------------------------------------------------------------------------------------------------------------
 
-# Her lager vi en ny variabel alder2 der vi ber R lagre alder som character
+# Her lager vi en ny variabel alder_ch der vi ber R lagre alder som character
 data$alder_ch <- as.character(data$alder)
 
 
-#' Om vi ser på datasettet etter at vi har laget den nye variabelen så ser vi at alder og alder2 ser helt like ut. Begge fremstår som tall vi kan gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne selv å kjøre funksjonen `mean()` som regner ut gjennomsnittet på alder2. 
+#' Om vi ser på datasettet etter at vi har laget den nye variabelen så ser vi at alder og alder_ch ser helt like ut. Begge fremstår som tall vi kan gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne selv å kjøre funksjonen `mean()` som regner ut gjennomsnittet på alder_ch. 
 #' 
 #' <!-- fixme: kuttkandidat;
 #' **Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?** -->
