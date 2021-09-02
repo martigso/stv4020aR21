@@ -1,18 +1,16 @@
 #' ---
 #' title: "Seminar 1"
-#' author: "Lise Rødland"
-#' date: "2020-08-20"
 #' output:
-#'   html_document:
-#'     keep_md: yes
-#'     self_contained: no
-#'     keep_html: no
-#' editor_options: 
-#'   chunk_output_type: console
+#'   github_document
+#' #    keep_md: yes
+#' #    self_contained: no
+#' #    keep_html: no
+#' #editor_options: 
+#' #  chunk_output_type: console
 #' ---
 #' 
 #' 
-## ----setup, include=FALSE------------------------------------------------------------------------------------
+## ----setup, include=FALSE----------------------------------------------------------------------------------------------
 #knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 
@@ -23,9 +21,9 @@ library(tidyverse)
 #' 1. En introduksjon om dagens emner. 
 #' 2. Oppgaver relatert til dagens emner. For å lære seg R så er det *helt* nødvendig å anvende kunnskapen.  
 #' 
-#' I år har vi fire introduksjonsseminarer som vil bli etterfulgt av en digital prøve mandag 14. august. Prøven er gjøre tilgjengelig i Canvaskl 9 og må leveres senest kl 15, men det bør ikke ta så mye mer enn to-tre timer å løse den. Vi gir dere god tid så vi kan ta høyde for tekniske problemer e.l. Dere har lov til å bruke alle hjelpemidler, men dere skal ikke samarbeide. Dere skal levere et kjørbart script som svarer på oppgavene på prøven. 
+#' I år har vi fire introduksjonsseminarer som vil bli etterfulgt av en digital prøve mandag 20. september. Prøven gjøres tilgjengelig i Canvas kl 9 og må leveres senest kl 15, men det bør ikke ta så mye mer enn to-tre timer å løse den. Vi gir dere god tid så vi kan ta høyde for tekniske problemer e.l. Dere har lov til å bruke alle hjelpemidler, og dere kan samarbeide. Dette gjelder *kun* R-prøven, ikke avsluttende eksamen. Dere skal levere et kjørbart script som svarer på oppgavene på prøven. 
 #' 
-#' På introduksjonsseminarene skal vi lære alt fra å laste inn datasett til å kjøre egne analyser for så å plotte resultatene. Vi skal lære ting som vil være anvendbare langt utover statistisk analyse. Neste uke tilbyr vi fordypningsseminarer for de av dere som vil jobbe videre med R. Disse anbefales spesielt til dere som skal skrive en statistisk oppgave, men det er selvfølgelig ikke et krav for å delta. På fordypningsseminarene vil vi gå nærmere inn på R-kode for flernivå-analyse, faktoranalyse og paneldata. Vi håper så klart å se mange av dere der også. Det blir ikke noen prøve om innholdet i fordypningsseminarene.
+#' På introduksjonsseminarene skal vi lære alt fra å laste inn datasett til å kjøre egne analyser for så å plotte resultatene. Vi skal lære ting som vil være anvendbare langt utover statistisk analyse. Neste uke tilbyr vi fordypningsseminarer for de av dere som vil jobbe videre med R. Disse anbefales spesielt til dere som skal skrive en statistisk oppgave, men det er ikke et krav for å delta. På fordypningsseminarene vil vi gå nærmere inn på R-kode for forutsetninger til OLS og logistisk regresjon, flernivå-analyse og paneldata. Vi håper så klart å se mange av dere der også. Det blir ikke noen prøve om innholdet i fordypningsseminarene.
 #' 
 #' # Hjemmeoppgaven
 #' Om du ikke allerede har bestemt deg så begyn å tenk på hjemmeoppgaven nå. Om du skal skrive en statistisk oppgave så er det fint å ha hjemmeoppgaven i bakhodet når vi går gjennom ting på seminar. Ta gjerne en titt på [Harvard dataverse](https://dataverse.harvard.edu/dataverse/harvard). Mange forskere bruker Harvard dataverse til å publisere replikasjonsdata når de skriver artikler. Du kan søke på temaer du synes er interessante eller en spesiell artikkel du syns er spennende. 
@@ -38,13 +36,15 @@ library(tidyverse)
 #' 1. Øvelse gjør mester.
 #' 2. Å lære R er en prosess der eksponering er det beste læringsverktøyet. 
 #' 3. Mye kan gjøres på flere måter. 
-#' 4. Samarbeid gjør det hele mye enklere (og morsommere). 
+#' 4. Samarbeid gjør det hele mye enklere (og morsommere).
+#' 5. Programmering handler i stor grad om å kunne google seg frem til svar.
 #' 
 #' Det betyr at for å få mest mulig ut av seminarene så må dere jobbe med oppgavene vi legger ut mellom seminarene - gjerne sammen med noen andre. I begynnelsen kan det være vanskelig å vite hvorfor en kode ikke vil kjøre, men det å søke opp løsninger på nett og i R sine hjelpefiler er en viktig del av å lære seg R. Noen av svarene dere finner er kanskje ikke prikk like på det vi har gjennomgått i seminar, men det betyr ikke at det ikke er en fin måte å løse det på. På prøven leverer dere et script for å vise at dere har brukt R for å finne svarene, men det finnes ikke noen **riktig** eller **feil** kode om svaret du kommer frem til er riktig. 
 #' 
 #' I tillegg oppfordrer vi til å stille masse spørsmål - både til medstudenter og oss seminarledere. Bruk medstudenter, nettressurser og R sine hjelpefiler aktivt, samarbeid og hjelp hverandre når dere løser oppgaver så vil prøven gå veldig fint.
 #' 
-#' Jeg vil lenke til undervisningsmateriell på Canvas. Selve opplegget blir lastet opp på github. Der finner dere også opplegget for tidligere år, men det er mappen H20-seminarer som gjelder. Opplegget i år er en del annerledes enn tidligere år selv om vi skal gjennom mye av det samme. 
+#' Jeg vil lenke til undervisningsmateriell på Canvas. Selve opplegget blir lastet opp på github, som er et sted der man kan dele kode og jobbe med prosjekter.
+#' 
 #' 
 #' ## Læringsressurser og nyttige R-lenker
 #' 
@@ -63,6 +63,7 @@ library(tidyverse)
 #' - [R-bloggers - har gode, kortfattede tutorials](https://www.r-bloggers.com/)
 #' 
 #' Du kan også finne videoer, flere gratis bøker m.m. hvis du googler/søker på stackoverflow/søker på youtube. Noe av det aller viktigste er nok imidlertid å lære seg å lese og forstå hjelpefiler i R og stackoverflow. For å bli god i R er det lurt å huske noen grunnbegreper (dvs. en god del av det som du lærer i seminarene og **R for Data Science**), men ut over det bruker man hjelpefiler i R/stackoverflow som ordbøker hele tiden.
+#' 
 #' 
 #' # Første seminaropplegg
 #' #### Mål for i dag: 
@@ -87,13 +88,17 @@ library(tidyverse)
 #' 
 #' Etterpå tar vi en runde og da skal du presentere personen ved siden av deg. Informasjonen skal vi bruke til å lage et lite datasett. Bruk tre minutter.
 #' 
+#' <!-- fixme: jeg legger til en seksjon om github her. Kan gås gjennom superkjapt, men fint å ha med -->
+#' 
 #' # Rstudio
-#' Først litt helt grunnleggende om R og Rstudio. I Rstudio skriver vi kode i script. Scriptene kan lagres og gjør arbeidet vårt reproduserbart. Opprett et nytt script med enten å trykke på arket oppe til venstre med et grønt plusstegn, gå på file > new file > R script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i script, kan vi sende koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script).
+#' Først litt helt grunnleggende om R og Rstudio. R er et programmeringsspråk, mens RStudio er et grensesnitt vi koder i. I Rstudio skriver vi kode i script. Du kan tenke på R-script litt som en word-fil, siden scriptene kan lagres og gjør arbeidet vårt reproduserbart. Opprett et nytt script med enten å trykke på arket oppe til venstre med et grønt plusstegn, gå på file > new file > R script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i script, kan vi sende koden til console for evaluering med *ctrl/cmd* + *enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises resultatet i console (vinduet under script).
+#' 
+#' ![](https://cienciapratica.files.wordpress.com/2015/07/slide2.jpg)
 #' 
 #' # Objekter
-#' For å bli kjent med R så skal vi bruke informasjonen fra bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å lage objekter av en type som heter vektor. Vektorene skal inneholder informasjon om navn, alder og hvor dere tok bachelorgraden deres. I R kan en vektor defineres som en ordnet lise av verdier, dvs. at man lagrer verdier en bestemt rekkefølge. Når verdiene er i en bestemt rekkefølge så kan vi slå vektorene sammen for å lage et datasett. I dette kurset kan dere for det meste tenke på vektorer som variabler fra et datasett. Vi lager objekter ved hjelp av assignment operatoren  `<-`.  
+#' For å bli kjent med R så skal vi bruke informasjonen fra bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å lage objekter av en type som heter vektor. Vektorene skal inneholde informasjon om navn, alder og hvor dere tok bachelorgraden deres. I R kan en vektor defineres som en ordnet liste av verdier, dvs. at man lagrer verdier i en bestemt rekkefølge. Når verdiene er i en bestemt rekkefølge så kan vi slå vektorene sammen for å lage et datasett. I dette kurset kan dere for det meste tenke på vektorer som variabler fra et datasett. Vi lager objekter ved hjelp av assignment operatoren  `<-`.  
 #' 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 # Her ser dere et eksempel på R-kode
 # Jeg bruker # for å skrive inn en kommentar som ikke skal evalueres av R
 
@@ -107,7 +112,7 @@ navn <- c("Thea", "Ole", "Mari")
 #' 
 #' Når vi lagrer objekter, returnerer ikke R en verdi i Console. I stedet dukker objektet opp i vinduet Environment (til høyre for scriptet). 
 #' 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 
 alder <- c(23, 20, 25)
 alder
@@ -123,15 +128,17 @@ data
 #' 
 #' Det finnes flere typer objekter i R. Vektor og datasett er de to typene vi skal fokusere på idag. Vi skal straks tilbake til datasettet vi har laget, men først skal vi ta en kort intro til R og Rstudio.  
 #' 
+#' 
 #' # Intro til R
 #' 
 #' I R skriver vi kode i script. Du åpner et nytt script ved å trykke på den hvite firkanten med en grønn sirkel og et plusstegn oppe til venstre i Rstudio. Etter at vi har skrevet kode i scriptet, sender vi koden til console for evaluering med ctrl/cmd + enter. Dersom output fra koden ikke er et objekt eller plot, vises resultatet i console (vinduet under script). La oss forsøke med koden `"Hello World!"`
 #' 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 "Hello world!"
 
+#' 
 #' R Kan også brukes som en kalkulator: 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 1 + 1  # addisjon
 2 - 3  # subtraksjon
 4/2    # divisjon
@@ -142,10 +149,11 @@ log(2) # logaritme (default er naturlig logaritme)
 2 * (4-2)/(4-2) # Parentesregler fungerer som i vanlig algebra: den innerste parentesen regnes ut først
 
 #' 
+#' 
 #' # Logiske tester
 #' 
-#' R kan evaluere logiske utsdagn og bedømme om de er ´TRUE´ eller ´FALSE´.   
-## ------------------------------------------------------------------------------------------------------------
+#' R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.   
+## ----------------------------------------------------------------------------------------------------------------------
 1 == 2                                # tester om 1 er lik 2
 2 == 2                                # tester om 2 er lik 2
 "Statsvitenskap" == "statsvitenskap"  # Logiske tester kan også brukes på tekst
@@ -157,8 +165,9 @@ log(2) # logaritme (default er naturlig logaritme)
 1 == 2 & 1 == 1                       # Tester om begge de to påstandene 1 er lik 2 og 1 er lik 1 er sanne
 
 #' 
+#' 
 #' ### Oversikt over logiske operatorer
-## ---- echo = FALSE, message=FALSE----------------------------------------------------------------------------
+## ---- echo = FALSE, message=FALSE--------------------------------------------------------------------------------------
 # Operator <- c("`==`", "<", ">", "<=", ">=", "`!=`", "`!x`", "`|`", "&")
 # Betydning <- c("er lik", "mindre enn", "større enn", "mindre eller lik", 
 #                 "større eller lik", "ikke lik", "ikke x", "eller", "og")
@@ -166,7 +175,7 @@ log(2) # logaritme (default er naturlig logaritme)
 
 
 #' 
-## ---- echo = FALSE-------------------------------------------------------------------------------------------
+## ---- echo = FALSE-----------------------------------------------------------------------------------------------------
 #knitr::kable(tabell, 
 #             format = "html",
 #             align = "lc") %>% 
@@ -176,54 +185,62 @@ log(2) # logaritme (default er naturlig logaritme)
 #' 
 #' **Oversikt over logiske operatorer:**
 #' 
-## ---- eval = FALSE, include = FALSE--------------------------------------------------------------------------
+## ---- eval = FALSE, include = FALSE------------------------------------------------------------------------------------
 ## # fixme
 ## # I tabellen under blir ikke | riktig i .md-filen når man åpner den via github
 ## # Det ser riktig ut i pdf- og html-versjonen en får preview av når en kjører filen
+## # Martin: den ser fin ut for meg på github. Men første kolonne har ikke definert alignment
+## # så jeg kaster inn det nå.
 ## 
 
 #' 
 #' 
-#' | Operator      | Betydning     |
-#' | ------------- |:-------------:|
-#' | `==` | er lik                 |
-#' | `<`  | mindre enn             |
-#' | `>`  | større enn             |
-#' | `<=` | mindre eller lik       |
-#' | `>=` | større eller lik       |
-#' | `!=` | ikke lik               |
-#' | `!x` | ikke x                 |
-#' | `|`  | eller                  |
-#' | `&`  | og                     |
+#' | Operator      | Betydning        |
+#' |:-------------:|:----------------:|
+#' | `==`          | er lik           |
+#' | `<`           | mindre enn       |
+#' | `>`           | større enn       |
+#' | `<=`          | mindre eller lik |
+#' | `>=`          | større eller lik |
+#' | `!=`          | ikke lik         |
+#' | `!x`          | ikke x           |
+#' | `|`           | eller            |
+#' | `&`           | og               |
 #' 
 #' 
-#' Vi kommer til å bruke disse opearterne mye, spesielt når vi gjør endringer i datasett som å lage nye variabler.  Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelse på er å øve. 
+#' Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør endringer i datasett som å lage nye variabler. Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelse på er å øve. 
+#' 
 #' 
 #' # Pakker 
 #' R er open source og mange flinke utviklere bidrar til å gjøre R bedre. Disse utviklerne deler kode (i hovedsak funksjoner) gjennom pakker. For å kunne kode fra en pakke må vi kjøre følgende kodelinjer:
-## ---- echo = TRUE, eval = FALSE------------------------------------------------------------------------------
+#' 
+## ---- echo = TRUE, eval = FALSE----------------------------------------------------------------------------------------
 ## install.packages("pakkenavn") # Laster ned filene pakken består av fra nett til PC - må bare gjøres en gang
 ## library(pakkenavn)            # Tilgjengeliggjør pakken i R-sesjonen, må gjøres hver gang du vil bruke pakken i en ny sesjon
 
 #' 
 #' Vi skal for det meste bruke kode som kommer fra pakker i [tidyverse](https://www.tidyverse.org/learn/). La oss installere disse pakkene:
 #' 
-## ---- echo = TRUE, eval = FALSE------------------------------------------------------------------------------
-## # fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC
-## install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
-## install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
+#' <!-- fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC 
+#'             men vi kan også teste det på installasjonsseminaret. -->
+## ---- echo = TRUE, eval = FALSE----------------------------------------------------------------------------------------
+## # install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
+## # install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
 ## library(tidyverse)
 
 #' 
+#' Forskjellen på `install.packages()` og `library()` kan tenkes på som julepakker. `install.packages()` er å kjøpe pakken, mens `library()` er å pakke den opp.
+#' 
 #' # Indeksering
-#' Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet i kapittel 1 i **Lær deg R** som er anbefalt pensum. 
+#' 
+#' Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet i kapittel 1 i **Lær deg R** som er anbefalt litteratur. 
 #' 
 #' Dersom vi for eksempel er interessert i å hente ut all informasjonen om Thea så kan det gjøres på mange måter: 
-## ---- echo = FALSE, message=FALSE----------------------------------------------------------------------------
+## ---- echo = FALSE, message=FALSE--------------------------------------------------------------------------------------
 library(dplyr)
 
 #' 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 # Vi kan bruke base R (som beskrevet i Lær deg R)
 data[navn == "Thea", ]      # vi ønsker alle kolonner/variabler for observasjone/radene med verdien "Thea" 
 data[data$navn == "Thea", ] # vi ønsker alle kolonner/variabler for observasjone/radene med verdien "Thea"
@@ -238,7 +255,7 @@ data %>%
 #' 
 #' Vi kan også hente ut informasjon i en variabel/kolonne: 
 #' 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 # Ved hjelp av base R
 data$alder                  
 data[, "alder"]
@@ -252,11 +269,13 @@ data %>%
 
 #' 
 #' Til slutt så kan vi hente ut informasjon om en variabel for en observasjon: 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 # Ved hjelp av base R
 data[navn == "Thea", "alder"]
 
 data[data$navn == "Thea", "alder"]
+
+data$alder[data$navn == "Thea"]
 
 # Ved hjelp av dplyr
 data %>% 
@@ -269,14 +288,14 @@ data %>%
 #' # Ulike typer vektorer i R
 #' Det finnes flere ulike objekter i R. Til nå har vi blitt introdusert for to av dem: datasett og vektorer. Hva slags objekt det er har noe å si for hva du kan gjøre med det. I tillegg finnes det ulike typer, eller klasser som vi kaller det, av vektorer. I tabellen under finner dere en grov inndeling av ulike typer vektorer i R (se også s. 42-47 i Lær deg R):
 #' 
-## ---- echo = FALSE, message=FALSE----------------------------------------------------------------------------
+## ---- echo = FALSE, message=FALSE--------------------------------------------------------------------------------------
 "Atomic vector" <- c("numeric", "integer", "character", "factor", "logical")
 "List" <- c("blanding", "", "", "", "")
 tabell <- cbind(`Atomic vector`, List)
 
 
 #' 
-## ---- echo = FALSE-------------------------------------------------------------------------------------------
+## ---- echo = FALSE-----------------------------------------------------------------------------------------------------
 # knitr::kable(tabell, format = "html") %>% 
 #  kableExtra::kable_styling("striped",
 #                            full_width = F,
@@ -297,30 +316,38 @@ tabell <- cbind(`Atomic vector`, List)
 #' Hvilket format tror du navn, alder og bachelor har? 
 #' 
 #' Det kan vi sjekke med funksjonen `class()`.
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
 class(data$navn)
 class(data$alder)
 class(data$bachelor)
 
+#' 
+#' Vi kan også bruke funksjonen `glimpse()` for å få en oversikt over alle variablene i data og deres format.
+## ----------------------------------------------------------------------------------------------------------------------
+glimpse(data)
+
+#' 
 #' Som dere ser er alder numeric, mens navn og bachelor er character. Her er det hva objektet er lagret som som teller, ikke hvordan det ser ut i datasettet. Selv om noe ser ut som tall i datasettet så er det ikke sikkert det er registrert som tall av R. Heldigvis kan dette ofte løses ved hjelp av en funksjoner som `as.numeric()`, `as.character()` og `as.factor()`.   
 #' 
-## ------------------------------------------------------------------------------------------------------------
+## ----------------------------------------------------------------------------------------------------------------------
+
 # Her lager vi en ny variabel alder2 der vi ber R lagre alder som character
 data$alder_ch <- as.character(data$alder)
 
+
 #' Om vi ser på datasettet etter at vi har laget den nye variabelen så ser vi at alder og alder2 ser helt like ut. Begge fremstår som tall vi kan gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne selv å kjøre funksjonen `mean()` som regner ut gjennomsnittet på alder2. 
 #' 
-#' **Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?**
+#' <!-- fixme: kuttkandidat;
+#' **Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?** -->
 #' 
-## ---- eval = FALSE, include = FALSE--------------------------------------------------------------------------
-## data$alder_fa <- as.factor(data$alder_ch)
-## data$alder_nu <- as.numeric(data$alder_fa)
-
-#' 
+#' <!-- ```{r, eval = FALSE, include = FALSE} -->
+#' <!-- data$alder_fa <- as.factor(data$alder_ch) -->
+#' <!-- data$alder_nu <- as.numeric(data$alder_fa) -->
+#' <!-- ``` -->
 #' 
 #' # Funksjoner i R
 #' Dersom vi ønsker å gjøre noe i R, får vi som regel en funksjon til å gjøre jobben for oss. En funksjon tar i mot verdi(er), gjerne lagret i form av et R-objekt, utfører operasjoner basert på input, og produserer nye verdier. En typisk R-funksjon har følgende syntaks:
-## ---- eval = FALSE-------------------------------------------------------------------------------------------
+## ---- eval = FALSE-----------------------------------------------------------------------------------------------------
 ## aFunction(x = "R-objekt", arg = "alternativ for figurens oppførsel")
 ## ## Merk: dette er ikke en faktisk funksjon i R. Funksjoner kan også ha andre syntakser.
 
@@ -332,8 +359,10 @@ data$alder_ch <- as.character(data$alder)
 #' Noen funksjoner er base R og vi trenger ikke gjøre noe for å bruke dem. Andre må vi laste ned og installere pakker for å bruke som med `select()` og `filter()` fra `tidyverse`. 
 #' 
 #' Vi skal nå bruke noen funksjoner til å finne ut mer informasjon fra datasettet vårt:
-## ------------------------------------------------------------------------------------------------------------
-summary(data)
+## ----------------------------------------------------------------------------------------------------------------------
+# Viser de første seks radene i datasettet
+head(data)
+
 # Finner minimumsverdi (den laveste alderen)
 min(data$alder, na.rm = TRUE) # na.rm = TRUE sier at missing skal droppes i beregningen
 
@@ -375,19 +404,18 @@ table(data$bachelor, useNA = "always") # useNA = "always" betyr at vi også vil 
 
 
 #' 
-#' 
 #' # Laste inn data
 #' Til slutt så skal vi laste inn dataene dere skal bruke i oppgavene i etterpå. Dersom dere skal gjøre statistisk analyse, er som regel den første seksjonen import og forberedelse av data. En styrke ved R, er at det er mulig å importere mange ulike filtyper, både fra en mappe på pcen din og fra en url på internett. Jeg går gjennom import av filer fra excel, stata, spss og R, men vit at det finnes mange andre muligheter.
 #' 
 #' Når du skal laste inn eller lagre noe lokalt på pc-en så vil R til enhver tid forvente at filnavn du refererer til befinner seg i **working directory**, som er en mappe på pcen din. For å sjekke hva nåværende **working directory** er, og hvilke filer som finnes i den mappen, kan du skrive følgende kode (jeg har gjemt egen output):
 #' 
-## ---- eval = FALSE-------------------------------------------------------------------------------------------
+## ---- eval = FALSE-----------------------------------------------------------------------------------------------------
 ## getwd()
 ## list.files()
 
 #' 
 #' For å endre **working directory**, bruker dere følgende kode:
-## ---- eval = FALSE-------------------------------------------------------------------------------------------
+## ---- eval = FALSE-----------------------------------------------------------------------------------------------------
 ## setwd("C:/Users/Navn/R/der/du/vil/jobbe/fra")   # For windows
 ## setwd("~/R/der/du/vil/jobbe/fra")               # For mac/linux
 ## # Merk at R bruker / for å skille mellom mappenivåer, mens filutforsker i Windows bruker \
@@ -399,7 +427,7 @@ table(data$bachelor, useNA = "always") # useNA = "always" betyr at vi også vil 
 #' 
 #' Datasett kommer i mange ulike filformater. Noen vanlige formater er csv, dta (Stata-datasett), sav (SPSS-datasett) og Rdata. Hvilket format dataene dine har bestemmer hvilken funksjon du må bruke for å laste inn datasettet. Her er eksempler på noen funksjoner for å laste inn data: 
 #' 
-## ---- eval = FALSE-------------------------------------------------------------------------------------------
+## ---- eval = FALSE-----------------------------------------------------------------------------------------------------
 ## library(tidyverse) # read_funksjoner fra readr i tidyvsere
 ## datasett <- read_filtype("filnavn.filtype") # Laster inn og lagrer datasettet som et objekt
 ## read_csv("filnavn.csv") # for .csv, sjekk også read.table
@@ -411,4 +439,8 @@ table(data$bachelor, useNA = "always") # useNA = "always" betyr at vi også vil 
 
 #' 
 #' Nå skal vi laste inn datasettet vi skal bruke til å løse oppgaver i neste time. 
+#' 
+## ----generere_script---------------------------------------------------------------------------------------------------
+# knitr::purl("./seminar1/Seminar1.Rmd", output = "./seminar1/seminar1.R", documentation = 2)
+
 #' 

@@ -140,6 +140,8 @@ Etterpå tar vi en runde og da skal du presentere personen ved siden av
 deg. Informasjonen skal vi bruke til å lage et lite datasett. Bruk tre
 minutter.
 
+<!-- fixme: jeg legger til en seksjon om github her. Kan gås gjennom superkjapt, men fint å ha med -->
+
 # Rstudio
 
 Først litt helt grunnleggende om R og Rstudio. R er et
@@ -344,16 +346,16 @@ R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 **Oversikt over logiske operatorer:**
 
 | Operator |    Betydning     |
-|----------|:----------------:|
-| `==`     |      er lik      |
-| `<`      |    mindre enn    |
-| `>`      |    større enn    |
-| `<=`     | mindre eller lik |
-| `>=`     | større eller lik |
-| `!=`     |     ikke lik     |
-| `!x`     |      ikke x      |
-| `|`      |      eller       |
-| `&`      |        og        |
+|:--------:|:----------------:|
+|   `==`   |      er lik      |
+|   `<`    |    mindre enn    |
+|   `>`    |    større enn    |
+|   `<=`   | mindre eller lik |
+|   `>=`   | større eller lik |
+|   `!=`   |     ikke lik     |
+|   `!x`   |      ikke x      |
+|   `|`    |      eller       |
+|   `&`    |        og        |
 
 Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør
 endringer i datasett som å lage nye variabler. Det er derfor viktig at
