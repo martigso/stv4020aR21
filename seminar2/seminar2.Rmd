@@ -347,8 +347,8 @@ Hadley Wickham fra R studio skriver mange veldig gode tilleggspakker til R (i ti
 Med det sagt, her er de nødvendige elementene man må spesifisere i syntaksen til `ggplot()`:
 
 ```{r, eval=F}
-ggplot(data = my_data) +
-  geom_point(aes(x = x-axis_var_name, y = y-axis_var_name, col=my.var3)))
+ggplot(data = my_data, aes(x = x-axis_var_name, y = y-axis_var_name, col = my.var3)) +
+  geom_point()
 ```
 
 Vi starter med å fortelle ggplot hvilket datasett vi bruker. Deretter bruker vi en `geom_...()`-funksjon, her `geom_point()` (det er en lang rekke alternativer), for å fortelle hvordan vi vil plotte data. Her har vi valgt å plotte data som punkter, dvs. lage et scatterplot. Vi må også spesifisere hvilke variabler fra datasettet vi vil plotte, etter `aes()` for aesthetics. Vi må minst velge å plotte en akse, som regel vil vi plotte minst to akser. Vi kan også velge å legge til argumentet `col` for å visualisere enda en variabel. Dette argumentet gir ulike farger til observasjonen avhengig av verdien de har på variabelen vi spesifiserte. Det finnes også alternative måter å visualisere mer enn to variabler, som f.eks. `size = my.var3`, eller `shape = my.var3`.
@@ -364,12 +364,13 @@ Filosofien til ggplot baserer seg på at et plot egentlig er en mengde lag av sp
 ```{r eval=FALSE}
 # install.packages("ggplot2")
 library(ggplot2)
-ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
+ggplot(aid, aes(x = gdp_growth)) + 
+  geom_histogram(bins = 50) # lager histogram
 ```
 
 ```{r include=FALSE}
-library(ggplot2)
-ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
+ggplot(aid, aes(x = gdp_growth)) + 
+  geom_histogram(bins = 50) # lager histogram
 ggsave("./bilder/seminar2_1.png")
 ```
 ```{r, echo = F}
@@ -380,12 +381,13 @@ Med et boxplot får du raskt oversikt over fordelingen til variabler innenfor ul
 
 
 ```{r, eval = F}
-ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid))
+ggplot(aid, aes(x = as.factor(region), y = aid)) + 
+  geom_boxplot()
 ```
 
 ```{r include=FALSE}
-library(ggplot2)
-ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid)) # lager histogram
+ggplot(aid, aes(x = as.factor(region), y = aid)) + 
+  geom_boxplot() # lager histogram
 ggsave("./bilder/seminar2_2.png")
 ```
 ```{r, echo = F}
@@ -396,12 +398,14 @@ knitr::include_graphics("./bilder/seminar2_2.png")
 Med `geom_line()` kan vi plotte tidsserier:
 
 ```{r, eval = F}
-ggplot(aid) + geom_line(aes(x = period, y = gdp_growth, col = country)) +
+ggplot(aid, aes(x = period, y = gdp_growth, col = country)) + 
+  geom_line() +
   theme(legend.key.size = unit(0.5,"line")) # Her justerer jeg størrelsen på legend for å få plass til alt
 ```
 ```{r include=FALSE}
-library(ggplot2)
-ggplot(aid) + geom_line(aes(x = period, y = gdp_growth, col = country)) +
+
+ggplot(aid, aes(x = period, y = gdp_growth, col = country)) + 
+  geom_line() +
   theme(legend.title = element_blank(),
         legend.key.size = unit(0.5,"line"))
 ggsave("./bilder/seminar2_3.png")
@@ -421,7 +425,7 @@ aid %>%
 # Fortsatt litt mye informasjon til å være enkelt å lese - La oss sammenligne 5 land med %in%
 ```
 ```{r include=FALSE}
-library(ggplot2)
+
 aid %>% 
   filter(region == "Sub-Saharan Africa") %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))# lager histogram
@@ -442,11 +446,11 @@ aid %>%
 <!--fixme: det virker som "MOZ", "AGO", "RWA" er missing, skal man endre til "GHA", "SOM", "TZA" som under?-->
  
 ```{r include=FALSE}
-library(ggplot2)
+
 aid %>% 
   filter(country %in% c("KEN", "ETH", "GHA", "SOM", "TZA")) %>%
-  ggplot() + 
-  geom_line(aes(x = period, y = gdp_growth, col = country))
+  ggplot(., aes(x = period, y = gdp_growth, col = country)) + 
+  geom_line()
 ggsave("./bilder/seminar2_5.png")
 ```
 ```{r, echo = F}
@@ -459,17 +463,17 @@ I tillegg til indekseringsmetodene for datasett fra første seminar, er det nytt
 Her viser jeg fordelingen til vekst (`gdp_growth`) opp mot bistand (`aid`) og makroøkonomisk politikk (`policy`) ved hjelp av et spredningsplot (scatterplot). Sammenlign gjerne med korrelasjonsmatrisen du lagde mellom disse tre variablene.
 
 ```{r}
-ggplot(aid) + 
-  geom_point(aes(x = aid, y = gdp_growth, col = policy))
+ggplot(aid, aes(x = aid, y = gdp_growth, col = policy)) + 
+  geom_point()
 
 ```
 
 Her er et overlesset eksempel på et scatterplot (poenget er å illustrere muligheter, ikke å lage et pent plot):
 
 ```{r, eval=FALSE}
-ggplot(aid) +
-  geom_point(aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
-  geom_smooth(aes(x=aid, y=gdp_growth), method="lm") +  # merk: geom_smooth gir bivariat regresjon
+ggplot(aid, aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
+  geom_point() +
+  geom_smooth(method="lm") +  # merk: geom_smooth gir bivariat regresjon
   ggtitle("Visualization of relationship between aid and growth to showcase ggplot") +
   xlab("aid") +
   ylab("growth") +
@@ -477,9 +481,9 @@ ggplot(aid) +
 ```
 
 ```{r include=FALSE}
-ggplot(aid) +
-  geom_point(aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
-  geom_smooth(aes(x=aid, y=gdp_growth), method="lm") +  # merk: geom_smooth gir bivariat regresjon
+ggplot(aid, aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
+  geom_point() +
+  geom_smooth(method="lm") +  # merk: geom_smooth gir bivariat regresjon
   ggtitle("Visualization of relationship between aid and growth to showcase ggplot") +
   xlab("aid") +
   ylab("growth") +
@@ -501,9 +505,9 @@ Mulighetene er endeløse, jeg har bare vist dere noen få muligheter her. Ved hj
 **Oppgave:** Forsøk å legge til `facet_wrap(~region)`, hva gjør dette argumentet? Forsøk å fjerne ett og ett argument i plottet over for å se hva argumentene gjør.
 
 ```{r, eval = F, include = F}
-ggplot(aid) + 
-  geom_point(aes(x = aid, y = gdp_growth, col = policy,)) +
-  facet_wrap(~region)
+ggplot(aid,aes(x = aid, y = gdp_growth, col = policy)) + 
+  geom_point() +
+  facet_wrap(~ region)
 ```
 
 
@@ -531,7 +535,8 @@ str(m1) # Gir oss informasjon om hva objektet inneholder.
 Vi legger inn flere uavhengige variabler med `+`.
 
 ```{r}
-summary(m2 <- lm(gdp_growth ~ aid + policy + region, data = aid))
+m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
+summary(m2)
 # Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
 ```
 
@@ -541,18 +546,22 @@ Hypotesen til artikkelforfatterne var følgende: *bistand fører til økonomisk 
 
 
 ```{r}
-summary(m3 <- lm(gdp_growth ~ aid*policy + region, data = aid))
+m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
+summary(m3)
 ```
 
 ### Andregradsledd og andre omkodinger
 
 Vi kan legge inn andregradsledd eller andre omkodinger av variabler i regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske transformasjoner brukes gjerne for eksponentiell vekst eller for å minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
 
-Andregradsledd legger vi inn med `I(uavh.var^2)`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn førstegradsleddet separat når dere legger inn andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel funksjon, er det fint å opprette en ny variabel i datasettet.
+Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen `poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn førstegradsleddet separat når dere legger inn andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel funksjon, er det fint å opprette en ny variabel i datasettet.
 
 
 ```{r}
-summary(m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), data = aid, na.action = "na.exclude"))
+m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
+         data = aid, 
+         na.action = "na.exclude")
+summary(m4)
 ```
 
 En nyttig pakke for å lage fine tabeller med resultatet fra regresjonsanalyser er `stargazer`. 

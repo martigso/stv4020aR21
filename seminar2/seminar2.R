@@ -39,7 +39,7 @@ aid <-  read_dta("aid.dta")
 
 #' 
 #' # Forberede og manipulere data
-#' Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så heldig å få et analyserklart datasett som har alle variablene man ønsker, men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt med å forberede og manipulere data, f.eks. ved å omkode variabler, eller hente inn variabler fra andre datakilder. Forberedelse av data er ikke rutinearbeid - det innbefatter svært ofte viktige metodologiske beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en konflikt ble avsluttet eller hvordan du skal håndtere missing verdier. Forsøk derfor alltid å tenke på metodologiske implikasjoner når du forbereder data. Dersom du lager en klar slagplan for hvordan du ønsker at dataene dine skal se ut på forhånd, blir det lettere å forberede data. 
+#' Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så heldig å få et analyseklart datasett som har alle variablene man ønsker, men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt med å forberede og manipulere data, f.eks. ved å omkode variabler, eller hente inn variabler fra andre datakilder. Forberedelse av data er ikke rutinearbeid - det innbefatter svært ofte viktige metodologiske beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en konflikt ble avsluttet eller hvordan du skal håndtere missing verdier. Forsøk derfor alltid å tenke på metodologiske implikasjoner når du forbereder data. Dersom du lager en klar slagplan for hvordan du ønsker at dataene dine skal se ut på forhånd, blir det lettere å forberede data. 
 #' 
 #' Datamanipulasjon og dataforberedelser handler derfor om å stille seg selv følgende spørsmål:
 #' 
@@ -116,6 +116,7 @@ table(is.na(aid$gdp_growth))  # tester hvor mange observasjoner som har missing 
 #' 
 ## ---- eval = FALSE, include = FALSE------------------------------------------------------------------------------------
 ## table(!is.na(aid$gdp_growth)) # tester hvor mange observasjoner som _ikke_ har missing på variabelen elrdgdpg
+## table(is.na(aid$gdp_growth) == FALSE) # akkurat samme resultat som over, med en annen metode
 
 #' 
 #' I noen datasett vil imidlertid missingverdier ha en fiktiv verdi som f.eks. -999, 888 o.l. Dette må avdekkes og disse verdiene må omkodes før du kan kjøre analysen din. Her er kodeboken gull verdt. 
@@ -233,7 +234,7 @@ aid %>%
 
 
 #' 
-#' Resultatet er fem observasjoner heller enn de opprinnelige 331. I outputen er nivået for observasjonene endret fra land-nivå til region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå. Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`. Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny variabelen med snitt per region direkte inn i datasettet: 
+#' Resultatet er fem observasjoner heller enn de opprinnelige 331. <!-- fixme: er det ikke bare 4 observasjoner her eller ser jeg feil -->  I outputen er nivået for observasjonene endret fra land-nivå til region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå. Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`. Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny variabelen med snitt per region direkte inn i datasettet: 
 #' 
 ## ----------------------------------------------------------------------------------------------------------------------
 # Samme kode, men lagrer som et objekt - vi får et nytt datasett der vi har lagt til variablene
@@ -284,7 +285,7 @@ str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ik
 
 aid %>%
 select(6:13) %>% # Her tar vi med variablene fra gdp_growth (nr 6) til aid (nr 13)
-cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
+  cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
 # Sjekk hva use = argumentet styrer i hjelpefilen
 
 #' Noen av variablene i datasettet vårt, bl.a. `aid$country` og `code`, er ikke kontinuerlig. Det er heller ikke den nyopprettet `aid$region` variebelen vår. Ved å ta `str(aid)`, ser vi at denne variabelen er kodet som en character. Dette innebærer at den vil behandles som en nominalnivå-variabel i statistisk analyse. For kategoriske variabler, er tabeller nyttig:
@@ -296,18 +297,20 @@ prop.table(table(aid$region)) # prosentfordeling basert på frekvenstabell
 #' 
 #' Vi kan også lage tabeller med flere variabler. Under viser jeg hvordan du lager en tabell med fordelingen av observasjoner som har høyere vekst enn medianveksten i utvalget, ved hjelp av en logisk test:
 ## ----------------------------------------------------------------------------------------------------------------------
-table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T))
-table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T), aid$country)
+table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE))
+table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE), aid$country)
 
 #' 
 #' De fleste land har vekst både over og under medianen. Dersom det hadde vært svært lite variasjon i veksten til land, ville kontrollvariabler for land (country fixed effects) kunne ha fjernet effekten av de fleste variabler - vi ville ikke hatt veldig godt datagrunnlag for å si så mye om effekten av bistand i samspill med policy (jeg sier ikke dermed nødvendigvis at dataene er gode generelt).
 #' 
 #' 
-#' **Oppgave:** Lag et nytt datasett ved hjelp av `group_by` og `summarise()`, der du oppretter variabler som viser korrelasjon (Pearsons r) mellom:
+#' **Oppgave:** Lag et nytt datasett ved hjelp av `group_by()` og `summarise()`, der du oppretter variabler som viser korrelasjon (Pearsons r) mellom:
 #' *` aid`, og `gdp_growth`
 #' * `aid` og `policy`
 #' * `policy` og `gdp_growth` 
-#' separat for hver region. Er det store forskjeller i korrelasjonene mellom regionene? Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at observasjoner som har positive verdier på henholdsvis variablene `policy` og `policy2` får verdien 1, mens andre observasjoner får verdien 0. Bruk disse nye variablene som grupperingsvariabler, og lag et nytt datasett der du inkluderer en variabel som beregner korrelasjon mellom `aid` og `policy` for hver gruppe.
+#' separat for hver region. Er det store forskjeller i korrelasjonene mellom regionene? 
+#' 
+#' Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at observasjoner som har positive verdier på henholdsvis variablene `policy` og `policy2` får verdien 1, mens andre observasjoner får verdien 0. Bruk disse nye variablene som grupperingsvariabler, og lag et nytt datasett der du inkluderer en variabel som beregner korrelasjon mellom `aid` og `policy` for hver gruppe.
 #' 
 #' 
 ## ---- eval = F, include=F----------------------------------------------------------------------------------------------
@@ -339,14 +342,13 @@ table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T), aid$country)
 #' 
 #' ## Plotte-funksjonen `ggplot` <a name="ggplot"></a>
 #' 
-#' 
 #' Hadley Wickham fra R studio skriver mange veldig gode tilleggspakker til R (i tillegg til gratis innføringsbøker på nett), blant annet pakken `ggplot2` (det kan være forvirrende at pakken heter `ggplot2`, mens funksjonen heter `ggplot()`). Jeg foretrekker å lage plot med `ggplot()` funksjonen fra ggplot2 over `plot()` fra *base* R (plot er også brukt i *Lær deg R* s. 49-58). Grunnen til dette er først og fremst fordi jeg liker syntaksen bedre, og at jeg har brukt `ggplot()` mest, det er ingenting galt med `plot()`. Det er også helt uproblematisk om dere bruker `plot()` på prøven. 
 #' 
 #' Med det sagt, her er de nødvendige elementene man må spesifisere i syntaksen til `ggplot()`:
 #' 
 ## ---- eval=F-----------------------------------------------------------------------------------------------------------
-## ggplot(data = my_data) +
-##   geom_point(aes(x = x-axis_var_name, y = y-axis_var_name, col=my.var3)))
+## ggplot(data = my_data, aes(x = x-axis_var_name, y = y-axis_var_name, col = my.var3)) +
+##   geom_point()
 
 #' 
 #' Vi starter med å fortelle ggplot hvilket datasett vi bruker. Deretter bruker vi en `geom_...()`-funksjon, her `geom_point()` (det er en lang rekke alternativer), for å fortelle hvordan vi vil plotte data. Her har vi valgt å plotte data som punkter, dvs. lage et scatterplot. Vi må også spesifisere hvilke variabler fra datasettet vi vil plotte, etter `aes()` for aesthetics. Vi må minst velge å plotte en akse, som regel vil vi plotte minst to akser. Vi kan også velge å legge til argumentet `col` for å visualisere enda en variabel. Dette argumentet gir ulike farger til observasjonen avhengig av verdien de har på variabelen vi spesifiserte. Det finnes også alternative måter å visualisere mer enn to variabler, som f.eks. `size = my.var3`, eller `shape = my.var3`.
@@ -362,12 +364,13 @@ table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T), aid$country)
 ## ----eval=FALSE--------------------------------------------------------------------------------------------------------
 ## # install.packages("ggplot2")
 ## library(ggplot2)
-## ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
+## ggplot(aid, aes(x = gdp_growth)) +
+##   geom_histogram(bins = 50) # lager histogram
 
 #' 
 ## ----include=FALSE-----------------------------------------------------------------------------------------------------
-library(ggplot2)
-ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
+ggplot(aid, aes(x = gdp_growth)) + 
+  geom_histogram(bins = 50) # lager histogram
 ggsave("./bilder/seminar2_1.png")
 
 ## ---- echo = F---------------------------------------------------------------------------------------------------------
@@ -378,29 +381,31 @@ knitr::include_graphics("./bilder/seminar2_1.png")
 #' 
 #' 
 ## ---- eval = F---------------------------------------------------------------------------------------------------------
-## ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid))
+## ggplot(aid, aes(x = as.factor(region), y = aid)) +
+##   geom_boxplot()
 
 #' 
 ## ----include=FALSE-----------------------------------------------------------------------------------------------------
-library(ggplot2)
-ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid)) # lager histogram
+ggplot(aid, aes(x = as.factor(region), y = aid)) + 
+  geom_boxplot() # lager histogram
 ggsave("./bilder/seminar2_2.png")
 
 ## ---- echo = F---------------------------------------------------------------------------------------------------------
 knitr::include_graphics("./bilder/seminar2_2.png")
 
-#' **Oppgave:** Lag boxplot som viser fordelingen til variablene `policy` og `elrgpdg` innenfor hver region.
-#' 
+#' **Oppgave:** Lag boxplot som viser fordelingen til variablene `policy` og `gdp_growth` innenfor hver region. <!--fixme: har endret elrdgdpg til gdp_growth ettersom denne variabelen ikke finnes--> 
 #' 
 #' Med `geom_line()` kan vi plotte tidsserier:
 #' 
 ## ---- eval = F---------------------------------------------------------------------------------------------------------
-## ggplot(aid) + geom_line(aes(x = period, y = gdp_growth, col = country)) +
+## ggplot(aid, aes(x = period, y = gdp_growth, col = country)) +
+##   geom_line() +
 ##   theme(legend.key.size = unit(0.5,"line")) # Her justerer jeg størrelsen på legend for å få plass til alt
 
 ## ----include=FALSE-----------------------------------------------------------------------------------------------------
-library(ggplot2)
-ggplot(aid) + geom_line(aes(x = period, y = gdp_growth, col = country)) +
+
+ggplot(aid, aes(x = period, y = gdp_growth, col = country)) + 
+  geom_line() +
   theme(legend.title = element_blank(),
         legend.key.size = unit(0.5,"line"))
 ggsave("./bilder/seminar2_3.png")
@@ -420,7 +425,7 @@ knitr::include_graphics("./bilder/seminar2_3.png")
 ## # Fortsatt litt mye informasjon til å være enkelt å lese - La oss sammenligne 5 land med %in%
 
 ## ----include=FALSE-----------------------------------------------------------------------------------------------------
-library(ggplot2)
+
 aid %>% 
   filter(region == "Sub-Saharan Africa") %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))# lager histogram
@@ -436,14 +441,16 @@ knitr::include_graphics("./bilder/seminar2_4.png")
 ## aid %>%
 ##   filter(country %in% c("KEN", "ETH", "MOZ", "AGO", "RWA")) %>%
 ##   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))
+## 
 
-#' 
+#' <!--fixme: det virker som "MOZ", "AGO", "RWA" er missing, skal man endre til "GHA", "SOM", "TZA" som under?-->
+#'  
 ## ----include=FALSE-----------------------------------------------------------------------------------------------------
-library(ggplot2)
+
 aid %>% 
   filter(country %in% c("KEN", "ETH", "GHA", "SOM", "TZA")) %>%
-  ggplot() + 
-  geom_line(aes(x = period, y = gdp_growth, col = country))
+  ggplot(., aes(x = period, y = gdp_growth, col = country)) + 
+  geom_line()
 ggsave("./bilder/seminar2_5.png")
 
 ## ---- echo = F---------------------------------------------------------------------------------------------------------
@@ -456,17 +463,17 @@ knitr::include_graphics("./bilder/seminar2_5.png")
 #' Her viser jeg fordelingen til vekst (`gdp_growth`) opp mot bistand (`aid`) og makroøkonomisk politikk (`policy`) ved hjelp av et spredningsplot (scatterplot). Sammenlign gjerne med korrelasjonsmatrisen du lagde mellom disse tre variablene.
 #' 
 ## ----------------------------------------------------------------------------------------------------------------------
-ggplot(aid) + 
-  geom_point(aes(x = aid, y = gdp_growth, col = policy))
+ggplot(aid, aes(x = aid, y = gdp_growth, col = policy)) + 
+  geom_point()
 
 
 #' 
 #' Her er et overlesset eksempel på et scatterplot (poenget er å illustrere muligheter, ikke å lage et pent plot):
 #' 
 ## ---- eval=FALSE-------------------------------------------------------------------------------------------------------
-## ggplot(aid) +
-##   geom_point(aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
-##   geom_smooth(aes(x=aid, y=gdp_growth), method="lm") +  # merk: geom_smooth gir bivariat regresjon
+## ggplot(aid, aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
+##   geom_point() +
+##   geom_smooth(method="lm") +  # merk: geom_smooth gir bivariat regresjon
 ##   ggtitle("Visualization of relationship between aid and growth to showcase ggplot") +
 ##   xlab("aid") +
 ##   ylab("growth") +
@@ -474,9 +481,9 @@ ggplot(aid) +
 
 #' 
 ## ----include=FALSE-----------------------------------------------------------------------------------------------------
-ggplot(aid) +
-  geom_point(aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
-  geom_smooth(aes(x=aid, y=gdp_growth), method="lm") +  # merk: geom_smooth gir bivariat regresjon
+ggplot(aid, aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
+  geom_point() +
+  geom_smooth(method="lm") +  # merk: geom_smooth gir bivariat regresjon
   ggtitle("Visualization of relationship between aid and growth to showcase ggplot") +
   xlab("aid") +
   ylab("growth") +
@@ -498,9 +505,9 @@ knitr::include_graphics("./bilder/seminar2_6.png")
 #' **Oppgave:** Forsøk å legge til `facet_wrap(~region)`, hva gjør dette argumentet? Forsøk å fjerne ett og ett argument i plottet over for å se hva argumentene gjør.
 #' 
 ## ---- eval = F, include = F--------------------------------------------------------------------------------------------
-## ggplot(aid) +
-##   geom_point(aes(x = aid, y = gdp_growth, col = policy,)) +
-##   facet_wrap(~region)
+## ggplot(aid,aes(x = aid, y = gdp_growth, col = policy)) +
+##   geom_point() +
+##   facet_wrap(~ region)
 
 #' 
 #' 
@@ -528,7 +535,8 @@ str(m1) # Gir oss informasjon om hva objektet inneholder.
 #' Vi legger inn flere uavhengige variabler med `+`.
 #' 
 ## ----------------------------------------------------------------------------------------------------------------------
-summary(m2 <- lm(gdp_growth ~ aid + policy + region, data = aid))
+m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
+summary(m2)
 # Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
 
 #' 
@@ -538,18 +546,22 @@ summary(m2 <- lm(gdp_growth ~ aid + policy + region, data = aid))
 #' 
 #' 
 ## ----------------------------------------------------------------------------------------------------------------------
-summary(m3 <- lm(gdp_growth ~ aid*policy + region, data = aid))
+m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
+summary(m3)
 
 #' 
 #' ### Andregradsledd og andre omkodinger
 #' 
 #' Vi kan legge inn andregradsledd eller andre omkodinger av variabler i regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske transformasjoner brukes gjerne for eksponentiell vekst eller for å minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
 #' 
-#' Andregradsledd legger vi inn med `I(uavh.var^2)`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn førstegradsleddet separat når dere legger inn andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel funksjon, er det fint å opprette en ny variabel i datasettet.
+#' Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen `poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn førstegradsleddet separat når dere legger inn andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel funksjon, er det fint å opprette en ny variabel i datasettet.
 #' 
 #' 
 ## ----------------------------------------------------------------------------------------------------------------------
-summary(m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), data = aid, na.action = "na.exclude"))
+m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
+         data = aid, 
+         na.action = "na.exclude")
+summary(m4)
 
 #' 
 #' En nyttig pakke for å lage fine tabeller med resultatet fra regresjonsanalyser er `stargazer`. 
@@ -581,5 +593,5 @@ stargazer(m2, m3,
 #' ## Takk for i dag!
 #' 
 ## ----generere_script---------------------------------------------------------------------------------------------------
-# knitr::purl("./seminar2/Seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 2)
+# knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 2)
 
