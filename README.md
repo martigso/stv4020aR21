@@ -97,3 +97,7 @@ For replikasjonsdata:
 - Sjekk fotnoter i artikkelen om det står noe om hvor data er gjort tilgjenglig
 - Ikke alle legger ut repliksjonsdata dessverre 
 
+
+
+---
+IT-hjelp under seminarer: https://www.uio.no/tjenester/it/kontakt/helpdesk/ 
