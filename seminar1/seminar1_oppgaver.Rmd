@@ -3,7 +3,9 @@ title: "Oppgaver seminar 1"
 output: github_document
 ---
 ### Oppgaver fra dagens tema:
-Bruk datasettet vi lastet ned i slutten av av forrige seminar. Datasettet inneholder informasjon om passasjerer på Titanic. 
+Opprett et nytt script og kjør følgende kode: 
+`titanic <- read.csv("https://raw.githubusercontent.com/martigso/stv4020aR/master/Gruppe%203/data/titanic.csv")`. 
+Du laster da inn et datasett som inneholder informasjon om passasjerer på Titanic, til objektet `titanic`. 
 
 1. Hvilke variabler finnes i datasettet?
 2. Hvilken klasse er variablene? 

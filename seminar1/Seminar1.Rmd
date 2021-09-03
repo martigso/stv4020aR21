@@ -330,12 +330,8 @@ glimpse(data)
 Som dere ser er alder numeric, mens navn og bachelor er character. Her er det hva objektet er lagret som som teller, ikke hvordan det ser ut i datasettet. Selv om noe ser ut som tall i datasettet så er det ikke sikkert det er registrert som tall av R. Heldigvis kan dette ofte løses ved hjelp av en funksjoner som `as.numeric()`, `as.character()` og `as.factor()`.   
 
 ```{r}
-<<<<<<< HEAD
-# Her lager vi en ny variabel alder_ch der vi ber R lagre alder som character
-=======
 
-# Her lager vi en ny variabel alder2 der vi ber R lagre alder som character
->>>>>>> 3377b74299a105268cbab7f53bf058c41c0d9ca5
+# Her lager vi en ny variabel alder_ch der vi ber R lagre alder som character
 data$alder_ch <- as.character(data$alder)
 
 ```
