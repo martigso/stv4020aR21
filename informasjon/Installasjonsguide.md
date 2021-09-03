@@ -67,7 +67,7 @@ Seminarene går smidigere om alle bruker samme versjon av R. Dersom du har R og 
 
 Åpne Rstudio. Øverst i konsoll så vil du se "session info". Den første linjen forteller deg hvilken R versjon du bruker. Alternativt så kan du kjøre koden `R.version.string` for å printe R versjonen. 
 
-Har du R versjon 4.1.0) installert?
+Har du R versjon 4.1.1 (Kick Things) installert?
 
 * Nei - følg instruksjonene for å “Oppdatere R og Rstudio”
 * Ja - supert! Du er klar for første R-seminar!
@@ -93,5 +93,13 @@ På Mac så laster du selv ned og installerer den nyeste versjonen av R. Når du
 1. Følg installasjonsveiledningen for MAC.
 
 2. For å oppdatere Rstudio så åpner du Rstudio, velger Help > Check for Updates. Dette vil sende deg til Rstudios nettside hvor du kan laste ned den nyeste versjonen. 
+
+*Linux (Ubuntu)*
+
+R oppdateres som alt annet på Ubuntu:
+1. `sudo apt update`
+2. `sudo apt upgrade`
+
+Rstudio oppdateres ved å følge veiledningen for installasjon av Rstudio over.
 
 Nå er du klar for første R-seminar!
