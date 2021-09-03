@@ -1,6 +1,8 @@
 ---
 title: "Seminar 4: Binomisk logistisk regresjon"
 output: github_document
+editor_options: 
+  chunk_output_type: console
 ---
 ## Logistisk regresjon
 

@@ -5,6 +5,8 @@ output:
 #    keep_md: yes
 #    self_contained: no
 #    keep_html: no
+editor_options: 
+  chunk_output_type: console
 ---
 
 I dag skal vi fortsette med OLS og databehandling:
@@ -42,6 +44,7 @@ m5 <- lm(data = aid,
 library(stargazer)
 stargazer(m5, type = "text")
 ```
+
 Så plotter vi effekten av institusjonell kvalitet på vekst i BNP (GDP). Vi går ikke veldig nøye inn på dette nå, men les gjerne [denne guiden til regresjonsplot](https://github.com/liserodland/stv4020aR/blob/master/Materiell%20fra%20tidl%20semestre/docs/Regresjonsplot.md). For å plotte en regresjonslinje så oppretter vi først et datasett der vi holder alle uavhengige variabler, bortsett fra den vi vil plotte effekten til, konstante. Her velger jeg å la `institutional_quality` variere fra minimums- til maksimumsverdien og setter resten av variablene til gjennomsnitt eller modusverdi. Neste steg er å predikere verdier for det nye datasettet basert på modellen vår ved hjelp av `predict()`. `predict()` tar datasettet vi har laget og gir oss blant annet predikerte verdier og konfidensintervaller basert på modellen vår. For å få datasettet vi skal bruke til plotting, så binder vi resultatet av `predict` sammen med datasettet vi lagde. For at `predict()` skal gi likt antall observasjoner som vi har i datasettet vårt så er det viktig å bevare informasjon om de observasjonene som har missing. Dette gjør vi med argumentet `na.action = "na.exclude` i `lm()`. 
 
 ```{r,tidy=FALSE}
@@ -183,6 +186,7 @@ equality$period <- as.numeric(as_factor(equality$period))
 table(equality$year,equality$period)
 # Ser fint ut
 ```
+
 Da har vi forhåpentligvis variabler som kan fungere som nøkler i begge datasettene. Neste steg er å endre på datastrukturen i datasettet `equality`, slik at den blir lik som i `aid`. For å få til dette, må vi endre observasjonene i `equality` til land-perioder. Dette kan vi gjøre med `group_by` og `summarise()`. På dette stadiet, må vi tenke datastruktur, og gjøre metodologiske valg om hvordan vi skal operasjonalisere informasjonen om konflikter. Under viser jeg to muligheter. I hjemmeoppgaven er dette et punkt der jeg vil anbefale at du tenker grundig gjennom de metodologiske implikasjonene av valgene du tar - tenk gjennom hva som er best og skriv koden din etterpå - ikke fall i fellen kode først, metode etterpå.
 
 ```{r}
