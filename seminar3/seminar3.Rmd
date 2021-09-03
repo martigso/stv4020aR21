@@ -212,3 +212,7 @@ table(is.na(aid2$avg_eq))
 
 summary(aid2$avg_eq)
 ```
+
+```{r generere_script, eval=FALSE, echo=FALSE}
+# knitr::purl("./seminar3/seminar3.Rmd", output = "./seminar3/seminar3.R", documentation = 2)
+```

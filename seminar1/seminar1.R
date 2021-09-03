@@ -440,7 +440,7 @@ table(data$bachelor, useNA = "always") # useNA = "always" betyr at vi også vil 
 #' 
 #' Nå skal vi laste inn datasettet vi skal bruke til å løse oppgaver i neste time. 
 #' 
-## ----generere_script---------------------------------------------------------------------------------------------------
-# knitr::purl("./seminar1/Seminar1.Rmd", output = "./seminar1/seminar1.R", documentation = 2)
+## ----generere_script, eval=FALSE, echo=FALSE---------------------------------------------------------------------------
+## # knitr::purl("./seminar1/Seminar1.Rmd", output = "./seminar1/seminar1.R", documentation = 2)
 
 #' 

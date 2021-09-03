@@ -440,7 +440,7 @@ read_dta("filnavn.dta") # for .dta-filer fra stata
 
 Nå skal vi laste inn datasettet vi skal bruke til å løse oppgaver i neste time. 
 
-```{r generere_script}
+```{r generere_script, eval=FALSE, echo=FALSE}
 # knitr::purl("./seminar1/Seminar1.Rmd", output = "./seminar1/seminar1.R", documentation = 2)
 ```
 

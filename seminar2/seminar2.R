@@ -592,6 +592,6 @@ stargazer(m2, m3,
 #' 
 #' ## Takk for i dag!
 #' 
-## ----generere_script---------------------------------------------------------------------------------------------------
-# knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 2)
+## ----generere_script, eval=FALSE, echo=FALSE---------------------------------------------------------------------------
+## # knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 2)
 
