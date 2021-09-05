@@ -18,7 +18,7 @@ I dette dokumentet får du en rask innføring i hvordan du kan gjøre logistisk 
 
 
 **Oppvarmings-oppgave i plenum:**
-Les hjelpefil, hva må vi spesifisere for å kjøre en logistisk regresjon? Forklar til sidemannen.
+Les hjelpefil <!-- fixme: hjelpefilen til glm()? --> , hva må vi spesifisere for å kjøre en logistisk regresjon? Forklar til sidemannen.
 
 Last inn datasettet `aid` under navnet `aid`, du finner data [her](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Innf%C3%B8ringsseminarer/data). Lagre i en mappe, sett working directory (dette steget er ikke nødvendig om du bruker prosjekt), og last inn datasettet i R med `read_dataformat()`. 
 
@@ -87,7 +87,7 @@ For å plotte en binomisk logisitisk regresjon så går vi gjennom seks trinn:
 
 1. Kjøre modellen.
 
-2. Lage et nytt fiktivt datasett med den uavhhengive variabelen og kontrollvariabeler. Du lar variabelen du er interessert i effekten av varierer i datasettet, mens de andre variablene settes til gjennomsnitt, median e.l. (bortsett fra avhengig variabel). 
+2. Lage et nytt fiktivt datasett med den uavhengige variabelen og kontrollvariabelene. Du lar variabelen du er interessert i effekten av variere i datasettet, mens de andre variablene settes til gjennomsnitt, median e.l. (bortsett fra avhengig variabel). 
 
 3. Predikerer verdier.
 
@@ -106,6 +106,7 @@ plotdata <- data.frame(aid = seq(min(aid$aid, na.rm = TRUE),
                        policy = mean(aid$policy, na.rm = TRUE),
                        period = "4")
 ```
+
 Plotter logits: 
 ```{r}
 # Trinn 3: Bruker først predict til å predikere logits
@@ -255,6 +256,7 @@ mean(aid$riktig, na.rm = TRUE)
 mean(aid[aid$gdp_growth_d == 1, ]$riktig, na.rm = TRUE) 
 mean(aid[aid$gdp_growth_d == 0, ]$riktig, na.rm = TRUE)
 ```
+
 Dette kan vi også presentere i en tabell som i **Lær deg R**:
 ```{r}
 krysstabell <- table(aid$growth.pred, aid$gdp_growth_d)
