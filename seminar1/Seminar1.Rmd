@@ -137,7 +137,7 @@ I R skriver vi kode i script. Du åpner et nytt script ved å trykke på den hvi
 "Hello world!"
 ```
 
-R Kan også brukes som en kalkulator: 
+R kan også brukes som en kalkulator: 
 ```{r}
 1 + 1  # addisjon
 2 - 3  # subtraksjon
@@ -167,32 +167,6 @@ R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 
 
 ### Oversikt over logiske operatorer
-```{r, echo = FALSE, message=FALSE}
-# Operator <- c("`==`", "<", ">", "<=", ">=", "`!=`", "`!x`", "`|`", "&")
-# Betydning <- c("er lik", "mindre enn", "større enn", "mindre eller lik", 
-#                 "større eller lik", "ikke lik", "ikke x", "eller", "og")
-# tabell <- tibble(Operator, Betydning) 
-
-```
-
-```{r, echo = FALSE}
-#knitr::kable(tabell, 
-#             format = "html",
-#             align = "lc") %>% 
-#  kableExtra::kable_styling(full_width = F,
-#                            position = "left")
-```
-
-**Oversikt over logiske operatorer:**
-
-```{r, eval = FALSE, include = FALSE}
-# fixme
-# I tabellen under blir ikke | riktig i .md-filen når man åpner den via github
-# Det ser riktig ut i pdf- og html-versjonen en får preview av når en kjører filen
-# Martin: den ser fin ut for meg på github. Men første kolonne har ikke definert alignment
-# så jeg kaster inn det nå.
-
-```
 
 
 | Operator      | Betydning        |
@@ -204,11 +178,11 @@ R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 | `>=`          | større eller lik |
 | `!=`          | ikke lik         |
 | `!x`          | ikke x           |
-| `\|`           | eller            |
+| `\|`          | eller            |
 | `&`           | og               |
 
 
-Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør endringer i datasett som å lage nye variabler. Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelse på er å øve. 
+Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør endringer i datasett som å lage nye variabler. Det er derfor viktig at dere forstår hvordan disse fungerer. Den beste måten å få denne foreståelsen på er å øve. 
 
 
 # Pakker 
@@ -223,6 +197,8 @@ Vi skal for det meste bruke kode som kommer fra pakker i [tidyverse](https://www
 
 <!-- fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC 
             men vi kan også teste det på installasjonsseminaret. -->
+<!-- fixme: det brukes en del funksjoner fra tidyverse i scriptet (select, filter, glimpse), men en kan jo alltids installere enkeltpakkene i stedet for tidyverse. Men foreslår at vi fjerner haven i og med at den ikke brukes her? -->
+
 ```{r, echo = TRUE, eval = FALSE}
 # install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
 # install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
@@ -233,7 +209,7 @@ Forskjellen på `install.packages()` og `library()` kan tenkes på som julepakke
 
 # Indeksering
 
-Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet i kapittel 1 i **Lær deg R** som er anbefalt litteratur. 
+Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden. Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke indeksering. Indeksering lar oss spesifisere et eller flere elementer i et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet for eksempel i kapittel 1 i boken **Lær deg R**. 
 
 Dersom vi for eksempel er interessert i å hente ut all informasjonen om Thea så kan det gjøres på mange måter: 
 ```{r, echo = FALSE, message=FALSE}
@@ -253,7 +229,7 @@ data %>%
 
 ```
 
-Vi kan også hente ut informasjon i en variabel/kolonne: 
+Vi kan også hente ut informasjon om en variabel/kolonne: 
 
 ```{r}
 # Ved hjelp av base R
@@ -268,7 +244,7 @@ data %>%
 
 ```
 
-Til slutt så kan vi hente ut informasjon om en variabel for en observasjon: 
+Til slutt så kan vi hente ut informasjon om en variabel/kolonne for en observasjon/rad: 
 ```{r}
 # Ved hjelp av base R
 data[navn == "Thea", "alder"]
@@ -286,20 +262,13 @@ data %>%
 
 
 # Ulike typer vektorer i R
-Det finnes flere ulike objekter i R. Til nå har vi blitt introdusert for to av dem: datasett og vektorer. Hva slags objekt det er har noe å si for hva du kan gjøre med det. I tillegg finnes det ulike typer, eller klasser som vi kaller det, av vektorer. I tabellen under finner dere en grov inndeling av ulike typer vektorer i R (se også s. 42-47 i Lær deg R):
+Det finnes flere ulike objekter i R. Til nå har vi blitt introdusert for to av dem: datasett og vektorer. Hva slags objekt det er har noe å si for hva du kan gjøre med det. I tillegg finnes det ulike typer, eller klasser som vi kaller det, av vektorer. I tabellen under finner dere en grov inndeling av ulike typer vektorer i R (se f.eks. s. 42-47 i Lær deg R for en nærmere innføring):
 
 ```{r, echo = FALSE, message=FALSE}
 "Atomic vector" <- c("numeric", "integer", "character", "factor", "logical")
 "List" <- c("blanding", "", "", "", "")
 tabell <- cbind(`Atomic vector`, List)
 
-```
-
-```{r, echo = FALSE}
-# knitr::kable(tabell, format = "html") %>% 
-#  kableExtra::kable_styling("striped",
-#                            full_width = F,
-#                            position = "left")
 ```
 
 
@@ -352,15 +321,15 @@ aFunction(x = "R-objekt", arg = "alternativ for figurens oppførsel")
 ## Merk: dette er ikke en faktisk funksjon i R. Funksjoner kan også ha andre syntakser. 
 ```
 
-Vi har allerede vært innom flere funksjoner i dag; `c()`, `class()`, `filter()`, `select()` og `mean()`. Dersom vi vil lære mer om en funksjon, kan vi spørre R om hjelp med `?`. Kjør `?c()` og `mean()`   
+Vi har allerede vært innom flere funksjoner i dag; `c()`, `class()`, `filter()`, `select()` og `mean()`. Dersom vi vil lære mer om en funksjon, kan vi spørre R om hjelp med `?`. Kjør `?c()` og `?mean()`   
 
 En funksjon er en kodesnutt der vi spesiferer en input. Funksjonen utfører operasjoner basert på input, og produserer deretter et resultat (eller output). Det finnes funksjoner for å løse de fleste tenkelige og utenkelige problemer. Noen funksjoner er det lurt å kunne, fordi du får bruk for dem hele tiden, men det er altfor mange funksjoner til å lære seg alle. En av de viktigste ferdighetene i R, er derfor å lære seg hvordan man kan finne og anvende funksjoner for å løse utfordringer man står overfor. Dette skal vi øve på i R-undervisningen.
 
-Noen funksjoner er base R og vi trenger ikke gjøre noe for å bruke dem. Andre må vi laste ned og installere pakker for å bruke som med `select()` og `filter()` fra `tidyverse`. 
+Noen funksjoner er base R og vi trenger ikke gjøre noe for å bruke dem. Andre må vi laste ned og installere pakker for å bruke som med `select()` og `filter()` fra pakken `tidyverse`. 
 
 Vi skal nå bruke noen funksjoner til å finne ut mer informasjon fra datasettet vårt:
 ```{r}
-# Viser de første seks radene i datasettet
+# Viser de første tre radene i datasettet
 head(data)
 
 # Finner minimumsverdi (den laveste alderen)
@@ -375,7 +344,7 @@ mean(data$alder, na.rm = TRUE)
 # Finner medianalderen
 median(data$alder, na.rm = TRUE)
 
-# Finner standardavviker
+# Finner standardavviket
 sd(data$alder, na.rm = TRUE)
 
 # Finner varians
@@ -387,13 +356,12 @@ quantile(data$alder, na.rm = TRUE)
 # Finner forskjellig deskriptiv statistikk for en variabel
 summary(data$alder)
 
-# Finner forskjellig deskriptiv statiskk for alle variabler i datasettet
+# Finner forskjellig deskriptiv statistikk for alle variabler i datasettet
 summary(data)
 
+# Finner skjevhet ved hjelp av moments-pakken
 # install.packages("moments")
 library(moments)
-
-# Finner skjevhet ved hjelp av moments-pakken
 skewness(data$alder, na.rm = TRUE) 
 
 # Finner kurtose ved hjelp av moments-pakken
