@@ -354,7 +354,7 @@ R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 |   `>=`   | større eller lik |
 |   `!=`   |     ikke lik     |
 |   `!x`   |      ikke x      |
-|   `|`    |      eller       |
+|   `\|`   |      eller       |
 |   `&`    |        og        |
 
 Vi kommer til å bruke disse operatorene mye, spesielt når vi gjør
@@ -377,12 +377,18 @@ Vi skal for det meste bruke kode som kommer fra pakker i
 [tidyverse](https://www.tidyverse.org/learn/). La oss installere disse
 pakkene:
 
+<!-- fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC 
+            men vi kan også teste det på installasjonsseminaret. -->
+
 ``` r
-# fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC
-install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
-install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
+# install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
+# install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
 library(tidyverse)
 ```
+
+Forskjellen på `install.packages()` og `library()` kan tenkes på som
+julepakker. `install.packages()` er å kjøpe pakken, mens `library()` er
+å pakke den opp.
 
 # Indeksering
 
@@ -475,6 +481,12 @@ data[data$navn == "Thea", "alder"]
     ## [1] 23
 
 ``` r
+data$alder[data$navn == "Thea"]
+```
+
+    ## [1] 23
+
+``` r
 # Ved hjelp av dplyr
 data %>% 
   filter(navn == "Thea") %>% 
@@ -550,18 +562,22 @@ ved hjelp av en funksjoner som `as.numeric()`, `as.character()` og
 `as.factor()`.
 
 ``` r
-# Her lager vi en ny variabel alder2 der vi ber R lagre alder som character
+# Her lager vi en ny variabel alder_ch der vi ber R lagre alder som character
 data$alder_ch <- as.character(data$alder)
 ```
 
 Om vi ser på datasettet etter at vi har laget den nye variabelen så ser
-vi at alder og alder2 ser helt like ut. Begge fremstår som tall vi kan
-gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne selv å
-kjøre funksjonen `mean()` som regner ut gjennomsnittet på alder2.
+vi at alder og alder\_ch ser helt like ut. Begge fremstår som tall vi
+kan gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne
+selv å kjøre funksjonen `mean()` som regner ut gjennomsnittet på
+alder\_ch. 
 
-**Hva skjer om du først omkoder alder til en faktor ved hjelp av
-`as.factor()` og så omkoder faktorvariabelen til en numerisk variabel
-med `as.numeric()`?**
+<!-- fixme: kuttkandidat;
+**Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?** -->
+<!-- ```{r, eval = FALSE, include = FALSE} -->
+<!-- data$alder_fa <- as.factor(data$alder_ch) -->
+<!-- data$alder_nu <- as.numeric(data$alder_fa) -->
+<!-- ``` -->
 
 # Funksjoner i R
 
@@ -757,7 +773,3 @@ read_dta("filnavn.dta") # for .dta-filer fra stata
 
 Nå skal vi laste inn datasettet vi skal bruke til å løse oppgaver i
 neste time.
-
-``` r
-# knitr::purl("./seminar1/Seminar1.Rmd", output = "./seminar1/seminar1.R", documentation = 2)
-```

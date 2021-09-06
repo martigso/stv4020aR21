@@ -204,7 +204,7 @@ R kan evaluere logiske utsagn og bedømme om de er ´TRUE´ eller ´FALSE´.
 | `>=`          | større eller lik |
 | `!=`          | ikke lik         |
 | `!x`          | ikke x           |
-| `|`           | eller            |
+| `\|`           | eller            |
 | `&`           | og               |
 
 
