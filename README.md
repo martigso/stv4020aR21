@@ -33,7 +33,7 @@ For noen kan R virke skummelt ved første øyekast, men erfaringsmessig så går
 
 Før første seminar må du:
 
-- Lese [installasjonsguiden](https://github.com/martigso/stv4020aR21/blob/main/Installasjonsguide.md) og denne [introduksjonen til R](https://github.com/liserodland/stv4020aR/blob/master/H20-seminarer/Innf%C3%B8ringsseminarer/docs/installasjonsguide_R.md).
+- Lese [installasjonsguiden](https://github.com/martigso/stv4020aR21/blob/main/informasjon/Installasjonsguide.md) og denne [introduksjonen til R](https://github.com/liserodland/stv4020aR/blob/master/H20-seminarer/Innf%C3%B8ringsseminarer/docs/installasjonsguide_R.md).
 - Laste ned og installere R og Rstudio (se installasjonsguide over).
 - Dersom du har R og Rstudio installert fra før så sjekk hvilken versjon du har og om du bør oppdatere (se installasjonsguide over). 
 - Bli gjerne med i facebookgruppen [R for statsvitenskap ved UiO](https://www.facebook.com/groups/427792970608618) og [discord-serveren "R-stv"](https://discord.gg/CAP9TbdWFa) (dette gjelder spesielt de som skal bruke R i hjemmeoppgaven).
