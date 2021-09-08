@@ -28,7 +28,7 @@ datasett <- read_filtype("filnavn.filtype")
 read_csv("filnavn.csv") # for .csv, sjekk også read.table
 load("") # For filer i R-format.
 
-library(haven)
+library(haven) # filformat fra andre statistiske pakker (SAS, SPSS og STATA)
 # Fra haven-pakken - dette skal vi se på i senere seminar
 read_spss("filnavn.sav")  # for .sav-filer fra spss
 read_dta("filnavn.dta") # for .dta-filer fra stata
@@ -46,10 +46,10 @@ library(tidyverse)
 
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
-    ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.1.2     v dplyr   1.0.6
+    ## v ggplot2 3.3.5     v purrr   0.3.4
+    ## v tibble  3.1.3     v dplyr   1.0.7
     ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.1
+    ## v readr   2.0.0     v forcats 0.5.1
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
@@ -63,10 +63,10 @@ aid <-  read_dta("aid.dta")
 # Forberede og manipulere data
 
 Vi lærer R for å kunne gjøre statistiske analyser. Noen ganger er man så
-heldig å få et analyserklart datasett som har alle variablene man
-ønsker, men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt
-med å forberede og manipulere data, f.eks. ved å omkode variabler, eller
-hente inn variabler fra andre datakilder. Forberedelse av data er ikke
+heldig å få et analyseklart datasett som har alle variablene man ønsker,
+men dette hører til sjeldenhetene. Veldig ofte må man jobbe litt med å
+forberede og manipulere data, f.eks. ved å omkode variabler, eller hente
+inn variabler fra andre datakilder. Forberedelse av data er ikke
 rutinearbeid - det innbefatter svært ofte viktige metodologiske
 beslutninger, som f.eks. hvordan du ønsker å operasjonalisere når en
 konflikt ble avsluttet eller hvordan du skal håndtere missing verdier.
@@ -390,6 +390,8 @@ tre variabler - `sub_saharan_africa`, `central_america` og
 `fast_growing_east_asia`. La oss bruke `ifelse()` og `mutate()` til
 dette:
 
+<!--fixme: kanskje vi kan region-variabelen i datasettet fra om vi skal ha med aggregering her? -->
+
 ``` r
 # OBS! Her skriver vi over det opprinnelige objektet vårt. Når du skriver hjemmeoppgaven så 
 # sjekk først at det blir riktig før du gjør det samme. 
@@ -427,8 +429,9 @@ aid %>%
     ## 3 Other                     1.46       149
     ## 4 Sub-Saharan Africa       -0.157      124
 
-Resultatet er fem observasjoner heller enn de opprinnelige 331. I
-outputen er nivået for observasjonene endret fra land-nivå til
+Resultatet er fem observasjoner heller enn de opprinnelige 331.
+<!-- fixme: er det ikke bare 4 observasjoner her eller ser jeg feil -->
+I outputen er nivået for observasjonene endret fra land-nivå til
 region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå.
 Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`.
 Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny
@@ -602,6 +605,8 @@ cor(aid$gdp_growth, aid$aid, use = "pairwise.complete.obs") # argumentet use bes
 Hva forteller denne oss om sammenhengen mellom økonomisk bistand og
 endring i BNP?
 
+<!--fixme: hmmm Kommentaren etter komma på første kodelinje i neste avsnitt gir ikke helt mening for meg. Kan den slettes?-->
+
 ``` r
 str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ikke har en tibble)
 ```
@@ -660,7 +665,7 @@ str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ik
 ``` r
 aid %>%
 select(6:13) %>% # Her tar vi med variablene fra gdp_growth (nr 6) til aid (nr 13)
-cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
+  cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
 ```
 
     ##                 gdp_growth gdp_pr_capita economic_open budget_balance
@@ -714,7 +719,7 @@ du lager en tabell med fordelingen av observasjoner som har høyere vekst
 enn medianveksten i utvalget, ved hjelp av en logisk test:
 
 ``` r
-table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T))
+table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE))
 ```
 
     ## 
@@ -722,7 +727,7 @@ table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T))
     ##   163   162
 
 ``` r
-table(aid$gdp_growth>median(aid$gdp_growth,na.rm=T), aid$country)
+table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE), aid$country)
 ```
 
     ##        
@@ -749,17 +754,18 @@ variabler - vi ville ikke hatt veldig godt datagrunnlag for å si så mye
 om effekten av bistand i samspill med policy (jeg sier ikke dermed
 nødvendigvis at dataene er gode generelt).
 
-**Oppgave:** Lag et nytt datasett ved hjelp av `group_by` og
+**Oppgave:** Lag et nytt datasett ved hjelp av `group_by()` og
 `summarise()`, der du oppretter variabler som viser korrelasjon
 (Pearsons r) mellom: *`aid`, og `gdp_growth` * `aid` og `policy` \*
 `policy` og `gdp_growth` separat for hver region. Er det store
-forskjeller i korrelasjonene mellom regionene? Lag deretter to nye
-variabler, `good_policy` og `good_policy2`, slik at observasjoner som
-har positive verdier på henholdsvis variablene `policy` og `policy2` får
-verdien 1, mens andre observasjoner får verdien 0. Bruk disse nye
-variablene som grupperingsvariabler, og lag et nytt datasett der du
-inkluderer en variabel som beregner korrelasjon mellom `aid` og `policy`
-for hver gruppe.
+forskjeller i korrelasjonene mellom regionene?
+
+Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at
+observasjoner som har positive verdier på henholdsvis variablene
+`policy` og `policy2` får verdien 1, mens andre observasjoner får
+verdien 0. Bruk disse nye variablene som grupperingsvariabler, og lag et
+nytt datasett der du inkluderer en variabel som beregner korrelasjon
+mellom `aid` og `policy` for hver gruppe.
 
 ## Plotte-funksjonen `ggplot` <a name="ggplot"></a>
 
@@ -777,8 +783,8 @@ Med det sagt, her er de nødvendige elementene man må spesifisere i
 syntaksen til `ggplot()`:
 
 ``` r
-ggplot(data = my_data) +
-  geom_point(aes(x = x-axis_var_name, y = y-axis_var_name, col=my.var3)))
+ggplot(data = my_data, aes(x = x-axis_var_name, y = y-axis_var_name, col = my.var3)) +
+  geom_point()
 ```
 
 Vi starter med å fortelle ggplot hvilket datasett vi bruker. Deretter
@@ -812,7 +818,8 @@ regel et godt resultat med et par linjer kode. Vi skal se raskt på 4
 ``` r
 # install.packages("ggplot2")
 library(ggplot2)
-ggplot(aid) + geom_histogram(aes(x = gdp_growth), bins = 50) # lager histogram
+ggplot(aid, aes(x = gdp_growth)) + 
+  geom_histogram(bins = 50) # lager histogram
 ```
 
 <img src="./bilder/seminar2_1.png" width="2100" />
@@ -821,17 +828,20 @@ Med et boxplot får du raskt oversikt over fordelingen til variabler
 innenfor ulike grupper.
 
 ``` r
-ggplot(aid) + geom_boxplot(aes(x = as.factor(region), y = aid))
+ggplot(aid, aes(x = as.factor(region), y = aid)) + 
+  geom_boxplot()
 ```
 
 <img src="./bilder/seminar2_2.png" width="2100" /> **Oppgave:** Lag
-boxplot som viser fordelingen til variablene `policy` og `elrgpdg`
+boxplot som viser fordelingen til variablene `policy` og `gdp_growth`
 innenfor hver region.
+<!--fixme: har endret elrdgdpg til gdp_growth ettersom denne variabelen ikke finnes-->
 
 Med `geom_line()` kan vi plotte tidsserier:
 
 ``` r
-ggplot(aid) + geom_line(aes(x = period, y = gdp_growth, col = country)) +
+ggplot(aid, aes(x = period, y = gdp_growth, col = country)) + 
+  geom_line() +
   theme(legend.key.size = unit(0.5,"line")) # Her justerer jeg størrelsen på legend for å få plass til alt
 ```
 
@@ -863,6 +873,8 @@ aid %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))
 ```
 
+<!--fixme: det virker som "MOZ", "AGO", "RWA" er missing, skal man endre til "GHA", "SOM", "TZA" som under?-->
+
 <img src="./bilder/seminar2_5.png" width="2100" />
 
 I tillegg til indekseringsmetodene for datasett fra første seminar, er
@@ -874,8 +886,8 @@ spredningsplot (scatterplot). Sammenlign gjerne med korrelasjonsmatrisen
 du lagde mellom disse tre variablene.
 
 ``` r
-ggplot(aid) + 
-  geom_point(aes(x = aid, y = gdp_growth, col = policy))
+ggplot(aid, aes(x = aid, y = gdp_growth, col = policy)) + 
+  geom_point()
 ```
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
@@ -886,9 +898,9 @@ Her er et overlesset eksempel på et scatterplot (poenget er å illustrere
 muligheter, ikke å lage et pent plot):
 
 ``` r
-ggplot(aid) +
-  geom_point(aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
-  geom_smooth(aes(x=aid, y=gdp_growth), method="lm") +  # merk: geom_smooth gir bivariat regresjon
+ggplot(aid, aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
+  geom_point() +
+  geom_smooth(method="lm") +  # merk: geom_smooth gir bivariat regresjon
   ggtitle("Visualization of relationship between aid and growth to showcase ggplot") +
   xlab("aid") +
   ylab("growth") +
@@ -1040,7 +1052,8 @@ str(m1) # Gir oss informasjon om hva objektet inneholder.
 Vi legger inn flere uavhengige variabler med `+`.
 
 ``` r
-summary(m2 <- lm(gdp_growth ~ aid + policy + region, data = aid))
+m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
+summary(m2)
 ```
 
     ## 
@@ -1071,6 +1084,8 @@ summary(m2 <- lm(gdp_growth ~ aid + policy + region, data = aid))
 # Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
 ```
 
+<!--fixme: kan vi stoppe her og flytte resten til seminar 3? Mulig vi må revurdere oppgavesettet, men seminar 2 har veldig mye innhold. -->
+
 ### Samspill
 
 Hypotesen til artikkelforfatterne var følgende: *bistand fører til
@@ -1082,7 +1097,8 @@ individuelle regresjonskoeffisientene til variablene vi spesifisere
 samspill mellom blir automatisk lagt til.
 
 ``` r
-summary(m3 <- lm(gdp_growth ~ aid*policy + region, data = aid))
+m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
+summary(m3)
 ```
 
     ## 
@@ -1119,17 +1135,24 @@ transformasjoner brukes gjerne for eksponentiell vekst eller for å
 minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig
 hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
 
-Andregradsledd legger vi inn med `I(uavh.var^2)`. Under har jeg lagt inn
-en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd.
-Merk at dere må legge inn førstegradsleddet separat når dere legger inn
-andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel
-funksjon, er det fint å opprette en ny variabel i datasettet.
+Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen
+`poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()`
+omkoding og et andregradsledd. Merk at dere må legge inn
+førstegradsleddet separat når dere legger inn andregradsledd. Dersom en
+variabeltransformasjon krever mer enn en enkel funksjon, er det fint å
+opprette en ny variabel i datasettet.
 
 ``` r
-summary(m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), data = aid, na.action = "na.exclude"))
+m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
+         data = aid, 
+         na.action = "na.exclude")
 ```
 
     ## Warning in log(gdp_growth): NaNs produced
+
+``` r
+summary(m4)
+```
 
     ## 
     ## Call:

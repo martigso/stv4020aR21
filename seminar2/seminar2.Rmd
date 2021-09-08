@@ -213,6 +213,8 @@ table(aid$decade, aid$periodstart, useNA = "always")
 
 Tenk deg at vi ønsket å opprette en ny variabel, `neigh_growth`, som viser gjennomsnittsveksten til alle land i samme region over hele tidsperioden. Dette høres kanskje fryktelig komplisert ut, og mangler en god teoretisk begrunnelse. Vi kan imidlertid finne informasjonen vi er på jakt etter ganske enkelt ved hjelp av funksjonene `group_by()` og `summarise()`. Først må vi imidlertid opprette en region-variabel - fordi informasjon om hvilken region et land tilhører er spredt ut over tre variabler - `sub_saharan_africa`, `central_america` og `fast_growing_east_asia`. La oss bruke `ifelse()` og `mutate()` til dette:
 
+ <!--fixme: kanskje vi kan region-variabelen i datasettet fra om vi skal ha med aggregering her? -->
+
 ```{r}
 # OBS! Her skriver vi over det opprinnelige objektet vårt. Når du skriver hjemmeoppgaven så 
 # sjekk først at det blir riktig før du gjør det samme. 
@@ -279,6 +281,8 @@ cor(aid$gdp_growth, aid$aid, use = "pairwise.complete.obs") # argumentet use bes
 ```
 
 Hva forteller denne oss om sammenhengen mellom økonomisk bistand og endring i BNP? 
+
+ <!--fixme: hmmm Kommentaren etter komma på første kodelinje i neste avsnitt gir ikke helt mening for meg. Kan den slettes?-->
 
 ```{r}
 str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ikke har en tibble)
@@ -539,6 +543,8 @@ m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
 summary(m2)
 # Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
 ```
+
+<!--fixme: kan vi stoppe her og flytte resten til seminar 3? Mulig vi må revurdere oppgavesettet, men seminar 2 har veldig mye innhold. --> 
 
 ### Samspill
 
