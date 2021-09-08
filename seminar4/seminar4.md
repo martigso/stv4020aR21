@@ -17,6 +17,8 @@ regresjon, og beslektede metoder som *probit*. Det er også en vanlig
 begrunnelse for andre alternative regresjonsmodeller som *multinomisk
 logistisk regresjon* (ikke på pensum i år).
 
+![](./bilder/glm_mental_model.png)
+
 **Konsekvenser i praksis:**
 
 -   Den største praktiske forskjellen er at substansiell tolkning blir
@@ -45,8 +47,9 @@ logistisk regresjon* (ikke på pensum i år).
 -   I R må vi bytte ut `lm()` med `glm()` og spesifisere alternativet
     `family = binomial`. De resterende argumentene er like.
 
-**Oppvarmings-oppgave i plenum:** Les hjelpefil, hva må vi spesifisere
-for å kjøre en logistisk regresjon? Forklar til sidemannen.
+**Oppvarmings-oppgave i plenum:** Les hjelpefil
+<!-- fixme: hjelpefilen til glm()? --> , hva må vi spesifisere for å
+kjøre en logistisk regresjon? Forklar til sidemannen.
 
 Last inn datasettet `aid` under navnet `aid`, du finner data
 [her](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Innf%C3%B8ringsseminarer/data).
@@ -200,9 +203,9 @@ trinn:
 
 1.  Kjøre modellen.
 
-2.  Lage et nytt fiktivt datasett med den uavhhengive variabelen og
-    kontrollvariabeler. Du lar variabelen du er interessert i effekten
-    av varierer i datasettet, mens de andre variablene settes til
+2.  Lage et nytt fiktivt datasett med den uavhengige variabelen og
+    kontrollvariabelene. Du lar variabelen du er interessert i effekten
+    av variere i datasettet, mens de andre variablene settes til
     gjennomsnitt, median e.l. (bortsett fra avhengig variabel).
 
 3.  Predikerer verdier.
