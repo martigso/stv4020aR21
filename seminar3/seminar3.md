@@ -2,9 +2,7 @@ Seminar 3
 ================
 
 I dag skal vi fortsette med OLS og databehandling: 1. Hvordan plotter vi
-resultater fra OLS? 2. Hvordan bruker vi R til å sjekke om
-forutsetningene for OLS holder? 3. Hvordan slår vi sammen flere
-datasett?
+resultater fra OLS? 3. Hvordan slår vi sammen flere datasett?
 
 Først: er det noen spørsmål til det vi gikk gjennom i går? Dersom du
 synes manipulering av data er vanskelig så kan det hjelpe å ta en titt
@@ -12,6 +10,11 @@ på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig på flere måter
 å omkode variabler på så kan du kikke på kapittel 5 i [**R for Data
 Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate).
 Og ikke glem: internett er din venn når du skal lære R.
+
+Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig
+viktig** å sjekke om forutsetningene for OLS og/eller logistisk modell
+er oppfylt. Dette går vi gjennom på [fordypningsseminar
+1](https://github.com/martigso/stv4020aR21/blob/main/fordypningsseminar%201/Fordypningsseminar-1-Forutsetninger.md).
 
 ## Hvordan plotte resutlater fra OLS?
 
@@ -140,15 +143,15 @@ Vi går ikke veldig nøye inn på dette nå, men les gjerne [denne guiden
 til
 regresjonsplot](https://github.com/liserodland/stv4020aR/blob/master/Materiell%20fra%20tidl%20semestre/docs/Regresjonsplot.md).
 For å plotte en regresjonslinje så oppretter vi først et datasett der vi
-holder alle uavhengige variabler bortsett fra den vi vil plotte effekten
-til konstante. Her velger jeg å la `institutional_quality` variere fra
-minimums- til maksimumsverdien og setter resten av variablene til
-gjennomsnitt eller modusverdi. Neste steg er å predikere verdier for det
-nye datasettet basert på modellen vår ved hjelp av `predict()`.
-`predict()` tar datasettet vi har laget og gir oss blant annet
-predikerte verdier og konfidensintervaller basert på modellen vår. For å
-få datasettet vi skal bruke til plotting så binder vi resultatet av
-`predict` sammen med datasettet vi lagde. For at `predict()` skal gi
+holder alle uavhengige variabler, bortsett fra den vi vil plotte
+effekten til, konstante. Her velger jeg å la `institutional_quality`
+variere fra minimums- til maksimumsverdien og setter resten av
+variablene til gjennomsnitt eller modusverdi. Neste steg er å predikere
+verdier for det nye datasettet basert på modellen vår ved hjelp av
+`predict()`. `predict()` tar datasettet vi har laget og gir oss blant
+annet predikerte verdier og konfidensintervaller basert på modellen vår.
+For å få datasettet vi skal bruke til plotting, så binder vi resultatet
+av `predict` sammen med datasettet vi lagde. For at `predict()` skal gi
 likt antall observasjoner som vi har i datasettet vårt så er det viktig
 å bevare informasjon om de observasjonene som har missing. Dette gjør vi
 med argumentet `na.action = "na.exclude` i `lm()`.
@@ -612,7 +615,7 @@ table(equality$year, equality$period)
     ##   1997           0           0           0           0           0
 
 ``` r
-# Tabell viser at jeg må justere periodcutpoints for å få rett
+# Tabellen viser at jeg må justere periodcutpoints for å få rett
 
 periodcutpoints <- periodcutpoints - 1
 table(periodcutpoints)

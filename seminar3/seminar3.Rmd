@@ -11,10 +11,11 @@ editor_options:
 
 I dag skal vi fortsette med OLS og databehandling:
 1. Hvordan plotter vi resultater fra OLS?
-2. Hvordan bruker vi R til å sjekke om forutsetningene for OLS holder?
 3. Hvordan slår vi sammen flere datasett? 
 
 Først: er det noen spørsmål til det vi gikk gjennom i går? Dersom du synes manipulering av data er vanskelig så kan det hjelpe å ta en titt på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig på flere måter å omkode variabler på så kan du kikke på kapittel 5 i [**R for Data Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate). Og ikke glem: internett er din venn når du skal lære R. 
+
+Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig viktig** å sjekke om forutsetningene for OLS og/eller logistisk modell er oppfylt. Dette går vi gjennom på [fordypningsseminar 1](https://github.com/martigso/stv4020aR21/blob/main/fordypningsseminar%201/Fordypningsseminar-1-Forutsetninger.md). 
 
 ## Hvordan plotte resutlater fra OLS? 
 I dag skal vi plotte resultatene og gjøre regresjonsdiagnostikk på modellen fra **Burnside and Dollar** - samme artikkel som vi har brukt tidligere i uka og samme som dere repliserte i oppgaven i går. Først laster vi inn pakker, data og kjører modellen.  
