@@ -29,10 +29,10 @@ library(tidyverse)
 
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
-    ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.1.2     v dplyr   1.0.6
+    ## v ggplot2 3.3.5     v purrr   0.3.4
+    ## v tibble  3.1.3     v dplyr   1.0.7
     ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.1
+    ## v readr   2.0.0     v forcats 0.5.1
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
@@ -155,6 +155,8 @@ av `predict` sammen med datasettet vi lagde. For at `predict()` skal gi
 likt antall observasjoner som vi har i datasettet vårt så er det viktig
 å bevare informasjon om de observasjonene som har missing. Dette gjør vi
 med argumentet `na.action = "na.exclude` i `lm()`.
+
+<!--fixme: bør vi bruke ggeffects i stedet for? Sparer mange kodelinjer, men gir kanskje mindre forståelse for hva som skjer? Dette var uansett noe mange synes var veldig vanskelig i fjor. -->
 
 ``` r
 # Lager datasettet
@@ -448,7 +450,7 @@ andre datasettet. Er variablene på landnivå, årnivå, land-år-nivå,
 region eller noe helt annet? Vi skal nå se på hvordan vi kan slå sammen
 aid-datasettet med et datasett om konflikt.
 
-Jeg har lastet ned versjon tid av Varieties of democracy datasettet fra
+Jeg har lastet ned versjon ti av Varieties of democracy datasettet fra
 V-den sin [nettside](https://www.v-dem.net/en/data/data-version-10/). I
 V-dem er det en variabel som heter `v2pepwrsoc`. Denne variabelen måler
 hvor jevnt makt er fordelt mellom sosiale grupper. Jeg har lastet opp en
@@ -460,15 +462,16 @@ lenken](https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-semin
 equality <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv")
 ```
 
-    ## 
+    ## Rows: 5163 Columns: 5
+
     ## -- Column specification --------------------------------------------------------
-    ## cols(
-    ##   country_name = col_character(),
-    ##   country_text_id = col_character(),
-    ##   country_id = col_double(),
-    ##   year = col_double(),
-    ##   v2pepwrsoc = col_double()
-    ## )
+    ## Delimiter: ","
+    ## chr (2): country_name, country_text_id
+    ## dbl (3): country_id, year, v2pepwrsoc
+
+    ## 
+    ## i Use `spec()` to retrieve the full column specification for this data.
+    ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
 summary(equality$v2pepwrsoc)
@@ -540,6 +543,8 @@ en ting vi må gjøre før vi kan slå datasettene sammen. V-dem-datasettet
 inneholder land-år-observasjoner, mens aid-datasettet inneholder
 land-periode-observasjoner. Vi må derfor lage en periode-variabel i
 equality-datasettet.
+
+<!--fixme: er dette unødvendig komplisert? -->
 
 ``` r
 # Oppretter periode-variabel i V-dem datasettet, slik at jeg er klar til å merge. Verdiene til period-variabelen går fra 1-8, jeg vil gi de samme periodene (datasettet inneholder imidlertid bare data for periode 2-7). Her bruker jeg et en egenskap ved `as.numeric` på en faktor som ofte fører til feil i kode for å gjøre dette raskt:
