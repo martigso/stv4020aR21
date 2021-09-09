@@ -7,10 +7,10 @@ library(tidyverse)
 
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
-    ## v ggplot2 3.3.5     v purrr   0.3.4
-    ## v tibble  3.1.3     v dplyr   1.0.7
+    ## v ggplot2 3.3.3     v purrr   0.3.4
+    ## v tibble  3.1.2     v dplyr   1.0.6
     ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   2.0.0     v forcats 0.5.1
+    ## v readr   1.4.0     v forcats 0.5.1
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
@@ -726,16 +726,15 @@ lenken](https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-semin
 equality <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv")
 ```
 
-    ## Rows: 5163 Columns: 5
-
-    ## -- Column specification --------------------------------------------------------
-    ## Delimiter: ","
-    ## chr (2): country_name, country_text_id
-    ## dbl (3): country_id, year, v2pepwrsoc
-
     ## 
-    ## i Use `spec()` to retrieve the full column specification for this data.
-    ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## -- Column specification --------------------------------------------------------
+    ## cols(
+    ##   country_name = col_character(),
+    ##   country_text_id = col_character(),
+    ##   country_id = col_double(),
+    ##   year = col_double(),
+    ##   v2pepwrsoc = col_double()
+    ## )
 
 ``` r
 summary(equality$v2pepwrsoc)
