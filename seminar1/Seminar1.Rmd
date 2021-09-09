@@ -206,6 +206,15 @@ library(dplyr)
 ```
 
 ```{r}
+# Endimensjonal vektor:
+navn[1]
+
+# For todimensjonale vektorer så gjelder dette generelt:
+# data[rad, kolonne] henter ut en gitt rad og en gitt kolonne 
+# data[rad, ] henter ut en alle kolonner for en gitt rad
+# data[, kolonne] henter ut alle rader for en gitt kolonne
+
+
 # Vi kan bruke base R (som beskrevet i Lær deg R)
 data[navn == "Thea", ]      # vi ønsker alle kolonner/variabler for observasjone/radene med verdien "Thea" 
 data[data$navn == "Thea", ] # vi ønsker alle kolonner/variabler for observasjone/radene med verdien "Thea"
@@ -236,15 +245,6 @@ data %>%
 Til slutt så kan vi hente ut informasjon om en variabel/kolonne for en observasjon/rad: 
 ```{r}
 # Ved hjelp av base R
-
-# Endimensjonal vektor:
-navn[1]
-
-# Todimensjonal vektor: 
-# data[rad, kolonne] henter ut en gitt rad og en gitt kolonne 
-# data[rad, ] henter ut en alle kolonner for en gitt rad
-# data[, kolonne] henter ut alle rader for en gitt kolonne
-
 data[navn == "Thea", "alder"]
 
 data[data$navn == "Thea", "alder"]

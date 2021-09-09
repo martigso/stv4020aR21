@@ -392,6 +392,19 @@ Dersom vi for eksempel er interessert i å hente ut all informasjonen om
 Thea så kan det gjøres på mange måter:
 
 ``` r
+# Endimensjonal vektor:
+navn[1]
+```
+
+    ## [1] "Thea"
+
+``` r
+# For todimensjonale vektorer så gjelder dette generelt:
+# data[rad, kolonne] henter ut en gitt rad og en gitt kolonne 
+# data[rad, ] henter ut en alle kolonner for en gitt rad
+# data[, kolonne] henter ut alle rader for en gitt kolonne
+
+
 # Vi kan bruke base R (som beskrevet i Lær deg R)
 data[navn == "Thea", ]      # vi ønsker alle kolonner/variabler for observasjone/radene med verdien "Thea" 
 ```
@@ -459,19 +472,6 @@ observasjon/rad:
 
 ``` r
 # Ved hjelp av base R
-
-# Endimensjonal vektor:
-navn[1]
-```
-
-    ## [1] "Thea"
-
-``` r
-# Todimensjonal vektor: 
-# data[rad, kolonne] henter ut en gitt rad og en gitt kolonne 
-# data[rad, ] henter ut en alle kolonner for en gitt rad
-# data[, kolonne] henter ut alle rader for en gitt kolonne
-
 data[navn == "Thea", "alder"]
 ```
 
