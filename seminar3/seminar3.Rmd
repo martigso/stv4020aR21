@@ -9,13 +9,111 @@ editor_options:
   chunk_output_type: console
 ---
 
+```{r}
+library(tidyverse)
+
+# Laster inn data
+load("./aid.RData")
+
+# Gjør de nødvendige omkodingene som dere gjorde i oppgaven
+aid <- aid %>% 
+  mutate(log_gdp_pr_capita = log(gdp_pr_capita),
+         period_fac = as.factor(period),
+         region = ifelse(fast_growing_east_asia == 1, "East Asia",
+                         ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa", "Other")),
+         region = factor(region, levels = c("Other", "Sub-Saharan Africa", "East Asia")))
+
+
+```
+
+
 I dag skal vi fortsette med OLS og databehandling:
+1. Kjøre OLS-modeller
 1. Hvordan plotter vi resultater fra OLS?
 3. Hvordan slår vi sammen flere datasett? 
 
 Først: er det noen spørsmål til det vi gikk gjennom i går? Dersom du synes manipulering av data er vanskelig så kan det hjelpe å ta en titt på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig på flere måter å omkode variabler på så kan du kikke på kapittel 5 i [**R for Data Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate). Og ikke glem: internett er din venn når du skal lære R. 
 
 Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig viktig** å sjekke om forutsetningene for OLS og/eller logistisk modell er oppfylt. Dette går vi gjennom på [fordypningsseminar 1](https://github.com/martigso/stv4020aR21/blob/main/fordypningsseminar%201/Fordypningsseminar-1-Forutsetninger.md). 
+
+## Lineær regresjon (OLS) <a name="ols"></a>
+
+### Syntaks
+
+For å kjøre en lineær regresjon i R, bruker vi funksjonen `lm()`, som har følgende syntaks:
+```{r, eval = F}
+lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
+# på mac får du ~ med alt + k + space
+```
+
+La oss se på et eksempel med `aid` datasettet vi har brukt så langt:
+```{r}
+m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 om objekt
+summary(m1) # ser på resultatene med summary()
+class(m1) # Legg merke til at vi har et objekt av en ny klasse!
+str(m1) # Gir oss informasjon om hva objektet inneholder.
+```
+
+
+### Multivariat regresjon
+
+Vi legger inn flere uavhengige variabler med `+`.
+
+```{r}
+m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
+summary(m2)
+# Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
+```
+
+
+### Samspill
+
+Hypotesen til artikkelforfatterne var følgende: *bistand fører til økonomisk vekst, men bare dersom de fører en god makroøkonomisk politikk*. Dette kan vi sjekke ved hjelp av samspill, som undersøker hvor vidt en effekt av en variabel er avhengig av en annen variabel. Vi legger inn samspill ved å sette `*` (gangetegn) mellom to variabler. De individuelle regresjonskoeffisientene til variablene vi spesifisere samspill mellom blir automatisk lagt til.
+
+
+```{r}
+m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
+summary(m3)
+```
+
+### Andregradsledd og andre omkodinger
+
+Vi kan legge inn andregradsledd eller andre omkodinger av variabler i regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske transformasjoner brukes gjerne for eksponentiell vekst eller for å minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
+
+Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen `poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn førstegradsleddet separat når dere legger inn andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel funksjon, er det fint å opprette en ny variabel i datasettet.
+
+
+```{r}
+m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
+         data = aid, 
+         na.action = "na.exclude")
+summary(m4)
+```
+
+En nyttig pakke for å lage fine tabeller med resultatet fra regresjonsanalyser er `stargazer`. 
+
+```{r, message=FALSE}
+#install.packages("stargazer")
+library(stargazer)
+stargazer(m2, m3,
+          type = "text") 
+
+```
+
+```{r, eval = F}
+# Om du skriver i word så kan du bruke type="html", lagre i en mappe og åpne i word.
+# obs. bruk .htm og ikke .html
+stargazer(m2, m4,
+          type = "html",
+          out = "./bilder/regresjonstabell.htm") 
+
+# Om du skriver i Latex så kan du bruker type = "latex" og kopiere inn output direkte, eller lagre i en mappe og hente inn via latex
+stargazer(m2, m4,
+          type = "latex") 
+
+# Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer. 
+```
+
 
 ## Hvordan plotte resutlater fra OLS? 
 I dag skal vi plotte resultatene og gjøre regresjonsdiagnostikk på modellen fra **Burnside and Dollar** - samme artikkel som vi har brukt tidligere i uka og samme som dere repliserte i oppgaven i går. Først laster vi inn pakker, data og kjører modellen.  
@@ -51,23 +149,22 @@ Så plotter vi effekten av institusjonell kvalitet på vekst i BNP (GDP). Vi gå
 <!--fixme: bør vi bruke ggeffects i stedet for? Sparer mange kodelinjer, men gir kanskje mindre forståelse for hva som skjer? Dette var uansett noe mange synes var veldig vanskelig i fjor. -->
 
 ```{r,tidy=FALSE}
+m6 <- lm(data = aid, 
+         gdp_growth ~ aid + policy, 
+         na.action = "na.exclude")
+
+
+
 # Lager datasettet
-snitt_data <- data.frame(log_gdp_pr_capita = mean(aid$log_gdp_pr_capita, na.rm = TRUE),
-                         ethnic_frac = mean(aid$ethnic_frac, na.rm = TRUE),
-                         assasinations = mean(aid$assasinations, na.rm = TRUE),
-                         institutional_quality = c(seq(min(aid$institutional_quality, na.rm = TRUE),
-                                                   max(aid$institutional_quality, na.rm =TRUE), by = 0.5)),
-                         m2_gdp_lagged = mean(aid$m2_gdp_lagged, na.rm = TRUE),
-                         region = "Other",
-                         policy = mean(aid$policy, na.rm = TRUE),
-                         aid = mean(aid$aid, na.rm = TRUE),
-                         period_fac = "4")
+snitt_data <- data.frame(policy = c(seq(min(aid$policy, na.rm = TRUE), 
+                                        max(aid$policy, na.rm =TRUE), by = 0.5)),
+                         aid = mean(aid$aid, na.rm = TRUE))
 
 # Bruker predict
-predict(m5, newdata = snitt_data, se = TRUE)
+predict(m6, newdata = snitt_data, se = TRUE)
 
 # Legger predikerte verdier inn i snitt_data
-snitt_data <- cbind(snitt_data, predict(m5, newdata = snitt_data, se = TRUE, interval = "confidence"))
+snitt_data <- cbind(snitt_data, predict(m6, newdata = snitt_data, se = TRUE, interval = "confidence"))
 snitt_data
 ```
 Variabelen som heter `fit.fit` er de predikerte verdiene. `fit.lwr` og `fit.upr` er nedre og øvre grense for et 95 % konfidensintervall. `se.fit` er standardfeilen. 
@@ -76,7 +173,7 @@ Variabelen som heter `fit.fit` er de predikerte verdiene. `fit.lwr` og `fit.upr`
 Lager plot:
 ```{r}
 library(ggplot2)
-ggplot(snitt_data, aes(x = institutional_quality, y = fit.fit)) + # Setter institusjonell kvalitet på x-aksen og predikert verdi på y-aksen
+ggplot(snitt_data, aes(x = policy, y = fit.fit)) + # Setter institusjonell kvalitet på x-aksen og predikert verdi på y-aksen
   geom_line() +                                                   # Sier at jeg vil ha et linjediagram
   scale_y_continuous(breaks = seq(-12, 12, 2)) +                  # Bestemmer verdier og mellomrom på y-aksen
   geom_ribbon(aes(ymin = fit.lwr, ymax = fit.upr, color = NULL), alpha = .2) + # Legger til konfidensintervall på plottet
@@ -87,21 +184,14 @@ Dette kan, og bør, også gjøres når det er samspill i modellen. Samspill er v
 
 ```{r,tidy=FALSE}
 # Lager plot data
-snitt_data_sam <- data.frame(log_gdp_pr_capita = mean(aid$log_gdp_pr_capita, na.rm = TRUE),
-                         ethnic_frac = mean(aid$ethnic_frac, na.rm = TRUE),
-                         assasinations = mean(aid$assasinations, na.rm = TRUE),
-                         institutional_quality = mean(aid$institutional_quality, na.rm = TRUE),
-                         m2_gdp_lagged = mean(aid$m2_gdp_lagged, na.rm = TRUE),
-                         region = "Other",
-                         policy = c(rep(-1, 9), rep(0, 9), rep(1, 9)),
-                         aid = rep(0:8, 3),
-                         period_fac = "4")
+snitt_data_sam <- data.frame(policy = c(rep(-1, 9), rep(0, 9), rep(1, 9)), 
+                             aid = rep(0:8, 3))
 
 # Predikerer verdier (løser likningen for modellen)
-predict(m5, newdata = snitt_data_sam, se = TRUE)
+predict(m6, newdata = snitt_data_sam, se = TRUE)
 
 # Lagrer predikerte verdier i plot datasettet
-snitt_data_sam <- cbind(snitt_data_sam, predict(m5, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
+snitt_data_sam <- cbind(snitt_data_sam, predict(m6, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
 snitt_data_sam
 
 # Plotter
@@ -162,8 +252,6 @@ aid %>%
 
 Vi kommer ikke til å bruke tid i seminar på å rette opp i dette, men her finner dere et eksempel på hvordan det kunne vært løst. Vi går derfor videre vel vitende om at vi ikke klarte å matche alle observasjonen (dette anbefaler jeg **ikke** å gjøre i hjemmeoppgaven). Det er fortsatt en ting vi må gjøre før vi kan slå datasettene sammen. V-dem-datasettet inneholder land-år-observasjoner, mens aid-datasettet inneholder land-periode-observasjoner. Vi må derfor lage en periode-variabel i equality-datasettet. 
 
-<!--fixme: er dette unødvendig komplisert? -->
-
 ```{r}
 # Oppretter periode-variabel i V-dem datasettet, slik at jeg er klar til å merge. Verdiene til period-variabelen går fra 1-8, jeg vil gi de samme periodene (datasettet inneholder imidlertid bare data for periode 2-7). Her bruker jeg et en egenskap ved `as.numeric` på en faktor som ofte fører til feil i kode for å gjøre dette raskt:
 table(aid$periodstart, aid$period)
@@ -214,6 +302,11 @@ aid2 <- left_join(aid, agg_equality,
 # Sjekker missing:
 table(is.na(aid2$avg_eq))
 # 6 missing pga observasjonen som mangler
+
+
+# Sjekker hvilke land som har missing
+table(aid2$country[which(is.na(aid2$avg_eq))])
+
 
 summary(aid2$avg_eq)
 ```
