@@ -205,10 +205,14 @@ Dersom vi for eksempel er interessert i 책 hente ut all informasjonen om Thea s�
 library(dplyr)
 ```
 
+I en endimensjonal vektor trenger vi bare 책 vise til radnummer: 
 ```{r}
 # Endimensjonal vektor:
 navn[1]
+```
 
+I todimensjonale vektorer m책 vi ta med b책de rad og kolonne: 
+```{r}
 # For todimensjonale vektorer s책 gjelder dette generelt:
 # data[rad, kolonne] henter ut en gitt rad og en gitt kolonne 
 # data[rad, ] henter ut en alle kolonner for en gitt rad

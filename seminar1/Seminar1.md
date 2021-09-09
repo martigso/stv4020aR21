@@ -391,12 +391,16 @@ for eksempel i kapittel 1 i boken **Lær deg R**.
 Dersom vi for eksempel er interessert i å hente ut all informasjonen om
 Thea så kan det gjøres på mange måter:
 
+I en endimensjonal vektor trenger vi bare å vise til radnummer:
+
 ``` r
 # Endimensjonal vektor:
 navn[1]
 ```
 
     ## [1] "Thea"
+
+I todimensjonale vektorer må vi ta med både rad og kolonne:
 
 ``` r
 # For todimensjonale vektorer så gjelder dette generelt:
