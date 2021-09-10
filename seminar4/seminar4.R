@@ -1,32 +1,3 @@
-#' ---
-#' title: "Seminar 4: Binomisk logistisk regresjon"
-#' output: github_document
-#' editor_options: 
-#'   chunk_output_type: console
-#' ---
-#' ## Logistisk regresjon
-#' 
-#' I dette dokumentet får du en rask innføring i hvordan du kan gjøre logistisk regresjon med R. Jeg inkluderer en svært enkel forklaring av logistisk regresjon på starten av dokumentet - men ta utgangspunkt i pensum/forelesning dersom du skal bruke metoden/lese til eksamen.
-#' 
-#' **Teori:** Vi gjør basically det samme som med *OLS*, vi bruker en matematisk metode for å finne den linjen som beskriver sammenhengen vi spesifiserer mellom uavhengig og avhengig variabel best. Siden den avhengige variabelen er dikotom, må den imidlertid transformeres for at regresjonen vår skal fungere. Dette er tankegangen bak logistisk regresjon, og beslektede metoder som *probit*. Det er også en vanlig begrunnelse for andre alternative regresjonsmodeller som *multinomisk logistisk regresjon* (ikke på pensum i år).
-#' 
-#' **Konsekvenser i praksis:**
-#' 
-#' * Den største praktiske forskjellen er at substansiell tolkning blir vanskeligere. OLS gir oss en rett linje (eller polynom) som beskriver en sammenheng i substansielt meningsfulle enheter, som f.eks. antall kroner til kommunene over statsbudsjett som en funksjon av hvor venstre/høyre-vridd regjeringen er. Logistisk regresjon gir oss en rett linje (eller polynom) på logits skalaen, som vi ikke kan tolke substansielt uten videre. Odds-ratio er heller ikke uten videre lett å forstå. Dersom alle var supersmarte matematikere, ville det vært mulig å se på logits, og regne om til sannsynlighet i hodet, for å deretter visualisere sammenhengen mellom uavhengige variabler og sannsynlighet for utfall grafisk. Dessverre er vi ikke så smarte, formen på sammenhengen er ikke-lineær, og sterkt avhengig av verdiene til kontrollvariabler. Derfor anbefaler jeg plotting av regresjonslinjen til logistisk regresjon på det **aller sterkeste**, da dette gjør substansiell tolkning av logistisk regresjon **mye** lettere. Vi kan også regne ut predikerte sannsynligheter "for hånd" ved å plugge inn koeffisienter og variabelverdier i formelen for å regne ut predikerte sannsynligheter. Predikerte sannsynligheter er greie å tolke, det er meningsfullt å snakke om hvor mye en uavhengig variabel endrer sannsynligheten for et positivt utfall relativt til referansekategorien.
-#' 
-#' * I R må vi bytte ut `lm()` med `glm()` og spesifisere alternativet `family = binomial`. De resterende argumentene er like.
-#' 
-#' 
-#' **Oppvarmings-oppgave i plenum:**
-#' Les hjelpefil, hva må vi spesifisere for å kjøre en logistisk regresjon? Forklar til sidemannen.
-#' 
-#' Last inn datasettet `aid` under navnet `aid`, du finner data [her](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Innf%C3%B8ringsseminarer/data). Lagre i en mappe, sett working directory (dette steget er ikke nødvendig om du bruker prosjekt), og last inn datasettet i R med `read_dataformat()`. 
-#' 
-#' Opprett en ny variabel `gdp_growth_d`, slik at observasjoner vekst mindre eller lik 0, og andre observasjoner får verdien 1.
-#' 
-#' Kjør deretter følgende logistiske regresjon:
-#' 
-## ---- include=FALSE----------------------------------------------------------------------------------------------------
 library(tidyverse)
 aid <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/aid.csv")
 
@@ -34,17 +5,14 @@ aid <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/
 aid <- aid %>% 
   mutate(gdp_growth_d = ifelse(gdp_growth <= 0, 0, 1))
 
-# Sjekker missing ved hjelp av en tabell
+# Sjekker missing på ny variabel ved hjelp av en tabell
 table(is.na(aid$gdp_growth_d), 
       is.na(aid$gdp_growth))
 
 
-#' 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 # Kjører en binomisk logistisk modell ved hjelp av glm
 m1 <- glm(gdp_growth_d ~ aid + policy + as.factor(period), data = aid, 
-          family = binomial(link = "logit"),
+          family = "binomial",
           na.action = "na.exclude")
 summary(m1)
 
@@ -53,61 +21,28 @@ library(stargazer)
 # Viser resultatene i en tabell
 stargazer(m1, type = "text")
 
-#' 
-#' Diskuter raskt med sidemannen hva slags informasjon du får fra regresjons-output. Husk at koeffisientene her er logits.  
-#' 
-#' For å regne om til predikert sannsynlighet for hånd, bruker vi følgende formel:
-#' `exp(b0 + b1X1 + b2X2 + ... + bnXn)/(1 + exp(b0 + b1X1 + b2X2 + ... + bnXn))` , der b0 er konstantledd. 
-#' 
-#' 1. Regn ut den predikerte sannsynligheten for positiv vekst for et land med `aid` lik `-3` i periode 4, med resterende variabler satt til sin medianverdi (ikke legg inn koeffisienter for andre perioder enn periode 8!).
-#' 
-#' 2. Regn ut den predikerte sannsynligheten for positiv vekst for et land med `aid` lik `3` i periode 4, med resterende variabler satt til sin medianverdi (ikke legg inn koeffisienter for andre perioder enn periode 8!).
-#' 
-#' Jeg har satt opp noe dere kan copy-paste under til hjelp, men dere må sørge for at formelen blir riktig selv:
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
+# Enklere formel for å regne ut sannsynligheten når alle uavhengige variabler har verdien 0:
+exp(m1$coefficients["(Intercept)"])/
+  (1 + exp(m1$coefficients["(Intercept)"]))
+
+
 # Her henter jeg ut koeffisientene fra modellobjektet ved hjelp av indeksering
 # og setter inn verdien på uavhengig variabel inn i likningen: 
-exp(m1$coefficients["(Intercept)"] + 
+exp(m1$coefficients["(Intercept)"] +
       m1$coefficients["as.factor(period)4"]*1 + 
-      m1$coefficients["aid"]*(-3) + 
+      m1$coefficients["aid"]*(1) + 
       m1$coefficients["policy"]*median(aid$policy, na.rm = TRUE))/
   (1 + exp(m1$coefficients["(Intercept)"] + 
       m1$coefficients["as.factor(period)4"]*1 + 
-      m1$coefficients["aid"]*(-3) + 
+      m1$coefficients["aid"]*(1) + 
       m1$coefficients["policy"]*median(aid$policy, na.rm = TRUE)))
 
-#' 
-#' *Er effekten av aid substansiell?*
-#' 
-#' Dette er ganske mye arbeid for få predikerte sannsynligheter, derfor skal vi øve på plotting av effekter. 
-#' 
-#' ### Plotte effekter
-#' For å plotte en binomisk logisitisk regresjon så går vi gjennom seks trinn: 
-#' 
-#' 1. Kjøre modellen.
-#' 
-#' 2. Lage et nytt fiktivt datasett med den uavhhengive variabelen og kontrollvariabeler. Du lar variabelen du er interessert i effekten av varierer i datasettet, mens de andre variablene settes til gjennomsnitt, median e.l. (bortsett fra avhengig variabel). 
-#' 
-#' 3. Predikerer verdier.
-#' 
-#' 4. Lagrer predikerte verdier i det fiktive datasettet. 
-#' 
-#' 5. Gjør eventuelle omregninger og regner ut konfidensintervall. 
-#' 
-#' 6. Plotter predikerte verdier og konfidensintervaller.  
-#' 
-#' Vi bruker modellen vi predikerte over og går rett på trinn 2. 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 # Trinn 2: Vi lager et datasett med plotdata der vi lar aid variere
 plotdata <- data.frame(aid = seq(min(aid$aid, na.rm = TRUE), 
                                     max(aid$aid, na.rm = TRUE), 1),
                        policy = mean(aid$policy, na.rm = TRUE),
                        period = "4")
 
-#' Plotter logits: 
-## ----------------------------------------------------------------------------------------------------------------------
 # Trinn 3: Bruker først predict til å predikere logits
 preds <- predict(m1, 
                  se.fit = TRUE,
@@ -135,10 +70,6 @@ ggplot(plotdata) +
   geom_line(aes(x = aid, y = ki.hoy), linetype = "dotted") +
   theme_minimal()
 
-#' 
-#' Plotter sannsynligheter: 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 # Snarvei for å plotte sannsynlighet:
 # Brukt i Lær deg R, men kan gi konfidensintervaller som går utenfor referanseområdet
 # Her gjenbruker vi trinn 1 og 2 fra tidligere og går rett på trinn 3
@@ -168,19 +99,9 @@ ggplot(plotdata) +
   scale_y_continuous(limits = c(0:1))
 
 
-#' 
-#' En ulempe ved å bruke `predict(type = "response")` til å predikere sannsynligheter er at du kan få verdier utenfor referanseområdet. Vi kan bruke `summary()` på grenseverdiene til konfidensintervallene: 
-#' 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 summary(plotdata$ki.lav.prob)
 summary(plotdata$ki.hoy.prob)
 
-#' 
-#' Her ser vi at minimumsverdien til konfidensintervallet for sannsynlighet er negativ. En sannsynlighet kan ikke være negativ. En mer presis måte å gjøre det på er å omregne direkte fra logits:
-#' 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 # Her gjenbruker vi trinn 1 - 4 fra når vi predikerte logits og går rett på trinn 5
 # Trinn 5: regner om sannsynligheter fra logits-prediksjonene og lagrer i plotdata
 plotdata$ki.lav.prob2  <- exp(plotdata$fit - 1.96*plotdata$se)/(1 + exp(plotdata$fit - 1.96*plotdata$se))
@@ -197,10 +118,6 @@ ggplot(plotdata) +
 
 
 
-#' 
-#' Vi bruker `summary()` igjen: 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 summary(plotdata$ki.lav.prob2)
 summary(plotdata$ki.hoy.prob2)
 
@@ -211,14 +128,6 @@ summary(plotdata$ki.hoy.prob2)
 table(plotdata$fit.prob == plotdata$fit.prob2)
 
 
-#' 
-#' Dette plottet gir oss en bedre forståelse av den predikerte sannsynligheten enn utregningen over, derfor oppfordrer jeg til bruk av plot ved tolkning av effekten av kontinuerlige uavhengige variabler i logistisk regresjon. For å legge inn samspill/flere nyanser i plottet, går du frem som med lineær regresjon. Når du plotter effekten av logistisk regresjon er det lurt å gjøre en rask test av at alt er gått rett ved å sjekke at alle verdier på `plot_data$low` og `plot_data$high` ligger mellom 0 og 1.
-#' 
-#' ### Forventet verdi vs. faktisk verdi - residualer
-#' 
-#' Ut fra regresjonskoeffisientene fra en regresjonsmodell, kan vi beregne den forventede verdien til hver enkelt observasjon på den avhengige variabelen. Vi kan sammenligne denne verdien med den observerte verdien på avhengig variabel for observasjonene våre, for å få et inntrykk av hvor godt modellen passer til data, eller se på differansen mellom forventet og faktisk verdi for en observasjon, dvs. residualen til en observasjon. Residualer, forventet verdi og faktisk verdi brukes også i ulike typer regresjonsdiagnostikk. Under viser jeg hvordan du enkelt kan hente ut residualer fra modellobjektet ved hjelp av `residuals`. For å hente ut forventet verdi kan du bruke `predict()` (se over). 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 # Henter ut residualer og lagrer dem i datasettet
 aid$resid <- residuals(m1)
 # Henter ut predikerte sannsynligheter og lagrer dem i datasettet
@@ -227,45 +136,25 @@ aid$predict <- predict(m1, type = "response")
 summary(aid$predict)
 
 
-#' 
-#' I logistisk regresjon tar man gjerne utgangspunkt i at utfallet enten er `1` eller `0`. Så sammenligner man om modellen predikerer `0` eller `1` med om observasjonene faktisk har den predikerte verdien. Andelen observasjoner som korrekt predikeres som `1`, delt på alle observasjoner som faktisk har verdien 1 (dvs. observasjoner som korrekt predikeres som `1` summert med andelen som feilaktig predikeres som `0`) kalles sensivitet. Andelen observasjoner som korrekt predikeres som `0`, delt på alle observasjoner som faktisk har verdien `0` (dvs. observasjoner som korrekt klassifiseres som `0` summert med observasjoner som feilaktig klassifiseres som `1`), kalles spesifisitet. Legg merke til at i en ROC-kurve, plottes *1 - spesifisitet*. Dette kan tolkes som andelen observasjoner som galt predikeres til verdien 1 (som faktisk har verdien 0), delt på det totale antallet observasjoner som faktisk har verdien 0.
-#' 
-#' Ved hjelp av `predict()` har vi nå lagret den predikerte sannsynligheter for at land har BNP vekst i variabelen `aid$predict`. Denne sannsynligheten varierer mellom 0 og 1. For å komme frem til predikerte verdier må vi bestemme oss for et kuttpunkt. Alle observasjoner med predikert sannsynlighet høyere enn kuttpunktet kan vi gi predikert verdi 1, og resten får predikert verdi 0. 
-#' 
-#' Det er ikke gitt hva vi skal velge som kuttpunkt. I *Lær deg R* settes kuttpunktet til andelen med verdi lik 1. Dette kan vi tenke på som en nullmodell. Vi følger samme eksempel her. Et annet alternativ er å klassifisere alle observasjoner med predikert sannsynlighet for `1` høyere enn `0.5` som `1`, og de resterende observasjonene som `0`. 
-#' 
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 kuttpunkt <- mean(aid$gdp_growth_d, na.rm = TRUE)
 kuttpunkt
 # I nullmodellen predikerer vi 62 prosent riktig om vi gjetter at alle land har vekst
 
 # Lager en variabel der de med predikert sannsynlighet høyere enn kuttpunktet får verdien 1
-aid$growth.pred <- as.numeric(aid$predict>kuttpunkt)
+aid$growth.pred <- as.numeric(aid$predict > kuttpunkt)
 
 # Bruker en logisk test til å sjekke om predikert verdi er lik faktisk verdi
 aid$riktig <- aid$growth.pred == aid$gdp_growth_d
 mean(aid$riktig, na.rm = TRUE)
 
-#' 
-#' *Predikerer modellen større andel riktig enn om vi bare hadde antatt at alle land hadde vekst?*
-#' 
-#' *Bruk indeksering til å finne ut om modellen predikerer best vekst eller ikke vekst.* 
-## ---- eval = FALSE, include = FALSE------------------------------------------------------------------------------------
 ## mean(aid[aid$gdp_growth_d == 1, ]$riktig, na.rm = TRUE)
 ## mean(aid[aid$gdp_growth_d == 0, ]$riktig, na.rm = TRUE)
 
-#' Dette kan vi også presentere i en tabell som i **Lær deg R**:
-## ----------------------------------------------------------------------------------------------------------------------
 krysstabell <- table(aid$growth.pred, aid$gdp_growth_d)
 krysstabell
 prop.table(krysstabell, margin = 2)
 
 
-#' 
-#' Vi kan også bruke en ROC-kurve til å fremstille hvor korrekt en logistisk regresjon klassifiserer observasjoner for alle slike kuttpunkt. Siden en ROC-kurve er ganske greit å lage med R, viser jeg hvordan dette gjøres under, ved hjelp av funksjoner fra pakkene `plotROC` og `ggplot2` ([les mer om dette her](https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html)).
-#' 
-## ----------------------------------------------------------------------------------------------------------------------
 #install.packages("plotROC")
 library(plotROC)
 
@@ -281,7 +170,4 @@ basicplot +
   scale_x_continuous("1 - Specificity", breaks = seq(0, 1, by = .1))
 
 
-#' 
-## ----generere_script, eval=FALSE, echo=FALSE---------------------------------------------------------------------------
-## # knitr::purl("./seminar4/seminar4.Rmd", output = "./seminar4/seminar4.R", documentation = 2)
-
+## # knitr::purl("./seminar4/seminar4.Rmd", output = "./seminar4/seminar4.R", documentation = 0)

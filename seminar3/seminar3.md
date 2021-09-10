@@ -5,14 +5,14 @@ Seminar 3
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 
-    ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.1.2     v dplyr   1.0.6
-    ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.1
+    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+    ## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
+    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
 
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -687,7 +687,7 @@ Vi jobber videre med aid-datasettet.
 aid
 ```
 
-    ## # A tibble: 331 x 22
+    ## # A tibble: 331 × 22
     ##    country period periodstart periodend code  gdp_growth gdp_pr_capita
     ##    <chr>    <dbl>       <dbl>     <dbl> <chr>      <dbl>         <dbl>
     ##  1 ARG          2        1970      1973 ARG2        1.70          5637
@@ -700,7 +700,7 @@ aid
     ##  8 BOL          3        1974      1977 BOL3        2.96          1838
     ##  9 BOL          4        1978      1981 BOL4       -1.49          2015
     ## 10 BOL          5        1982      1985 BOL5       -4.32          1864
-    ## # ... with 321 more rows, and 15 more variables: economic_open <dbl>,
+    ## # … with 321 more rows, and 15 more variables: economic_open <dbl>,
     ## #   budget_balance <dbl>, inflation <dbl>, ethnic_frac <dbl>,
     ## #   assasinations <dbl>, aid <dbl>, fast_growing_east_asia <dbl>,
     ## #   sub_saharan_africa <dbl>, central_america <dbl>, policy <dbl>,
@@ -726,15 +726,16 @@ lenken](https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-semin
 equality <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv")
 ```
 
+    ## Rows: 5163 Columns: 5
+
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr (2): country_name, country_text_id
+    ## dbl (3): country_id, year, v2pepwrsoc
+
     ## 
-    ## -- Column specification --------------------------------------------------------
-    ## cols(
-    ##   country_name = col_character(),
-    ##   country_text_id = col_character(),
-    ##   country_id = col_double(),
-    ##   year = col_double(),
-    ##   v2pepwrsoc = col_double()
-    ## )
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
 summary(equality$v2pepwrsoc)
@@ -747,7 +748,7 @@ summary(equality$v2pepwrsoc)
 equality
 ```
 
-    ## # A tibble: 5,163 x 5
+    ## # A tibble: 5,163 × 5
     ##    country_name country_text_id country_id  year v2pepwrsoc
     ##    <chr>        <chr>                <dbl> <dbl>      <dbl>
     ##  1 Mexico       MEX                      3  1966     -0.028
@@ -760,7 +761,7 @@ equality
     ##  8 Mexico       MEX                      3  1973     -0.028
     ##  9 Mexico       MEX                      3  1974     -0.028
     ## 10 Mexico       MEX                      3  1975     -0.028
-    ## # ... with 5,153 more rows
+    ## # … with 5,153 more rows
 
 ``` r
 # Vi ser at V-dem har en variabel som heter country_text_id og year
@@ -789,7 +790,7 @@ aid %>%
   unique()
 ```
 
-    ## # A tibble: 1 x 1
+    ## # A tibble: 1 × 1
     ##   country
     ##   <chr>  
     ## 1 ZAR
@@ -1053,7 +1054,7 @@ table(agg_equality$period, agg_equality$period_num)
 agg_equality
 ```
 
-    ## # A tibble: 1,297 x 4
+    ## # A tibble: 1,297 × 4
     ## # Groups:   country_text_id [179]
     ##    country_text_id period avg_eq period_num
     ##    <chr>            <dbl>  <dbl>      <dbl>
@@ -1067,7 +1068,7 @@ agg_equality
     ##  8 AFG                  8 -0.133          8
     ##  9 AGO                  1 -2.52           1
     ## 10 AGO                  2 -2.52           2
-    ## # ... with 1,287 more rows
+    ## # … with 1,287 more rows
 
 Nå som data fra `equality` er i samme format som i `aid`, er vi klare
 til å kombinere informasjonen med `left_join`:

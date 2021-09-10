@@ -59,14 +59,14 @@ verdien 1:
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 
-    ## v ggplot2 3.3.5     v purrr   0.3.4
-    ## v tibble  3.1.3     v dplyr   1.0.7
-    ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   2.0.0     v forcats 0.5.1
+    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+    ## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
+    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
 
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -76,14 +76,14 @@ aid <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/
 
     ## Rows: 331 Columns: 19
 
-    ## -- Column specification --------------------------------------------------------
+    ## ── Column specification ────────────────────────────────────────────────────────
     ## Delimiter: ","
     ## chr  (2): country, code
     ## dbl (17): period, periodstart, periodend, gdp_growth, gdp_pr_capita, economi...
 
     ## 
-    ## i Use `spec()` to retrieve the full column specification for this data.
-    ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 ``` r
 # Lager ny dikotom variabel
@@ -532,11 +532,7 @@ her](https://cran.r-project.org/web/packages/plotROC/vignettes/examples.html)).
 ``` r
 #install.packages("plotROC")
 library(plotROC)
-```
 
-    ## Warning: package 'plotROC' was built under R version 4.1.1
-
-``` r
 # Basic ROC:
 basicplot <- ggplot(aid, aes(d = gdp_growth_d, m = predict)) + geom_roc(labelround = 2) 
 

@@ -284,5 +284,5 @@ basicplot +
 ```
 
 ```{r generere_script, eval=FALSE, echo=FALSE}
-# knitr::purl("./seminar4/seminar4.Rmd", output = "./seminar4/seminar4.R", documentation = 2)
+# knitr::purl("./seminar4/seminar4.Rmd", output = "./seminar4/seminar4.R", documentation = 0)
 ```

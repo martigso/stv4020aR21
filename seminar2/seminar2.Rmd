@@ -294,7 +294,7 @@ str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ik
 
 aid %>%
 select(6:13) %>% # Her tar vi med variablene fra gdp_growth (nr 6) til aid (nr 13)
-  cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
+  cor(., use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
 # Sjekk hva use = argumentet styrer i hjelpefilen
 ```
 Noen av variablene i datasettet vårt, bl.a. `aid$country` og `code`, er ikke kontinuerlig. Det er heller ikke den nyopprettet `aid$region` variebelen vår. Ved å ta `str(aid)`, ser vi at denne variabelen er kodet som en character. Dette innebærer at den vil behandles som en nominalnivå-variabel i statistisk analyse. For kategoriske variabler, er tabeller nyttig:
@@ -530,5 +530,5 @@ save(aid, file = "aid.Rdata")
 ## Takk for i dag!
 
 ```{r generere_script, eval=FALSE, echo=FALSE}
-# knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 2)
+# knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 0)
 ```
