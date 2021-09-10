@@ -43,4 +43,7 @@ vignettes/*.pdf
 ./prove/*
 
 # Løsningsforslag
-./seminar1/seminar3a_losningsforslag.R
+seminar1/seminar1_losningsforslag.R
+seminar3/seminar3a_losningsforslag.R
+seminar3/seminar3b_losningsforslag.R
+seminar4/seminar4_losningsforslag.R
