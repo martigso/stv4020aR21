@@ -44,14 +44,14 @@ denne lenken:
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
-    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
-    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
+    ## v ggplot2 3.3.5     v purrr   0.3.4
+    ## v tibble  3.1.3     v dplyr   1.0.7
+    ## v tidyr   1.1.3     v stringr 1.4.0
+    ## v readr   2.0.0     v forcats 0.5.1
 
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -267,7 +267,7 @@ aid %>% # Spesifiserer at vi skal jobbe med datasettet aid - R vil da lete etter
   mutate(policy_index = economic_open + inflation + budget_balance) # lager variabelen policy ved å summere budsjettbalanse, inflasjon og en indeks for øk. åpenhet
 ```
 
-    ## # A tibble: 331 × 20
+    ## # A tibble: 331 x 20
     ##    country period periodstart periodend code  gdp_growth gdp_pr_capita
     ##    <chr>    <dbl>       <dbl>     <dbl> <chr>      <dbl>         <dbl>
     ##  1 ARG          2        1970      1973 ARG2        1.70          5637
@@ -280,7 +280,7 @@ aid %>% # Spesifiserer at vi skal jobbe med datasettet aid - R vil da lete etter
     ##  8 BOL          3        1974      1977 BOL3        2.96          1838
     ##  9 BOL          4        1978      1981 BOL4       -1.49          2015
     ## 10 BOL          5        1982      1985 BOL5       -4.32          1864
-    ## # … with 321 more rows, and 13 more variables: economic_open <dbl>,
+    ## # ... with 321 more rows, and 13 more variables: economic_open <dbl>,
     ## #   budget_balance <dbl>, inflation <dbl>, ethnic_frac <dbl>,
     ## #   assasinations <dbl>, aid <dbl>, fast_growing_east_asia <dbl>,
     ## #   sub_saharan_africa <dbl>, central_america <dbl>, policy <dbl>,
@@ -423,7 +423,7 @@ aid %>%
              n_region = n()) # Teller antall observasjoner i hvert gruppe
 ```
 
-    ## # A tibble: 4 × 3
+    ## # A tibble: 4 x 3
     ##   region             neigh_growth n_region
     ##   <chr>                     <dbl>    <int>
     ## 1 Central America           0.190       28
@@ -623,13 +623,11 @@ cor.test(aid$gdp_growth, aid$gdp_pr_capita) # Denne gir deg også signifikans og
 Hva forteller denne oss om sammenhengen mellom økonomisk bistand og
 endring i BNP?
 
-<!--fixme: hmmm Kommentaren etter komma på første kodelinje i neste avsnitt gir ikke helt mening for meg. Kan den slettes?-->
-
 ``` r
-str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ikke har en tibble)
+str(aid)         # sjekker hvilke variabler som er numeriske (vi kan ikke beregne korrelasjon på ikke-numeriske variabler)
 ```
 
-    ## tibble [331 × 28] (S3: tbl_df/tbl/data.frame)
+    ## tibble [331 x 28] (S3: tbl_df/tbl/data.frame)
     ##  $ country               : chr [1:331] "ARG" "ARG" "ARG" "ARG" ...
     ##   ..- attr(*, "format.stata")= chr "%-9s"
     ##  $ period                : num [1:331] 2 3 4 5 6 7 2 3 4 5 ...

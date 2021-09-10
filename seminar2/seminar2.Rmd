@@ -287,10 +287,9 @@ cor.test(aid$gdp_growth, aid$gdp_pr_capita) # Denne gir deg også signifikans og
 
 Hva forteller denne oss om sammenhengen mellom økonomisk bistand og endring i BNP? 
 
- <!--fixme: hmmm Kommentaren etter komma på første kodelinje i neste avsnitt gir ikke helt mening for meg. Kan den slettes?-->
 
 ```{r}
-str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ikke har en tibble)
+str(aid)         # sjekker hvilke variabler som er numeriske (vi kan ikke beregne korrelasjon på ikke-numeriske variabler)
 
 aid %>%
 select(6:13) %>% # Her tar vi med variablene fra gdp_growth (nr 6) til aid (nr 13)
