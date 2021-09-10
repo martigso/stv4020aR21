@@ -4,7 +4,7 @@ author: "Lise Rødland"
 date: "03-09-2020"
 output: github_document
 ---
-I dette seminaret skal vi jobbe med en artikkel fra 2005 skrevet av Neumayer og spess. Artikkelen heter *Do bilateral investment treaties increase foreign direct investment to developing countries?* og bruker paneldata til å undersøke effekten av bilaterale investeringsavtaler på hvor mye utenlandsinvesteringer utviklingsland mottar. Datasettet har jeg lastet ned fra [Harvard Dataverse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HQJN8G). Jeg har bearbeidet datasettet litt før dette seminaret for at variablene skal ha litt mer intuitive navn. Du kan laste det bearbeidede datasettet ned fra [data-mappen](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Fordypningsseminarer/data/Paneldata) på github. 
+I dette seminaret skal vi jobbe med en artikkel fra 2005 skrevet av Neumayer og spess. Artikkelen heter *Do bilateral investment treaties increase foreign direct investment to developing countries?* og bruker paneldata til å undersøke effekten av bilaterale investeringsavtaler på hvor mye utenlandsinvesteringer utviklingsland mottar. Datasettet har jeg lastet ned fra [Harvard Dataverse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/HQJN8G). Jeg har bearbeidet datasettet litt før dette seminaret for at variablene skal ha litt mer intuitive navn. Du kan laste det bearbeidede datasettet ned fra [github](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Fordypningsseminarer/data/Paneldata). 
 
 ```{r}
 # Laster inn nødvendige pakker
@@ -86,7 +86,7 @@ I eksempelet har vi ingen enheter med observasjoner for alle år. Vi kan også s
 # Finner antall tidsperioder i opprinnelig datasett uten missing
 length(unique(data.complete$country))
 length(unique(data.balanced.ind$country))
-# I det nye datasettet har vi data for 45 unike land sammenlignet med 120 land opprinnelig
+# I det nye datasettet har vi data for 45 unike land sammenlignet med 120 land opprinelig
 
 length(unique(data.complete$year))
 length(unique(data.balanced.ind$year))
@@ -94,7 +94,7 @@ length(unique(data.balanced.ind$year))
 # Dette gir mening fordi vi valgte å beholde de enhetene vi hadde observasjoner for alle år for. 
 
 ```
-Dette illustrerer utfordringen knyttet til at du fort mister veldig mye data om du skal anvende et balansert panel. Men, dersom du har et ubalansert panel, vil du ha implisitt missing - det vil si at R ikke forteller deg at du mangler informasjon om observasjoner du egentlig burde ha hatt informasjon om. I det følgende vil vi uansett gå videre med det ubalanserte panelet. 
+Dette illustrerer at du fort mister veldig mye data om du skal anvende et balansert panel. Men, dersom du har et ubalansert panel, vil du ha implisitt missing - det vil si at R ikke forteller deg at du mangler informasjon om observasjoner du egentlig burde ha hatt informasjon om. I det følgende vil vi uansett gå videre med det ubalanserte panelet. 
 
 ## Paneldataanalyse med plm
 Med `plm` må vi spesifisere noen flere elementer enn med `lm()`. Vi må bestemme `effect` og `model`.  Gjennom `model` forteller vi `plm` om vi ønsker OLS uten faste effekter (`model = "pooling"`), fixed effects (`model = "within"`) eller random effects (`model = "random"`). Gjennom `effect` forteller vi `plm` om vi ønsker å se på enheter (`effect = "individual"`), tid (`effect = "time"`) eller begge deler (`effect = "twoways"`).  En kan også velge andre spesifikasjoner, men de går vi ikke gjennom i dag. 
@@ -111,7 +111,7 @@ mod1ols <- plm(data = data.complete,
               na.action = "na.exclude", model = "pooling")
 ```
 
-Vi skal bruke denne modellen for å se på noen av utfordringene knyttet til paneldata, men først skal vi legge til panelkorrigerte standardfeil (PCSE). `plm` inneholder funksjonen `vcovBK` som kan brukes til å beregne panel-korrigerte standardfeil. Jeg kommer ikke til å gå i detalj om hva funksjonen gjør, men dersom du skal gjøre dette i hjemmeoppgaven så kan du bytte ut `mod1osl` med de eget plm-modellobjekt. Denne formelen kan også brukes på fixed effects og random effects modeller. 
+Vi skal bruke denne modellen for å se på noen av utfordringene knyttet til paneldata, men først skal vi legge til panelkorrigerte standardfeil (PCSE). `plm` inneholder funksjonen `vcovBK` som kan brukes til å beregne panel-korrigerte standardfeil. Jeg kommer ikke til å gå i detalj om hva funksjonen gjør, men dersom du skal gjøre dette i hjemmeoppgaven så kan du bytte ut `mod1osl` med ditt eget plm-modellobjekt. Denne formelen kan også brukes på fixed effects og random effects modeller. 
 
 ```{r}
 # Beregner PCSE:
@@ -128,7 +128,7 @@ stargazer(mod1ols, mod1ols, type = "text",
 ```
 
 ### Restleddsutfordringer og paneldata 
-I det følgende tar vi utgangspunkt i OLS-modellen for å vurdere noen av utfordringene knyttet til paneldata. PCSE tar hånd om samtidig korrelasjon og heteroskedastisitet, men hjelper ikke mot autokorrelasjon. For å håndtere autokorrelasjon kan vi inkludere en lagget avhengigvariabel eller en trendvariabel som uavhengig variabel. PCSE hjelper heller ikke mot utelatt variabel skjevhet som vil bli diskutert nærmere under fixed effects. 
+I det følgende tar vi utgangspunkt i OLS-modellen for å vurdere noen av utfordringene knyttet til paneldata. PCSE tar hånd om samtidig korrelasjon og heteroskedastisitet, men hjelper ikke mot autokorrelasjon. For å håndtere autokorrelasjon kan vi inkludere en lagget avhengig variabel eller en trendvariabel som uavhengig variabel. PCSE hjelper heller ikke mot utelatt variabel skjevhet som vil bli diskutert nærmere under fixed effects. 
 
 #### Autokorrelasjon
 Durbin-Watson testen sjekker for AR(1) seriekorrelasjon. 
@@ -136,12 +136,12 @@ Durbin-Watson testen sjekker for AR(1) seriekorrelasjon.
 # Kjører durbin watson test på modellobjektet
 pdwtest(mod1ols)
 ```
-I følge Christophers så indikerer verdier i nærheten av 2 ingen autokorrelasjon, og verdier i nærheten av 0 positiv autokorrelasjon.  En løsning er å inkludere en lagget avhengig variabel som uavhengigvariabel.
+I følge Christophersen så indikerer verdier i nærheten av 2 ingen autokorrelasjon og verdier i nærheten av 0 positiv autokorrelasjon.  En løsning er å inkludere en lagget avhengig variabel som uavhengigvariabel.
 
 ```{r}
 # Kjører modellen med lagget avhengig variabel som uavhengig variabel 
 mod1ols_lag <- plm(data = data.complete, 
-              fdi_inflow ~ lag(fdi_inflow, 1) +  # Bytt ut "1" med ønsker antall lags dersom du vil ha mer enn 1
+              fdi_inflow ~ lag(fdi_inflow, 1) +  # Bytt ut "1" med ønsket antall lags dersom du vil ha mer enn 1
                 bits + ln_gdp_pr_cap + ln_population +
                 economic_growth + inflation + resource_rent + 
                 bilateral_trade_agreements + wto_member + polcon3,
@@ -185,10 +185,11 @@ data.complete <- data.complete %>%
 # Eye ball test av heteroskedastisitet
 ggplot(data.complete %>% 
          filter(country %in% c("Norway", "Ethiopia", "Chile", "Estonia",
-                               "Chad", "Switzerland", "Spain")),
-       aes(x = fdi_inflow_pred, y = resid)) +         # Velger noen land som jeg plotter for å ikke få et helt uoversiktelig plot
+                               "Chad", "Switzerland", "Spain")) %>%      # Velger noen land som jeg plotter for å ikke få et helt uoversiktelig plot
+         data.frame(),                                                   # Gjør om til en data.frame objekt for å plotte
+       aes(x = fdi_inflow_pred, y = resid)) +         
   geom_point(aes(col = country)) +
-  geom_smooth(method = lm)
+  geom_smooth(method = "lm")
 
 
 ```
@@ -273,8 +274,10 @@ ggplot(data.complete %>%
   xlab("Year") + ylab("WTO membership")
   
 
+ggsave("bilder/paneldata_wtomember_land.jpg")
+
+
 table(data.complete$year)
-ggsave("../figures/paneldata_wtomember_land.jpg")
 ```
 
 ```{r, eval = FALSE}
@@ -289,7 +292,7 @@ ggplot(data.complete%>%
 ```
 
 
-![](../figures/paneldata_wtomember_land.jpg)
+![](bilder/paneldata_wtomember_land.jpg)
 
 
 ```{r, include = FALSE}
@@ -302,7 +305,7 @@ ggplot(data.complete%>%
   theme_bw() +
   xlab("Year") + ylab("Antall BITs")
 
-ggsave("../figures/paneldata_bits_land.jpg")
+ggsave("bilder/paneldata_bits_land.jpg")
 ```
 
 
@@ -318,7 +321,7 @@ ggplot(data.complete%>%
 ```
 
 
-![](../figures/paneldata_bits_land.jpg)
+![](bilder/paneldata_bits_land.jpg)
 
 ### Modeller med random effects
 
@@ -443,7 +446,7 @@ ggplot(plot_data %>%
   xlab("Year") + ylab("FDI inflow") +
   theme(legend.position = "right", legend.title = element_blank())
 
-ggsave("../figures/paneldata_pred_faktisk.jpg")
+ggsave("bilder/paneldata_pred_faktisk.jpg")
 
 ```
 
@@ -486,7 +489,7 @@ ggplot(plot_data %>%
 ```
 
 
-![](../figures/paneldata_pred_faktisk.jpg)
+![](bilder/paneldata_pred_faktisk.jpg)
 
 Som vi ser av plottet så ligger de predikerte verdiene for OLS og random effects ganske nærme hverandre, mens estimatene med faste effekter skiller seg betydelig fra disse. 
 
@@ -533,4 +536,7 @@ I [vignetten til plm](https://cran.r-project.org/web/packages/plm/vignettes/plmP
 Det er relativt greit å kjøre ikke-lineære modeller med fixed effects. Du legger bare til variabelene som angir enheter og/eller tid som uavhengige variabler i f.eks. `glm()`. Skal du kjøre en logistisk modell med random effects så kan du se nærmere på pakken `glmer`, men merk at dette ligger utenfor pensum i 4020A. 
 
 
+```{r generere_script, eval=FALSE, echo=FALSE}
+# knitr::purl("./Fordypningsseminar 2 Paneldata.Rmd", output = "./Fordypningsseminar 2 Paneldata.R", documentation = 0)
+```
 
