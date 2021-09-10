@@ -3,11 +3,9 @@ library(tidyverse)
 # Laster inn data
 load("./aid.RData")
 
-# Gjør de nødvendige omkodingene som dere gjorde i oppgaven
+# Omkoder regionvariabelen:
 aid <- aid %>% 
-  mutate(log_gdp_pr_capita = log(gdp_pr_capita),
-         period_fac = as.factor(period),
-         region = ifelse(fast_growing_east_asia == 1, "East Asia",
+  mutate(region = ifelse(fast_growing_east_asia == 1, "East Asia",
                          ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa", "Other")),
          region = factor(region, levels = c("Other", "Sub-Saharan Africa", "East Asia")))
 
@@ -16,20 +14,19 @@ aid <- aid %>%
 ## lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
 ## # på mac får du ~ med alt + k + space
 
-m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 om objekt
+m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 som objekt
 summary(m1) # ser på resultatene med summary()
 class(m1) # Legg merke til at vi har et objekt av en ny klasse!
 str(m1) # Gir oss informasjon om hva objektet inneholder.
 
 m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
 summary(m2)
-# Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
 
-m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
+m3 <- lm(gdp_growth ~ aid * policy + region, data = aid)
 summary(m3)
 
-m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
-         data = aid, 
+m4 <- lm(gdp_growth ~ log(gdp_pr_capita) + institutional_quality + I(institutional_quality^2) + region + aid * policy +  as_factor(period), 
+         data = aid,
          na.action = "na.exclude")
 summary(m4)
 
@@ -40,7 +37,7 @@ stargazer(m2, m3,
 
 
 ## # Om du skriver i word så kan du bruke type="html", lagre i en mappe og åpne i word.
-## # obs. bruk .htm og ikke .html
+## # obs. bruk .htm og ikke .html i filnavnet
 ## stargazer(m2, m4,
 ##           type = "html",
 ##           out = "./bilder/regresjonstabell.htm")
@@ -51,30 +48,7 @@ stargazer(m2, m3,
 ## 
 ## # Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer.
 
-library(tidyverse)
-
-# Laster inn data
-load("./aid.RData")
-
-# Gjør de nødvendige omkodingene som dere gjorde i oppgaven
-aid <- aid %>% 
-  mutate(log_gdp_pr_capita = log(gdp_pr_capita),
-         period_fac = as.factor(period),
-         region = ifelse(fast_growing_east_asia == 1, "East Asia",
-                         ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa", "Other")),
-         region = factor(region, levels = c("Other", "Sub-Saharan Africa", "East Asia")))
-
-# Kjører modellen og bevarer informasjon om missing med na.action = "na.exclude"
-m5 <- lm(data = aid, 
-         gdp_growth ~ log_gdp_pr_capita + ethnic_frac*assasinations + 
-           institutional_quality + m2_gdp_lagged + region + policy*aid +
-           period_fac, 
-         na.action = "na.exclude")
-
-# Printer resultatene i en tabell
-library(stargazer)
-stargazer(m5, type = "text")
-
+# Kjører en redusert modell
 m6 <- lm(data = aid, 
          gdp_growth ~ aid + policy, 
          na.action = "na.exclude")
@@ -93,22 +67,26 @@ predict(m6, newdata = snitt_data, se = TRUE)
 snitt_data <- cbind(snitt_data, predict(m6, newdata = snitt_data, se = TRUE, interval = "confidence"))
 snitt_data
 
-library(ggplot2)
 ggplot(snitt_data, aes(x = policy, y = fit.fit)) + # Setter institusjonell kvalitet på x-aksen og predikert verdi på y-aksen
   geom_line() +                                                   # Sier at jeg vil ha et linjediagram
   scale_y_continuous(breaks = seq(-12, 12, 2)) +                  # Bestemmer verdier og mellomrom på y-aksen
   geom_ribbon(aes(ymin = fit.lwr, ymax = fit.upr, color = NULL), alpha = .2) + # Legger til konfidensintervall på plottet
-  labs(x = "Kvalitet på institusjoner", y = "Forventet GDP vekst", color = "Policy", fill = "Policy") # Setter tittel på akser og plot
+  labs(x = "Policy index", y = "Forventet GDP vekst") # Setter tittel på akser og plot
+
+# Kjører en redusert modell med samspill
+m7 <- lm(data = aid, 
+         gdp_growth ~ aid * policy, 
+         na.action = "na.exclude")
 
 # Lager plot data
 snitt_data_sam <- data.frame(policy = c(rep(-1, 9), rep(0, 9), rep(1, 9)), 
                              aid = rep(0:8, 3))
 
 # Predikerer verdier (løser likningen for modellen)
-predict(m6, newdata = snitt_data_sam, se = TRUE)
+predict(m7, newdata = snitt_data_sam, se = TRUE)
 
 # Lagrer predikerte verdier i plot datasettet
-snitt_data_sam <- cbind(snitt_data_sam, predict(m6, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
+snitt_data_sam <- cbind(snitt_data_sam, predict(m7, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
 snitt_data_sam
 
 # Plotter
@@ -189,10 +167,15 @@ table(is.na(aid2$avg_eq))
 # 6 missing pga observasjonen som mangler
 
 
-# Sjekker hvilke land som har missing
+# Sjekker hvilke land som har missing med base
 table(aid2$country[which(is.na(aid2$avg_eq))])
 
+# Sjekker hvilke land som har missing med tidyverse
+aid2 %>% 
+  filter(is.na(avg_eq)) %>% 
+  select(country) 
 
+# Henter ut informasjon om variabelen i det nye datasettet
 summary(aid2$avg_eq)
 
-## # knitr::purl("./seminar3/seminar3.Rmd", output = "./seminar3/seminar3.R", documentation = 2)
+## # knitr::purl("./seminar3/seminar3.Rmd", output = "./seminar3/seminar3.R", documentation = 0)

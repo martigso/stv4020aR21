@@ -9,30 +9,29 @@ editor_options:
   chunk_output_type: console
 ---
 
+I dag skal vi fortsette med databehandling og jobbe med OLS:
+
+1. Hvordan kjører vi OLS-modeller i R?
+1. Hvordan plotter vi resultater fra OLS?
+3. Hvordan slår vi sammen flere datasett? 
+
+Det første vi skal gjøre er å laste inn pakken `tidyverse`, laste inn data og gjøre noen nødvendige omkodinger: 
 ```{r}
 library(tidyverse)
 
 # Laster inn data
 load("./aid.RData")
 
-# Gjør de nødvendige omkodingene som dere gjorde i oppgaven
+# Omkoder regionvariabelen:
 aid <- aid %>% 
-  mutate(log_gdp_pr_capita = log(gdp_pr_capita),
-         period_fac = as.factor(period),
-         region = ifelse(fast_growing_east_asia == 1, "East Asia",
+  mutate(region = ifelse(fast_growing_east_asia == 1, "East Asia",
                          ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa", "Other")),
          region = factor(region, levels = c("Other", "Sub-Saharan Africa", "East Asia")))
 
 
 ```
 
-
-I dag skal vi fortsette med OLS og databehandling:
-1. Kjøre OLS-modeller
-1. Hvordan plotter vi resultater fra OLS?
-3. Hvordan slår vi sammen flere datasett? 
-
-Først: er det noen spørsmål til det vi gikk gjennom i går? Dersom du synes manipulering av data er vanskelig så kan det hjelpe å ta en titt på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig på flere måter å omkode variabler på så kan du kikke på kapittel 5 i [**R for Data Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate). Og ikke glem: internett er din venn når du skal lære R. 
+Før vi setter i gang, er det noen spørsmål til det vi gikk gjennom i går? Dersom du synes manipulering av data er vanskelig så kan det hjelpe å ta en titt på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig på flere måter å omkode variabler på så kan du kikke på kapittel 5 i [**R for Data Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate). Og ikke glem: internett er din venn når du skal lære R. 
 
 Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig viktig** å sjekke om forutsetningene for OLS og/eller logistisk modell er oppfylt. Dette går vi gjennom på [fordypningsseminar 1](https://github.com/martigso/stv4020aR21/blob/main/fordypningsseminar%201/Fordypningsseminar-1-Forutsetninger.md). 
 
@@ -48,7 +47,7 @@ lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
 
 La oss se på et eksempel med `aid` datasettet vi har brukt så langt:
 ```{r}
-m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 om objekt
+m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 som objekt
 summary(m1) # ser på resultatene med summary()
 class(m1) # Legg merke til at vi har et objekt av en ny klasse!
 str(m1) # Gir oss informasjon om hva objektet inneholder.
@@ -62,7 +61,6 @@ Vi legger inn flere uavhengige variabler med `+`.
 ```{r}
 m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
 summary(m2)
-# Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
 ```
 
 
@@ -72,7 +70,7 @@ Hypotesen til artikkelforfatterne var følgende: *bistand fører til økonomisk 
 
 
 ```{r}
-m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
+m3 <- lm(gdp_growth ~ aid * policy + region, data = aid)
 summary(m3)
 ```
 
@@ -84,8 +82,8 @@ Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen `poly()`.
 
 
 ```{r}
-m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
-         data = aid, 
+m4 <- lm(gdp_growth ~ log(gdp_pr_capita) + institutional_quality + I(institutional_quality^2) + region + aid * policy +  as_factor(period), 
+         data = aid,
          na.action = "na.exclude")
 summary(m4)
 ```
@@ -102,7 +100,7 @@ stargazer(m2, m3,
 
 ```{r, eval = F}
 # Om du skriver i word så kan du bruke type="html", lagre i en mappe og åpne i word.
-# obs. bruk .htm og ikke .html
+# obs. bruk .htm og ikke .html i filnavnet
 stargazer(m2, m4,
           type = "html",
           out = "./bilder/regresjonstabell.htm") 
@@ -116,45 +114,21 @@ stargazer(m2, m4,
 
 
 ## Hvordan plotte resutlater fra OLS? 
-I dag skal vi plotte resultatene og gjøre regresjonsdiagnostikk på modellen fra **Burnside and Dollar** - samme artikkel som vi har brukt tidligere i uka og samme som dere repliserte i oppgaven i går. Først laster vi inn pakker, data og kjører modellen.  
+Før vi skal i gang med å plotte effekter så skal vi kjøre en litt enklere modell. Dette vil forhåpentligvis gjøre de neste stegene litt lettere å forstå:
 
 ```{r}
-library(tidyverse)
-
-# Laster inn data
-load("./aid.RData")
-
-# Gjør de nødvendige omkodingene som dere gjorde i oppgaven
-aid <- aid %>% 
-  mutate(log_gdp_pr_capita = log(gdp_pr_capita),
-         period_fac = as.factor(period),
-         region = ifelse(fast_growing_east_asia == 1, "East Asia",
-                         ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa", "Other")),
-         region = factor(region, levels = c("Other", "Sub-Saharan Africa", "East Asia")))
-
-# Kjører modellen og bevarer informasjon om missing med na.action = "na.exclude"
-m5 <- lm(data = aid, 
-         gdp_growth ~ log_gdp_pr_capita + ethnic_frac*assasinations + 
-           institutional_quality + m2_gdp_lagged + region + policy*aid +
-           period_fac, 
-         na.action = "na.exclude")
-
-# Printer resultatene i en tabell
-library(stargazer)
-stargazer(m5, type = "text")
-```
-
-Så plotter vi effekten av institusjonell kvalitet på vekst i BNP (GDP). Vi går ikke veldig nøye inn på dette nå, men les gjerne [denne guiden til regresjonsplot](https://github.com/liserodland/stv4020aR/blob/master/Materiell%20fra%20tidl%20semestre/docs/Regresjonsplot.md). For å plotte en regresjonslinje så oppretter vi først et datasett der vi holder alle uavhengige variabler, bortsett fra den vi vil plotte effekten til, konstante. Her velger jeg å la `institutional_quality` variere fra minimums- til maksimumsverdien og setter resten av variablene til gjennomsnitt eller modusverdi. Neste steg er å predikere verdier for det nye datasettet basert på modellen vår ved hjelp av `predict()`. `predict()` tar datasettet vi har laget og gir oss blant annet predikerte verdier og konfidensintervaller basert på modellen vår. For å få datasettet vi skal bruke til plotting, så binder vi resultatet av `predict` sammen med datasettet vi lagde. For at `predict()` skal gi likt antall observasjoner som vi har i datasettet vårt så er det viktig å bevare informasjon om de observasjonene som har missing. Dette gjør vi med argumentet `na.action = "na.exclude` i `lm()`. 
-
-<!--fixme: bør vi bruke ggeffects i stedet for? Sparer mange kodelinjer, men gir kanskje mindre forståelse for hva som skjer? Dette var uansett noe mange synes var veldig vanskelig i fjor. -->
-
-```{r,tidy=FALSE}
+# Kjører en redusert modell
 m6 <- lm(data = aid, 
          gdp_growth ~ aid + policy, 
          na.action = "na.exclude")
 
 
+```
 
+Les gjerne [denne guiden til regresjonsplot](https://github.com/liserodland/stv4020aR/blob/master/Materiell%20fra%20tidl%20semestre/docs/Regresjonsplot.md) for en grundig innføring i hva vi skal gjøre nå. For å plotte en regresjonslinje så oppretter vi først et datasett der vi holder alle uavhengige variabler, bortsett fra den vi vil plotte effekten til, konstante. Her velger jeg å la `policy` variere fra minimums- til maksimumsverdien og setter resten av de uavhengige variablene (her bare `aid`) til gjennomsnitt eller modusverdi. Neste steg er å predikere verdier for det nye datasettet basert på modellen vår ved hjelp av `predict()`. `predict()` tar datasettet vi har laget og gir oss blant annet predikerte verdier og konfidensintervaller basert på modellen vår. For å få datasettet vi skal bruke til plotting, så binder vi resultatet av `predict` sammen med datasettet vi lagde. For at `predict()` skal gi likt antall observasjoner som vi har i datasettet vårt så er det viktig å bevare informasjon om de observasjonene som har missing. Dette gjør vi med argumentet `na.action = "na.exclude` i `lm()`. 
+
+
+```{r,tidy=FALSE}
 # Lager datasettet
 snitt_data <- data.frame(policy = c(seq(min(aid$policy, na.rm = TRUE), 
                                         max(aid$policy, na.rm =TRUE), by = 0.5)),
@@ -172,15 +146,24 @@ Variabelen som heter `fit.fit` er de predikerte verdiene. `fit.lwr` og `fit.upr`
 
 Lager plot:
 ```{r}
-library(ggplot2)
 ggplot(snitt_data, aes(x = policy, y = fit.fit)) + # Setter institusjonell kvalitet på x-aksen og predikert verdi på y-aksen
   geom_line() +                                                   # Sier at jeg vil ha et linjediagram
   scale_y_continuous(breaks = seq(-12, 12, 2)) +                  # Bestemmer verdier og mellomrom på y-aksen
   geom_ribbon(aes(ymin = fit.lwr, ymax = fit.upr, color = NULL), alpha = .2) + # Legger til konfidensintervall på plottet
-  labs(x = "Kvalitet på institusjoner", y = "Forventet GDP vekst", color = "Policy", fill = "Policy") # Setter tittel på akser og plot
+  labs(x = "Policy index", y = "Forventet GDP vekst") # Setter tittel på akser og plot
 ```
 
-Dette kan, og bør, også gjøres når det er samspill i modellen. Samspill er vanskelig å tolke i en tabell og jeg synes derfor det er fint å plotte disse. Når vi skal plotte samspill så lar vi begge variablene som er en del av samspillsleddet variere, mens resten er konstante. Vi lar den ene variabelen være `x`, mens vi bruker den andre til å fylle ut argumentet `color`. I tilfellet med to kontinuerlige variabler må en gjøre den ene om til en faktorvariabel slik jeg gjør med policy under. 
+Dette kan, og bør, også gjøres når det er samspill i modellen. Samspill er vanskelig å tolke i en tabell og jeg synes derfor det er fint å plotte disse. Først kjører vi en redusert modell med samspill: 
+
+```{r}
+# Kjører en redusert modell med samspill
+m7 <- lm(data = aid, 
+         gdp_growth ~ aid * policy, 
+         na.action = "na.exclude")
+```
+
+
+Når vi skal plotte samspill så lar vi begge variablene som er en del av samspillsleddet variere, mens resten er konstante. Vi lar den ene variabelen være `x`, mens vi bruker den andre til å fylle ut argumentet `color`. I tilfellet med to kontinuerlige variabler må en gjøre den ene om til en faktorvariabel slik jeg gjør med policy under. 
 
 ```{r,tidy=FALSE}
 # Lager plot data
@@ -188,10 +171,10 @@ snitt_data_sam <- data.frame(policy = c(rep(-1, 9), rep(0, 9), rep(1, 9)),
                              aid = rep(0:8, 3))
 
 # Predikerer verdier (løser likningen for modellen)
-predict(m6, newdata = snitt_data_sam, se = TRUE)
+predict(m7, newdata = snitt_data_sam, se = TRUE)
 
 # Lagrer predikerte verdier i plot datasettet
-snitt_data_sam <- cbind(snitt_data_sam, predict(m6, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
+snitt_data_sam <- cbind(snitt_data_sam, predict(m7, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
 snitt_data_sam
 
 # Plotter
@@ -204,6 +187,8 @@ ggplot(snitt_data_sam, aes(x = aid, y = fit.fit,
   geom_ribbon(aes(ymin = fit.lwr, ymax = fit.upr, color = NULL), alpha = .2) +
   labs(x = "Bistandsnivå", y = "Forventet GDP vekst", color = "Policy", fill = "Policy")
 ```
+
+
 Vi skal ikke bruke snitt_data mer så jeg fjerner objektene fra environment:
 
 ```{r}
@@ -238,6 +223,7 @@ equality
 table(aid$country %in% equality$country_text_id)
 # Ikke alle matcher. 
 ```
+
 Når ikke alle observasjonen har en match så kan dette kan enten løses manuelt eller ved hjelp av andre datasett eller R-pakker. 
 
 ```{r}
@@ -304,10 +290,15 @@ table(is.na(aid2$avg_eq))
 # 6 missing pga observasjonen som mangler
 
 
-# Sjekker hvilke land som har missing
+# Sjekker hvilke land som har missing med base
 table(aid2$country[which(is.na(aid2$avg_eq))])
 
+# Sjekker hvilke land som har missing med tidyverse
+aid2 %>% 
+  filter(is.na(avg_eq)) %>% 
+  select(country) 
 
+# Henter ut informasjon om variabelen i det nye datasettet
 summary(aid2$avg_eq)
 ```
 
