@@ -41,3 +41,6 @@ vignettes/*.pdf
 
 # Prøve
 ./prove/*
+
+# Løsningsforslag
+./seminar1/seminar3a_losningsforslag.R
