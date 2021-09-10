@@ -1044,3 +1044,6 @@ I flernivåmodeller varierer koeffisientene på tvers av klasser. Koeffisientest
 Her er en mer utdypende [forklaring av lme4 pakken med eksempler](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf).
 Mye av teksten er teknisk, men se seksjon 5.2 dersom du tenker å kjøre en flernivåanalyse til hjemmeoppgaven for detaljer om diagnostikk for
 `lmer`.
+
+
+
