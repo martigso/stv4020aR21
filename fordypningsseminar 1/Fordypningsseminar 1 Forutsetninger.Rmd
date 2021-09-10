@@ -6,7 +6,7 @@ output: github_document
 
 ## Forutsetninger for OLS regresjon
 
-Dere vil se forutsetningene for OLS formulert på litt forskjellige måter i ulike metodetekster. Det er blant annet forskjell på forutsetninger for at OLS skal være forventningsrett og konsistent, og at OLS skal være BLUE. Det er også mulig å formulere de samme forutsetningene i ulik språkdrakt, selv når forutsetningene bygger på de samme matematiske formuleringene. Noen ganger vil dere også se at forutsetningene om restledd er utelatt, andre ganger vil dere kunne se en antagelse om at kurtosen ikke er uendelig stor. Noen vil kategorisere ingen innflytelsesrike observasjoner og ikke perfekt multikolinearitet som antagelser, mens andre vil kategorisere det som problemer/trusler. Dere forholder dere til pensum, jeg følger Cristophersens forelesning her. Det bør forøvrig nevnes at **Lær deg R** gir en ypperlig gjennomgang av regresjonsdiagnostikk.
+Dere vil se forutsetningene for OLS formulert på litt forskjellige måter i ulike metodetekster. Det er blant annet forskjell på forutsetninger for at OLS skal være forventningsrett og konsistent, og at OLS skal være BLUE. Det er også mulig å formulere de samme forutsetningene i ulik språkdrakt, selv når forutsetningene bygger på de samme matematiske formuleringene. Noen ganger vil dere også se at forutsetningene om restledd er utelatt, andre ganger vil dere kunne se en antagelse om at kurtosen ikke er uendelig stor. Noen vil kategorisere ingen innflytelsesrike observasjoner og ikke perfekt multikolinearitet som antagelser, mens andre vil kategorisere det som problemer/trusler. Dere forholder dere til pensum. Det bør forøvrig nevnes at **Lær deg R** gir en fin gjennomgang av regresjonsdiagnostikk.
 
 **Kritiske aspekter i modellvurdering - OLS:**
 
@@ -18,13 +18,13 @@ Dere vil se forutsetningene for OLS formulert på litt forskjellige måter i uli
 6. Ingen perfekt multikollinearitet
 7. Manglende opplysninger(missing values)
 
-Vi skal nå sjekke om forutsetningene for OLS og logistisk regresjonen holder. Først henter vi inn data, gjør de samme omkodingene og kjører modellen.
+Vi skal nå sjekke om forutsetningene for OLS og logistisk regresjonen holder. Vi skal bruke samme datasett som i forrige uke og kjører modellen fra oppgavesett 3a. Først henter vi inn data, gjør de samme omkodingene og kjører modellen.
 
 ```{r}
 
 library(tidyverse)
 
-load("./aid.RData")
+load("aid.RData")
 
 aid <- aid %>% 
   mutate(log_gdp_pr_capita = log(gdp_pr_capita),
@@ -311,7 +311,7 @@ rm(m1, m5, m5b, miss_mod, model5_usam)
 ## Forutsetninger for logistisk regresjon
 
 ### Kontroll av forutsetninger
-Mange av metodene for diagnostikk for OLS fungerer også for logistisk regresjon. Funksjonene `ceresplot()`, `dfbetas()`, `influenceIndexPlot()`, `vif()` m.m. fungerer også for logistisk regresjon. Husk forøvrig på at forutsetninger om homoskedastiske, normalfordelte restledd ikke gjelder logistisk regresjon. I tillegg viser jeg hvordan du kan lage ROC-kurver [her](https://github.com/martigso/stv4020aR/blob/master/Gruppe%201/docs/Introduksjon_seminar4.md). 
+Mange av metodene for diagnostikk for OLS fungerer også for logistisk regresjon. Funksjonene `ceresplot()`, `dfbetas()`, `influenceIndexPlot()`, `vif()` m.m. fungerer også for logistisk regresjon og det samme gjelder missinganalysene. Husk forøvrig på at forutsetninger om homoskedastiske, normalfordelte restledd ikke gjelder logistisk regresjon. I tillegg viser jeg hvordan du kan lage ROC-kurver [her](https://github.com/martigso/stv4020aR/blob/master/Gruppe%201/docs/Introduksjon_seminar4.md). 
 
 Tomme celler vil føre til at modellen ikke lar seg estimere, eller at du ikke får estimert standardfeil/ekstremt høye standardfeil, og er således greit å oppdage. Spredningsplot mellom variabler fra regresjonen kan brukes til å undersøke dette nærmere. En
 kan forsøke å løse det ved å forenkle modellen (f.eks. slå sammen kategorier) eller samle inn mer data.
@@ -380,3 +380,9 @@ pR2(gm1)
 Husk at Pseudo $R^2$ aldri kan tolkes som andel forklart varians. 
 
 **Husk:** I tillegg til formell diagnostikk, må du aldri glemme generelle validitets/metode-vurderinger.
+
+```{r generere_script, eval=FALSE, echo=FALSE}
+# knitr::purl("Fordypningsseminar 1 Forutsetninger.Rmd", output = "Fordypningsseminar 1 Forutsetninger.R", documentation = 0)
+```
+
+
