@@ -139,21 +139,23 @@ Dersom variabelen `policy` ikke allerede fantes, så måtte vi ha opprettet en n
 
 ```{r}
 # oppretter alternativ policy-indeks variabel
-aid$policy2 <- aid$inflation + aid$budget_balance + aid$economic_open # Eksempel i tråd med det som er beskrevet i "Lær deg R"
+aid$policy_index <- aid$inflation + aid$budget_balance + aid$economic_open # Eksempel i tråd med det som er beskrevet i "Lær deg R"
 ```
 
 I `tidyverse` og `dplyr` pakken bruker man som regel `mutate()` funksjonen sammen med andre funksjoner for å opprette nye variabler. Ved hjelp av `mutate()` kan du gjøre mange omkodinger i slengen - dette gir mer ryddig kode.
 
 ```{r}
 aid %>% # Spesifiserer at vi skal jobbe med datasettet aid - R vil da lete etter variabler vi referer til her, slik at vi slipper aid$var
-  mutate(policy2 = economic_open + inflation + budget_balance) # lager variabelen policy ved å summere budsjettbalanse, inflasjon og en indeks for øk. åpenhet
+  mutate(policy_index = economic_open + inflation + budget_balance) # lager variabelen policy ved å summere budsjettbalanse, inflasjon og en indeks for øk. åpenhet
 
 
 
 aid <- aid %>% # samme kode som over, men nå overskriver jeg variabelen jeg lagde i stad - gjør dette etter at du har testet at koden fungerte
-  mutate(policy2 = economic_open + inflation + budget_balance,
-         policy_sent = policy - mean(policy, na.rm = TRUE))
-# Her lager jeg to versjoner av policyindeksen - først en additiv indeks og en sentrert variant av denne. 
+  mutate(policy_index = economic_open + inflation + budget_balance,
+         policy_sent = policy - mean(policy, na.rm = TRUE)) %>% 
+  rename(policy2 = policy_index)
+# Her lager jeg to versjoner av policyindeksen - først en additiv indeks og en sentrert variant av denne.
+# På siste rad endrer vi navn fra policy_index til policy2
 # Dette er en ryddig måte å samle alle omkodinger på!
 
 ```
@@ -180,7 +182,7 @@ aid$gdp_growth_chr <- as.character(aid$gdp_growth)
 Den funksjonen jeg bruker mest til omkoding, er `ifelse()`. Funksjonen kan brukes på numeriske og kategoriske variabler. Syntaksen til denne funksjonen kan forklares som følger:
 
 ```{r, eval=FALSE}
-data$nyvar <- ifelse(test = my_data$my.variabel=="some logical condition",
+data$nyvar <- ifelse(test = my_data$my.variabel == "some logical condition",
        yes  = "what to return if 'some condition' is TRUE",
        no   = "what to return if 'some condition' is FALSE")
 ```
@@ -195,9 +197,11 @@ aid <- aid %>%  # Jeg vil jobbe med aid datasettet og lagre endringene
 ```
 
 I `ifelse()` sier jeg at de observasjonene der periodestart er:
+
 * tidligere enn 1980 skal ha verdien "70s"
 * senere enn 1980 OG tidligere enn 1990 skal ha verdien "80s"
 * resten skal ha verdien "90s"
+
 
 ```{r}
 # sjekker at det ser fint ut med en tabell der jeg også får opp missing-verdiene
@@ -213,8 +217,6 @@ table(aid$decade, aid$periodstart, useNA = "always")
 
 Tenk deg at vi ønsket å opprette en ny variabel, `neigh_growth`, som viser gjennomsnittsveksten til alle land i samme region over hele tidsperioden. Dette høres kanskje fryktelig komplisert ut, og mangler en god teoretisk begrunnelse. Vi kan imidlertid finne informasjonen vi er på jakt etter ganske enkelt ved hjelp av funksjonene `group_by()` og `summarise()`. Først må vi imidlertid opprette en region-variabel - fordi informasjon om hvilken region et land tilhører er spredt ut over tre variabler - `sub_saharan_africa`, `central_america` og `fast_growing_east_asia`. La oss bruke `ifelse()` og `mutate()` til dette:
 
- <!--fixme: kanskje vi kan region-variabelen i datasettet fra om vi skal ha med aggregering her? -->
-
 ```{r}
 # OBS! Her skriver vi over det opprinnelige objektet vårt. Når du skriver hjemmeoppgaven så 
 # sjekk først at det blir riktig før du gjør det samme. 
@@ -222,7 +224,7 @@ Tenk deg at vi ønsket å opprette en ny variabel, `neigh_growth`, som viser gje
 aid <- aid %>% # Forteller at vi skal jobbe med aid-datasettet
        mutate(region = ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa",
                                ifelse(central_america == 1, "Central America",
-                               ifelse(fast_growing_east_asia == 1, "East Asia", "Other"))))
+                                      ifelse(fast_growing_east_asia == 1, "East Asia", "Other"))))
 # Her nøster jeg ifelse-funksjoner inne i hverandre, ved å skrive en ifelse() funksjon med det som skal gjøres med observasjoner som får FALSE på at de ligger i Afrika sør for Sahara, osv. La oss sjekke omkodingen med en tabell
 table(aid$region, aid$sub_saharan_africa, useNA = "always") # ser at det er like mange land - kunne gjort det samme for resten av kategoriene
 ```
@@ -232,11 +234,13 @@ La oss se hvordan `group_by()` og `summarise()` fungerer:
 aid %>%
    group_by(region) %>% # grupperer observasjoner basert på verdi på region-variabelen. Alle observasjoner med lik verdi (uavh. av tidsperiode) blir gruppert sammen.
    summarise(neigh_growth = mean(gdp_growth, na.rm = T), # regner gjennomsnitt for økonomisk vekst innad i hver gruppe - for hele tidsperioden data dekker sett under ett
-          n_region = n()) # Teller antall observasjoner i hvert gruppe
+             n_region = n()) # Teller antall observasjoner i hvert gruppe
 
 ``` 
 
-Resultatet er fem observasjoner heller enn de opprinnelige 331. <!-- fixme: er det ikke bare 4 observasjoner her eller ser jeg feil -->  I outputen er nivået for observasjonene endret fra land-nivå til region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå. Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`. Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny variabelen med snitt per region direkte inn i datasettet: 
+Resultatet er fire observasjoner heller enn de opprinnelige 331.  
+
+I outputen er nivået for observasjonene endret fra land-nivå til region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå. Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`. Ved å bruke `mutate()` i steden for `summarise()` så kan vi legge den ny variabelen med snitt per region direkte inn i datasettet: 
 
 ```{r}
 # Samme kode, men lagrer som et objekt - vi får et nytt datasett der vi har lagt til variablene
@@ -244,7 +248,7 @@ Resultatet er fem observasjoner heller enn de opprinnelige 331. <!-- fixme: er d
 # sjekk først at det blir riktig før du gjør det samme. 
 aid <- aid %>%
   group_by(region) %>%
-  mutate(neigh_growth = mean(gdp_growth, na.rm = T), # Her bruker jeg mutate for å legge variabelen til uten
+  mutate(neigh_growth = mean(gdp_growth, na.rm = T), # Her bruker jeg mutate for å legge variabelen til
           n_region = n()) %>% 
   ungroup() # Vi bruker ungroup() for å fortelle R at vi nå vil bruke dataene på det opprinnelige nivået igjen (her: land)
 
@@ -261,7 +265,7 @@ Disse funksjonene gir unviariat statistikk for kontinuerlige variabler (vi gjenn
 min(aid$gdp_growth, na.rm = TRUE)  # minimumsverdi, na.rm = T spesifiserer at missing skal droppes i beregning.
 max(aid$gdp_growth, na.rm = TRUE)  # maksimumsverdi
 mean(aid$gdp_growth, na.rm = TRUE) # gjennomsnitt
-median(aid$gdp_growth, na.rm =T )  # median
+median(aid$gdp_growth, na.rm = T)  # median
 sd(aid$gdp_growth, na.rm = T)      # standardavvik
 var(aid$gdp_growth, na.rm = T)     # varians
 
@@ -270,7 +274,7 @@ library(moments)
 skewness(aid$gdp_growth, na.rm = T) # skjevhet - fra moments
 kurtosis(aid$gdp_growth, na.rm = T) # kurtose - fra moments
 
-summary(aid$gdp_growth) # forskjellig deskriptiv staatistikk for en variabel
+summary(aid$gdp_growth) # forskjellig deskriptiv statistikk for en variabel
 summary(aid)            # deskriptiv statistikk for alle variabler i datasettet
 ```
 
@@ -278,18 +282,18 @@ For bivariat eller multivariat deskriptiv statistikk, ser vi gjerne på korrelas
 
 ```{r}
 cor(aid$gdp_growth, aid$aid, use = "pairwise.complete.obs") # argumentet use bestemmer missing-håndtering
+cor.test(aid$gdp_growth, aid$gdp_pr_capita) # Denne gir deg også signifikans og konfidensintervaller
 ```
 
 Hva forteller denne oss om sammenhengen mellom økonomisk bistand og endring i BNP? 
 
- <!--fixme: hmmm Kommentaren etter komma på første kodelinje i neste avsnitt gir ikke helt mening for meg. Kan den slettes?-->
 
 ```{r}
-str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ikke har en tibble)
+str(aid)         # sjekker hvilke variabler som er numeriske (vi kan ikke beregne korrelasjon på ikke-numeriske variabler)
 
 aid %>%
 select(6:13) %>% # Her tar vi med variablene fra gdp_growth (nr 6) til aid (nr 13)
-  cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
+  cor(., use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
 # Sjekk hva use = argumentet styrer i hjelpefilen
 ```
 Noen av variablene i datasettet vårt, bl.a. `aid$country` og `code`, er ikke kontinuerlig. Det er heller ikke den nyopprettet `aid$region` variebelen vår. Ved å ta `str(aid)`, ser vi at denne variabelen er kodet som en character. Dette innebærer at den vil behandles som en nominalnivå-variabel i statistisk analyse. For kategoriske variabler, er tabeller nyttig:
@@ -301,17 +305,19 @@ prop.table(table(aid$region)) # prosentfordeling basert på frekvenstabell
 
 Vi kan også lage tabeller med flere variabler. Under viser jeg hvordan du lager en tabell med fordelingen av observasjoner som har høyere vekst enn medianveksten i utvalget, ved hjelp av en logisk test:
 ```{r}
-table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE))
-table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE), aid$country)
+table(aid$gdp_growth > median(aid$gdp_growth, na.rm = TRUE))
+table(aid$gdp_growth > median(aid$gdp_growth, na.rm = TRUE), aid$country)
 ```
 
 De fleste land har vekst både over og under medianen. Dersom det hadde vært svært lite variasjon i veksten til land, ville kontrollvariabler for land (country fixed effects) kunne ha fjernet effekten av de fleste variabler - vi ville ikke hatt veldig godt datagrunnlag for å si så mye om effekten av bistand i samspill med policy (jeg sier ikke dermed nødvendigvis at dataene er gode generelt).
 
 
 **Oppgave:** Lag et nytt datasett ved hjelp av `group_by()` og `summarise()`, der du oppretter variabler som viser korrelasjon (Pearsons r) mellom:
+
 *` aid`, og `gdp_growth`
 * `aid` og `policy`
 * `policy` og `gdp_growth` 
+
 separat for hver region. Er det store forskjeller i korrelasjonene mellom regionene? 
 
 Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at observasjoner som har positive verdier på henholdsvis variablene `policy` og `policy2` får verdien 1, mens andre observasjoner får verdien 0. Bruk disse nye variablene som grupperingsvariabler, og lag et nytt datasett der du inkluderer en variabel som beregner korrelasjon mellom `aid` og `policy` for hver gruppe.
@@ -428,6 +434,7 @@ aid %>%
 
 # Fortsatt litt mye informasjon til å være enkelt å lese - La oss sammenligne 5 land med %in%
 ```
+
 ```{r include=FALSE}
 
 aid %>% 
@@ -443,12 +450,11 @@ knitr::include_graphics("./bilder/seminar2_4.png")
 
 # Velger land med %in%, fint for mindre sammenligninger
 aid %>% 
-  filter(country %in% c("KEN", "ETH", "MOZ", "AGO", "RWA")) %>%
+  filter(country %in% c("KEN", "ETH", "GHA", "SOM", "TZA")) %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))
 
 ```
-<!--fixme: det virker som "MOZ", "AGO", "RWA" er missing, skal man endre til "GHA", "SOM", "TZA" som under?-->
- 
+
 ```{r include=FALSE}
 
 aid %>% 
@@ -514,90 +520,14 @@ ggplot(aid,aes(x = aid, y = gdp_growth, col = policy)) +
   facet_wrap(~ region)
 ```
 
-
-## Lineær regresjon (OLS) <a name="ols"></a>
-
-### Syntaks
-
-For å kjøre en lineær regresjon i R, bruker vi funksjonen `lm()`, som har følgende syntaks:
+For å lagre datasettet til neste seminar kan vi kjøre følgende kode: 
 ```{r, eval = F}
-lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
-# på mac får du ~ med alt + k + space
+save(aid, file = "aid.Rdata")
 ```
-
-La oss se på et eksempel med `aid` datasettet vi har brukt så langt:
-```{r}
-m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 om objekt
-summary(m1) # ser på resultatene med summary()
-class(m1) # Legg merke til at vi har et objekt av en ny klasse!
-str(m1) # Gir oss informasjon om hva objektet inneholder.
-```
-
-
-### Multivariat regresjon
-
-Vi legger inn flere uavhengige variabler med `+`.
-
-```{r}
-m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
-summary(m2)
-# Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
-```
-
-<!--fixme: kan vi stoppe her og flytte resten til seminar 3? Mulig vi må revurdere oppgavesettet, men seminar 2 har veldig mye innhold. --> 
-
-### Samspill
-
-Hypotesen til artikkelforfatterne var følgende: *bistand fører til økonomisk vekst, men bare dersom de fører en god makroøkonomisk politikk*. Dette kan vi sjekke ved hjelp av samspill, som undersøker hvor vidt en effekt av en variabel er avhengig av en annen variabel. Vi legger inn samspill ved å sette `*` (gangetegn) mellom to variabler. De individuelle regresjonskoeffisientene til variablene vi spesifisere samspill mellom blir automatisk lagt til.
-
-
-```{r}
-m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
-summary(m3)
-```
-
-### Andregradsledd og andre omkodinger
-
-Vi kan legge inn andregradsledd eller andre omkodinger av variabler i regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske transformasjoner brukes gjerne for eksponentiell vekst eller for å minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
-
-Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen `poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()` omkoding og et andregradsledd. Merk at dere må legge inn førstegradsleddet separat når dere legger inn andregradsledd. Dersom en variabeltransformasjon krever mer enn en enkel funksjon, er det fint å opprette en ny variabel i datasettet.
-
-
-```{r}
-m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
-         data = aid, 
-         na.action = "na.exclude")
-summary(m4)
-```
-
-En nyttig pakke for å lage fine tabeller med resultatet fra regresjonsanalyser er `stargazer`. 
-
-```{r, message=FALSE}
-#install.packages("stargazer")
-library(stargazer)
-stargazer(m2, m3,
-          type = "text") 
-
-```
-
-```{r, eval = F}
-# Om du skriver i word så kan du bruke type="html", lagre i en mappe og åpne i word.
-# obs. bruk .htm og ikke .html
-stargazer(m2, m4,
-          type = "html",
-          out = "./bilder/regresjonstabell.htm") 
-
-# Om du skriver i Latex så kan du bruker type = "latex" og kopiere inn output direkte, eller lagre i en mappe og hente inn via latex
-stargazer(m2, m4,
-          type = "latex") 
-
-# Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer. 
-```
-
 
 
 ## Takk for i dag!
 
 ```{r generere_script, eval=FALSE, echo=FALSE}
-# knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 2)
+# knitr::purl("./seminar2/seminar2.Rmd", output = "./seminar2/seminar2.R", documentation = 0)
 ```

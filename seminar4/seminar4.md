@@ -17,8 +17,6 @@ regresjon, og beslektede metoder som *probit*. Det er også en vanlig
 begrunnelse for andre alternative regresjonsmodeller som *multinomisk
 logistisk regresjon* (ikke på pensum i år).
 
-![](./bilder/glm_mental_model.png)
-
 **Konsekvenser i praksis:**
 
 -   Den største praktiske forskjellen er at substansiell tolkning blir
@@ -47,25 +45,65 @@ logistisk regresjon* (ikke på pensum i år).
 -   I R må vi bytte ut `lm()` med `glm()` og spesifisere alternativet
     `family = binomial`. De resterende argumentene er like.
 
-**Oppvarmings-oppgave i plenum:** Les hjelpefil
-<!-- fixme: hjelpefilen til glm()? --> , hva må vi spesifisere for å
-kjøre en logistisk regresjon? Forklar til sidemannen.
-
 Last inn datasettet `aid` under navnet `aid`, du finner data
 [her](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Innf%C3%B8ringsseminarer/data).
 Lagre i en mappe, sett working directory (dette steget er ikke nødvendig
 om du bruker prosjekt), og last inn datasettet i R med
 `read_dataformat()`.
 
-Opprett en ny variabel `gdp_growth_d`, slik at observasjoner vekst
-mindre eller lik 0, og andre observasjoner får verdien 1.
+Først skal vi opprette en ny variabel `gdp_growth_d`, slik at
+observasjoner med vekst mindre eller lik 0, og andre observasjoner får
+verdien 1:
 
-Kjør deretter følgende logistiske regresjon:
+``` r
+library(tidyverse)
+```
+
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+
+    ## ✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+    ## ✓ tibble  3.1.4     ✓ dplyr   1.0.7
+    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+    ## ✓ readr   2.0.1     ✓ forcats 0.5.1
+
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
+aid <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/aid.csv")
+```
+
+    ## Rows: 331 Columns: 19
+
+    ## ── Column specification ────────────────────────────────────────────────────────
+    ## Delimiter: ","
+    ## chr  (2): country, code
+    ## dbl (17): period, periodstart, periodend, gdp_growth, gdp_pr_capita, economi...
+
+    ## 
+    ## ℹ Use `spec()` to retrieve the full column specification for this data.
+    ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+``` r
+# Lager ny dikotom variabel
+aid <- aid %>% 
+  mutate(gdp_growth_d = ifelse(gdp_growth <= 0, 0, 1))
+
+# Sjekker missing på ny variabel ved hjelp av en tabell
+table(is.na(aid$gdp_growth_d), 
+      is.na(aid$gdp_growth))
+```
+
+    ##        
+    ##         FALSE TRUE
+    ##   FALSE   325    0
+    ##   TRUE      0    6
 
 ``` r
 # Kjører en binomisk logistisk modell ved hjelp av glm
 m1 <- glm(gdp_growth_d ~ aid + policy + as.factor(period), data = aid, 
-          family = binomial(link = "logit"),
+          family = "binomial",
           na.action = "na.exclude")
 summary(m1)
 ```
@@ -73,7 +111,7 @@ summary(m1)
     ## 
     ## Call:
     ## glm(formula = gdp_growth_d ~ aid + policy + as.factor(period), 
-    ##     family = binomial(link = "logit"), data = aid, na.action = "na.exclude")
+    ##     family = "binomial", data = aid, na.action = "na.exclude")
     ## 
     ## Deviance Residuals: 
     ##     Min       1Q   Median       3Q      Max  
@@ -163,33 +201,42 @@ formel:
 , der b0 er konstantledd.
 
 1.  Regn ut den predikerte sannsynligheten for positiv vekst for et land
-    med `aid` lik `-3` i periode 4, med resterende variabler satt til
-    sin medianverdi (ikke legg inn koeffisienter for andre perioder enn
-    periode 8!).
+    med `aid` lik `1` i periode 4, med resterende variabler satt til sin
+    medianverdi (ikke legg inn koeffisienter for andre perioder enn
+    periode 4!).
 
 2.  Regn ut den predikerte sannsynligheten for positiv vekst for et land
     med `aid` lik `3` i periode 4, med resterende variabler satt til sin
     medianverdi (ikke legg inn koeffisienter for andre perioder enn
-    periode 8!).
+    periode 4!).
 
 Jeg har satt opp noe dere kan copy-paste under til hjelp, men dere må
 sørge for at formelen blir riktig selv:
 
 ``` r
+# Enklere formel for å regne ut sannsynligheten når alle uavhengige variabler har verdien 0:
+exp(m1$coefficients["(Intercept)"])/
+  (1 + exp(m1$coefficients["(Intercept)"]))
+```
+
+    ## (Intercept) 
+    ##   0.7472523
+
+``` r
 # Her henter jeg ut koeffisientene fra modellobjektet ved hjelp av indeksering
 # og setter inn verdien på uavhengig variabel inn i likningen: 
-exp(m1$coefficients["(Intercept)"] + 
+exp(m1$coefficients["(Intercept)"] +
       m1$coefficients["as.factor(period)4"]*1 + 
-      m1$coefficients["aid"]*(-3) + 
+      m1$coefficients["aid"]*(1) + 
       m1$coefficients["policy"]*median(aid$policy, na.rm = TRUE))/
   (1 + exp(m1$coefficients["(Intercept)"] + 
       m1$coefficients["as.factor(period)4"]*1 + 
-      m1$coefficients["aid"]*(-3) + 
+      m1$coefficients["aid"]*(1) + 
       m1$coefficients["policy"]*median(aid$policy, na.rm = TRUE)))
 ```
 
     ## (Intercept) 
-    ##   0.8050392
+    ##   0.6563114
 
 *Er effekten av aid substansiell?*
 
@@ -425,8 +472,8 @@ predikert sannsynlighet høyere enn kuttpunktet kan vi gi predikert verdi
 Det er ikke gitt hva vi skal velge som kuttpunkt. I *Lær deg R* settes
 kuttpunktet til andelen med verdi lik 1. Dette kan vi tenke på som en
 nullmodell. Vi følger samme eksempel her. Et annet alternativ er å
-klassifisere alle observasjoner med predikert sannsynlighet for `1`
-høyere enn `0.5` som `1`, og de resterende observasjonene som `0`.
+klassifisere alle observasjoner med predikert sannsynlighet høyere enn
+`0.5` som `1`, og de resterende observasjonene som `0`.
 
 ``` r
 kuttpunkt <- mean(aid$gdp_growth_d, na.rm = TRUE)
@@ -439,7 +486,7 @@ kuttpunkt
 # I nullmodellen predikerer vi 62 prosent riktig om vi gjetter at alle land har vekst
 
 # Lager en variabel der de med predikert sannsynlighet høyere enn kuttpunktet får verdien 1
-aid$growth.pred <- as.numeric(aid$predict>kuttpunkt)
+aid$growth.pred <- as.numeric(aid$predict > kuttpunkt)
 
 # Bruker en logisk test til å sjekke om predikert verdi er lik faktisk verdi
 aid$riktig <- aid$growth.pred == aid$gdp_growth_d

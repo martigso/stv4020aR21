@@ -113,21 +113,45 @@ del av det som du lærer i seminarene og **R for Data Science**), men ut
 over det bruker man hjelpefiler i R/stackoverflow som ordbøker hele
 tiden.
 
+<<<<<<< HEAD
+=======
+# Rstudio
+
+Først litt helt grunnleggende om R og Rstudio. R er et
+programmeringsspråk, mens RStudio er et grensesnitt vi koder i. I
+Rstudio skriver vi kode i script. Du kan tenke på R-script litt som en
+word-fil, siden scriptene kan lagres og gjør arbeidet vårt
+reproduserbart. Opprett et nytt script med enten å trykke på arket oppe
+til venstre med et grønt plusstegn, gå på file &gt; new file &gt; R
+script, eller trykk *ctrl/cmd + shift + n*. Når vi har skrevet kode i
+script, kan vi sende koden til console for evaluering med *ctrl/cmd* +
+*enter*. Dersom resultet av koden ikke er et objekt eller et plot, vises
+resultatet i console (vinduet under script).
+
+![](https://cienciapratica.files.wordpress.com/2015/07/slide2.jpg)
+
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 # Første seminaropplegg
 
 #### Mål for i dag:
 
 1.  Bli kjent med hverandre
+<<<<<<< HEAD
     <!-- 2. Få R og Rstudio til å virke på egen PC  fixme: regner med dette ikke lenger er relevant-->
+=======
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 2.  Forstå hvordan Rstudio er satt opp og hvordan man kjører kode
 3.  Forstå grunnleggende konsepter i R: indeksering, objekter,
     funksjoner og pakker
 4.  Løse noen oppgaver på egenhånd
 
+<<<<<<< HEAD
 <!-- fixme: Samme som over.
 Dersom du enda ikke har gjennomført installasjonsguiden[**sett inn oppdatert lenke**], ta en titt på den etterpå. I mellomtiden, finn deg en person som har R og Rstudio installert, og sett deg sammen med den personen med ok korona-avstand. -->
 <!-- Dersom du har gjennomført installasjonsguiden, uten å ha fått Rstudio til å virke, så ser vi på dette etterpå. -->
 
+=======
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 Det første vi skal gjøre er å lage et lite datasett. Snakk med personen
 ved siden av deg og finn ut:
 
@@ -140,6 +164,7 @@ Etterpå tar vi en runde og da skal du presentere personen ved siden av
 deg. Informasjonen skal vi bruke til å lage et lite datasett. Bruk tre
 minutter.
 
+<<<<<<< HEAD
 <!-- fixme: jeg legger til en seksjon om github her. Kan gås gjennom superkjapt, men fint å ha med -->
 
 # Rstudio
@@ -159,6 +184,13 @@ resultatet i console (vinduet under script).
 
 # Objekter
 
+=======
+Seminaropplegget finner du alltid på
+[github](https://github.com/martigso/stv4020aR21).
+
+# Objekter
+
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 For å bli kjent med R så skal vi bruke informasjonen fra
 bli-kjent-runden til å lage et lite datasett. Det første vi gjør er å
 lage objekter av en type som heter vektor. Vektorene skal inneholde
@@ -375,19 +407,34 @@ Vi skal for det meste bruke kode som kommer fra pakker i
 [tidyverse](https://www.tidyverse.org/learn/). La oss installere disse
 pakkene:
 
+<<<<<<< HEAD
 <!-- fixme: muligens vi kan vurdere å skippe tidyverseinstallasjon første gang? Jeg har erfaring med at det aldri funker på UiO-PC 
             men vi kan også teste det på installasjonsseminaret. -->
 <!-- fixme: det brukes en del funksjoner fra tidyverse i scriptet (select, filter, glimpse), men en kan jo alltids installere enkeltpakkene i stedet for tidyverse. Men foreslår at vi fjerner haven i og med at den ikke brukes her? -->
 
+=======
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 ``` r
 # install.packages("tidyverse") # Fjern hashtag på starten av denne og neste linje!
-# install.packages("haven") # legg merke til at vi bruker "" i install.packages(), men ikke i library()
 library(tidyverse)
 ```
 
 Forskjellen på `install.packages()` og `library()` kan tenkes på som
 julepakker. `install.packages()` er å kjøpe pakken, mens `library()` er
 å pakke den opp.
+<<<<<<< HEAD
+
+# Indeksering
+
+Nå skal vi tilbake til datasettet vi lagde basert på bli-kjent-runden.
+Dersom vi ønsker å hente ut informasjon om en person så kan vi bruke
+indeksering. Indeksering lar oss spesifisere et eller flere elementer i
+et objekt. Det er flere måter å indeksere på og dette er nøye beskrevet
+for eksempel i kapittel 1 i boken **Lær deg R**.
+
+Dersom vi for eksempel er interessert i å hente ut all informasjonen om
+Thea så kan det gjøres på mange måter:
+=======
 
 # Indeksering
 
@@ -400,7 +447,25 @@ for eksempel i kapittel 1 i boken **Lær deg R**.
 Dersom vi for eksempel er interessert i å hente ut all informasjonen om
 Thea så kan det gjøres på mange måter:
 
+I en endimensjonal vektor trenger vi bare å vise til radnummer:
+
 ``` r
+# Endimensjonal vektor:
+navn[1]
+```
+
+    ## [1] "Thea"
+
+I todimensjonale vektorer må vi ta med både rad og kolonne:
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
+
+``` r
+# For todimensjonale vektorer så gjelder dette generelt:
+# data[rad, kolonne] henter ut en gitt rad og en gitt kolonne 
+# data[rad, ] henter ut en alle kolonner for en gitt rad
+# data[, kolonne] henter ut alle rader for en gitt kolonne
+
+
 # Vi kan bruke base R (som beskrevet i Lær deg R)
 data[navn == "Thea", ]      # vi ønsker alle kolonner/variabler for observasjone/radene med verdien "Thea" 
 ```
@@ -504,6 +569,7 @@ klasser som vi kaller det, av vektorer. I tabellen under finner dere en
 grov inndeling av ulike typer vektorer i R (se f.eks. s. 42-47 i Lær deg
 R for en nærmere innføring):
 
+<<<<<<< HEAD
 | Atomic vector | List     |
 |---------------|----------|
 | numeric       | blanding |
@@ -511,6 +577,15 @@ R for en nærmere innføring):
 | character     |          |
 | factor        |          |
 | logical       |          |
+=======
+| Atomic vector        | List     |
+|----------------------|----------|
+| numeric/dbl (tall)   | blanding |
+| integer (heltall)    |          |
+| character (tekst)    |          |
+| factor (kategorier)  |          |
+| logical (TRUE/FALSE) |          |
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 
 En hyppig årsak til at en funksjon ikke fungerer, er at en
 vektor/variabel ikke er i det formatet vi forventet. Tabellen gir en
@@ -563,14 +638,28 @@ ved hjelp av en funksjoner som `as.numeric()`, `as.character()` og
 ``` r
 # Her lager vi en ny variabel alder_ch der vi ber R lagre alder som character
 data$alder_ch <- as.character(data$alder)
+
+# Slik ser datasettet ut
+glimpse(data)
 ```
 
+<<<<<<< HEAD
+=======
+    ## Rows: 3
+    ## Columns: 4
+    ## $ navn     <chr> "Thea", "Ole", "Mari"
+    ## $ alder    <dbl> 23, 20, 25
+    ## $ bachelor <chr> "UIO", "UIB", "UIS"
+    ## $ alder_ch <chr> "23", "20", "25"
+
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 Om vi ser på datasettet etter at vi har laget den nye variabelen så ser
 vi at alder og alder\_ch ser helt like ut. Begge fremstår som tall vi
 kan gjøre regneoperasjoner på, men bare en av dem er det. Prøv gjerne
 selv å kjøre funksjonen `mean()` som regner ut gjennomsnittet på
 alder\_ch. 
 
+<<<<<<< HEAD
 <!-- fixme: kuttkandidat;
 **Hva skjer om du først omkoder alder til en faktor ved hjelp av `as.factor()` og så omkoder faktorvariabelen til en numerisk variabel med `as.numeric()`?** -->
 <!-- ```{r, eval = FALSE, include = FALSE} -->
@@ -580,6 +669,10 @@ alder\_ch. 
 
 # Funksjoner i R
 
+=======
+# Funksjoner i R
+
+>>>>>>> 8330ddc8f7622973bf7509fb766d24eff52ba6b3
 Dersom vi ønsker å gjøre noe i R, får vi som regel en funksjon til å
 gjøre jobben for oss. En funksjon tar i mot verdi(er), gjerne lagret i
 form av et R-objekt, utfører operasjoner basert på input, og produserer

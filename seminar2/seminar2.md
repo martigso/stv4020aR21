@@ -254,7 +254,7 @@ inflasjon (`aid$inflation`), budsjettbalanse (`aid$budget_balance`) og
 
 ``` r
 # oppretter alternativ policy-indeks variabel
-aid$policy2 <- aid$inflation + aid$budget_balance + aid$economic_open # Eksempel i tråd med det som er beskrevet i "Lær deg R"
+aid$policy_index <- aid$inflation + aid$budget_balance + aid$economic_open # Eksempel i tråd med det som er beskrevet i "Lær deg R"
 ```
 
 I `tidyverse` og `dplyr` pakken bruker man som regel `mutate()`
@@ -264,7 +264,7 @@ mer ryddig kode.
 
 ``` r
 aid %>% # Spesifiserer at vi skal jobbe med datasettet aid - R vil da lete etter variabler vi referer til her, slik at vi slipper aid$var
-  mutate(policy2 = economic_open + inflation + budget_balance) # lager variabelen policy ved å summere budsjettbalanse, inflasjon og en indeks for øk. åpenhet
+  mutate(policy_index = economic_open + inflation + budget_balance) # lager variabelen policy ved å summere budsjettbalanse, inflasjon og en indeks for øk. åpenhet
 ```
 
     ## # A tibble: 331 x 20
@@ -284,13 +284,15 @@ aid %>% # Spesifiserer at vi skal jobbe med datasettet aid - R vil da lete etter
     ## #   budget_balance <dbl>, inflation <dbl>, ethnic_frac <dbl>,
     ## #   assasinations <dbl>, aid <dbl>, fast_growing_east_asia <dbl>,
     ## #   sub_saharan_africa <dbl>, central_america <dbl>, policy <dbl>,
-    ## #   m2_gdp_lagged <dbl>, institutional_quality <dbl>, policy2 <dbl>
+    ## #   m2_gdp_lagged <dbl>, institutional_quality <dbl>, policy_index <dbl>
 
 ``` r
 aid <- aid %>% # samme kode som over, men nå overskriver jeg variabelen jeg lagde i stad - gjør dette etter at du har testet at koden fungerte
-  mutate(policy2 = economic_open + inflation + budget_balance,
-         policy_sent = policy - mean(policy, na.rm = TRUE))
-# Her lager jeg to versjoner av policyindeksen - først en additiv indeks og en sentrert variant av denne. 
+  mutate(policy_index = economic_open + inflation + budget_balance,
+         policy_sent = policy - mean(policy, na.rm = TRUE)) %>% 
+  rename(policy2 = policy_index)
+# Her lager jeg to versjoner av policyindeksen - først en additiv indeks og en sentrert variant av denne.
+# På siste rad endrer vi navn fra policy_index til policy2
 # Dette er en ryddig måte å samle alle omkodinger på!
 ```
 
@@ -331,7 +333,7 @@ kan brukes på numeriske og kategoriske variabler. Syntaksen til denne
 funksjonen kan forklares som følger:
 
 ``` r
-data$nyvar <- ifelse(test = my_data$my.variabel=="some logical condition",
+data$nyvar <- ifelse(test = my_data$my.variabel == "some logical condition",
        yes  = "what to return if 'some condition' is TRUE",
        no   = "what to return if 'some condition' is FALSE")
 ```
@@ -353,9 +355,11 @@ aid <- aid %>%  # Jeg vil jobbe med aid datasettet og lagre endringene
                          ifelse(periodstart > 1980 & periodstart < 1990, "80s", "90s"))) 
 ```
 
-I `ifelse()` sier jeg at de observasjonene der periodestart er: \*
-tidligere enn 1980 skal ha verdien “70s” \* senere enn 1980 OG tidligere
-enn 1990 skal ha verdien “80s” \* resten skal ha verdien “90s”
+I `ifelse()` sier jeg at de observasjonene der periodestart er:
+
+-   tidligere enn 1980 skal ha verdien “70s”
+-   senere enn 1980 OG tidligere enn 1990 skal ha verdien “80s”
+-   resten skal ha verdien “90s”
 
 ``` r
 # sjekker at det ser fint ut med en tabell der jeg også får opp missing-verdiene
@@ -390,8 +394,6 @@ tre variabler - `sub_saharan_africa`, `central_america` og
 `fast_growing_east_asia`. La oss bruke `ifelse()` og `mutate()` til
 dette:
 
-<!--fixme: kanskje vi kan region-variabelen i datasettet fra om vi skal ha med aggregering her? -->
-
 ``` r
 # OBS! Her skriver vi over det opprinnelige objektet vårt. Når du skriver hjemmeoppgaven så 
 # sjekk først at det blir riktig før du gjør det samme. 
@@ -399,7 +401,7 @@ dette:
 aid <- aid %>% # Forteller at vi skal jobbe med aid-datasettet
        mutate(region = ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa",
                                ifelse(central_america == 1, "Central America",
-                               ifelse(fast_growing_east_asia == 1, "East Asia", "Other"))))
+                                      ifelse(fast_growing_east_asia == 1, "East Asia", "Other"))))
 # Her nøster jeg ifelse-funksjoner inne i hverandre, ved å skrive en ifelse() funksjon med det som skal gjøres med observasjoner som får FALSE på at de ligger i Afrika sør for Sahara, osv. La oss sjekke omkodingen med en tabell
 table(aid$region, aid$sub_saharan_africa, useNA = "always") # ser at det er like mange land - kunne gjort det samme for resten av kategoriene
 ```
@@ -418,7 +420,7 @@ La oss se hvordan `group_by()` og `summarise()` fungerer:
 aid %>%
    group_by(region) %>% # grupperer observasjoner basert på verdi på region-variabelen. Alle observasjoner med lik verdi (uavh. av tidsperiode) blir gruppert sammen.
    summarise(neigh_growth = mean(gdp_growth, na.rm = T), # regner gjennomsnitt for økonomisk vekst innad i hver gruppe - for hele tidsperioden data dekker sett under ett
-          n_region = n()) # Teller antall observasjoner i hvert gruppe
+             n_region = n()) # Teller antall observasjoner i hvert gruppe
 ```
 
     ## # A tibble: 4 x 3
@@ -429,8 +431,8 @@ aid %>%
     ## 3 Other                     1.46       149
     ## 4 Sub-Saharan Africa       -0.157      124
 
-Resultatet er fem observasjoner heller enn de opprinnelige 331.
-<!-- fixme: er det ikke bare 4 observasjoner her eller ser jeg feil -->
+Resultatet er fire observasjoner heller enn de opprinnelige 331.
+
 I outputen er nivået for observasjonene endret fra land-nivå til
 region-nivå. Jeg har brukt summarise mye for å vise data på gruppenivå.
 Merk at vi her ikke lagret endringen fordi vi ikke brukte `aid <- aid`.
@@ -443,7 +445,7 @@ variabelen med snitt per region direkte inn i datasettet:
 # sjekk først at det blir riktig før du gjør det samme. 
 aid <- aid %>%
   group_by(region) %>%
-  mutate(neigh_growth = mean(gdp_growth, na.rm = T), # Her bruker jeg mutate for å legge variabelen til uten
+  mutate(neigh_growth = mean(gdp_growth, na.rm = T), # Her bruker jeg mutate for å legge variabelen til
           n_region = n()) %>% 
   ungroup() # Vi bruker ungroup() for å fortelle R at vi nå vil bruke dataene på det opprinnelige nivået igjen (her: land)
 
@@ -484,7 +486,7 @@ mean(aid$gdp_growth, na.rm = TRUE) # gjennomsnitt
     ## [1] 1.039167
 
 ``` r
-median(aid$gdp_growth, na.rm =T )  # median
+median(aid$gdp_growth, na.rm = T)  # median
 ```
 
     ## [1] 1.186194
@@ -516,7 +518,7 @@ kurtosis(aid$gdp_growth, na.rm = T) # kurtose - fra moments
     ## [1] 3.938884
 
 ``` r
-summary(aid$gdp_growth) # forskjellig deskriptiv staatistikk for en variabel
+summary(aid$gdp_growth) # forskjellig deskriptiv statistikk for en variabel
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
@@ -602,13 +604,27 @@ cor(aid$gdp_growth, aid$aid, use = "pairwise.complete.obs") # argumentet use bes
 
     ## [1] -0.1587284
 
+``` r
+cor.test(aid$gdp_growth, aid$gdp_pr_capita) # Denne gir deg også signifikans og konfidensintervaller
+```
+
+    ## 
+    ##  Pearson's product-moment correlation
+    ## 
+    ## data:  aid$gdp_growth and aid$gdp_pr_capita
+    ## t = 0.77599, df = 316, p-value = 0.4383
+    ## alternative hypothesis: true correlation is not equal to 0
+    ## 95 percent confidence interval:
+    ##  -0.06669321  0.15286293
+    ## sample estimates:
+    ##        cor 
+    ## 0.04361142
+
 Hva forteller denne oss om sammenhengen mellom økonomisk bistand og
 endring i BNP?
 
-<!--fixme: hmmm Kommentaren etter komma på første kodelinje i neste avsnitt gir ikke helt mening for meg. Kan den slettes?-->
-
 ``` r
-str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ikke har en tibble)
+str(aid)         # sjekker hvilke variabler som er numeriske (vi kan ikke beregne korrelasjon på ikke-numeriske variabler)
 ```
 
     ## tibble [331 x 28] (S3: tbl_df/tbl/data.frame)
@@ -665,7 +681,7 @@ str(aid)         # sjekker hvilke variabler som er numeriske, str(aid hvis du ik
 ``` r
 aid %>%
 select(6:13) %>% # Her tar vi med variablene fra gdp_growth (nr 6) til aid (nr 13)
-  cor(, use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
+  cor(., use = "pairwise.complete.obs")  # korrelasjonsmatrise basert på numeriske variabler
 ```
 
     ##                 gdp_growth gdp_pr_capita economic_open budget_balance
@@ -719,7 +735,7 @@ du lager en tabell med fordelingen av observasjoner som har høyere vekst
 enn medianveksten i utvalget, ved hjelp av en logisk test:
 
 ``` r
-table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE))
+table(aid$gdp_growth > median(aid$gdp_growth, na.rm = TRUE))
 ```
 
     ## 
@@ -727,7 +743,7 @@ table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE))
     ##   163   162
 
 ``` r
-table(aid$gdp_growth>median(aid$gdp_growth, na.rm = TRUE), aid$country)
+table(aid$gdp_growth > median(aid$gdp_growth, na.rm = TRUE), aid$country)
 ```
 
     ##        
@@ -756,9 +772,12 @@ nødvendigvis at dataene er gode generelt).
 
 **Oppgave:** Lag et nytt datasett ved hjelp av `group_by()` og
 `summarise()`, der du oppretter variabler som viser korrelasjon
-(Pearsons r) mellom: *`aid`, og `gdp_growth` * `aid` og `policy` \*
-`policy` og `gdp_growth` separat for hver region. Er det store
-forskjeller i korrelasjonene mellom regionene?
+(Pearsons r) mellom:
+
+*`aid`, og `gdp_growth` * `aid` og `policy` \* `policy` og `gdp_growth`
+
+separat for hver region. Er det store forskjeller i korrelasjonene
+mellom regionene?
 
 Lag deretter to nye variabler, `good_policy` og `good_policy2`, slik at
 observasjoner som har positive verdier på henholdsvis variablene
@@ -869,11 +888,9 @@ aid %>%
 ``` r
 # Velger land med %in%, fint for mindre sammenligninger
 aid %>% 
-  filter(country %in% c("KEN", "ETH", "MOZ", "AGO", "RWA")) %>%
+  filter(country %in% c("KEN", "ETH", "GHA", "SOM", "TZA")) %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))
 ```
-
-<!--fixme: det virker som "MOZ", "AGO", "RWA" er missing, skal man endre til "GHA", "SOM", "TZA" som under?-->
 
 <img src="./bilder/seminar2_5.png" width="2100" />
 
@@ -931,323 +948,10 @@ grupper av enheter.
 argumentet? Forsøk å fjerne ett og ett argument i plottet over for å se
 hva argumentene gjør.
 
-## Lineær regresjon (OLS) <a name="ols"></a>
-
-### Syntaks
-
-For å kjøre en lineær regresjon i R, bruker vi funksjonen `lm()`, som
-har følgende syntaks:
+For å lagre datasettet til neste seminar kan vi kjøre følgende kode:
 
 ``` r
-lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
-# på mac får du ~ med alt + k + space
-```
-
-La oss se på et eksempel med `aid` datasettet vi har brukt så langt:
-
-``` r
-m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 om objekt
-summary(m1) # ser på resultatene med summary()
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = gdp_growth ~ aid, data = aid)
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -12.813  -2.181   0.144   2.153  15.443 
-    ## 
-    ## Coefficients:
-    ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   1.5570     0.2730   5.704 2.64e-08 ***
-    ## aid          -0.2993     0.1036  -2.889  0.00412 ** 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 3.711 on 323 degrees of freedom
-    ##   (6 observations deleted due to missingness)
-    ## Multiple R-squared:  0.02519,    Adjusted R-squared:  0.02218 
-    ## F-statistic: 8.348 on 1 and 323 DF,  p-value: 0.004122
-
-``` r
-class(m1) # Legg merke til at vi har et objekt av en ny klasse!
-```
-
-    ## [1] "lm"
-
-``` r
-str(m1) # Gir oss informasjon om hva objektet inneholder.
-```
-
-    ## List of 13
-    ##  $ coefficients : Named num [1:2] 1.557 -0.299
-    ##   ..- attr(*, "names")= chr [1:2] "(Intercept)" "aid"
-    ##  $ residuals    : Named num [1:325] 0.149 -0.474 -2.665 -4.099 -2.652 ...
-    ##   ..- attr(*, "format.stata")= chr "%10.0g"
-    ##   ..- attr(*, "names")= chr [1:325] "1" "2" "3" "4" ...
-    ##  $ effects      : Named num [1:325] -18.73 -10.72 -2.65 -4.09 -2.64 ...
-    ##   ..- attr(*, "format.stata")= chr "%10.0g"
-    ##   ..- attr(*, "names")= chr [1:325] "(Intercept)" "aid" "" "" ...
-    ##  $ rank         : int 2
-    ##  $ fitted.values: Named num [1:325] 1.55 1.55 1.55 1.55 1.55 ...
-    ##   ..- attr(*, "format.stata")= chr "%10.0g"
-    ##   ..- attr(*, "names")= chr [1:325] "1" "2" "3" "4" ...
-    ##  $ assign       : int [1:2] 0 1
-    ##  $ qr           :List of 5
-    ##   ..$ qr   : num [1:325, 1:2] -18.0278 0.0555 0.0555 0.0555 0.0555 ...
-    ##   .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. ..$ : chr [1:325] "1" "2" "3" "4" ...
-    ##   .. .. ..$ : chr [1:2] "(Intercept)" "aid"
-    ##   .. ..- attr(*, "assign")= int [1:2] 0 1
-    ##   ..$ qraux: num [1:2] 1.06 1.05
-    ##   ..$ pivot: int [1:2] 1 2
-    ##   ..$ tol  : num 1e-07
-    ##   ..$ rank : int 2
-    ##   ..- attr(*, "class")= chr "qr"
-    ##  $ df.residual  : int 323
-    ##  $ na.action    : 'omit' Named int [1:6] 79 80 81 296 297 298
-    ##   ..- attr(*, "names")= chr [1:6] "79" "80" "81" "296" ...
-    ##  $ xlevels      : Named list()
-    ##  $ call         : language lm(formula = gdp_growth ~ aid, data = aid)
-    ##  $ terms        :Classes 'terms', 'formula'  language gdp_growth ~ aid
-    ##   .. ..- attr(*, "variables")= language list(gdp_growth, aid)
-    ##   .. ..- attr(*, "factors")= int [1:2, 1] 0 1
-    ##   .. .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. .. ..$ : chr [1:2] "gdp_growth" "aid"
-    ##   .. .. .. ..$ : chr "aid"
-    ##   .. ..- attr(*, "term.labels")= chr "aid"
-    ##   .. ..- attr(*, "order")= int 1
-    ##   .. ..- attr(*, "intercept")= int 1
-    ##   .. ..- attr(*, "response")= int 1
-    ##   .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
-    ##   .. ..- attr(*, "predvars")= language list(gdp_growth, aid)
-    ##   .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
-    ##   .. .. ..- attr(*, "names")= chr [1:2] "gdp_growth" "aid"
-    ##  $ model        :'data.frame':   325 obs. of  2 variables:
-    ##   ..$ gdp_growth: num [1:325] 1.7 1.08 -1.12 -2.55 -1.1 ...
-    ##   .. ..- attr(*, "format.stata")= chr "%10.0g"
-    ##   ..$ aid       : num [1:325] 0.0182 0.0172 0.024 0.03 0.0157 ...
-    ##   .. ..- attr(*, "format.stata")= chr "%10.0g"
-    ##   ..- attr(*, "terms")=Classes 'terms', 'formula'  language gdp_growth ~ aid
-    ##   .. .. ..- attr(*, "variables")= language list(gdp_growth, aid)
-    ##   .. .. ..- attr(*, "factors")= int [1:2, 1] 0 1
-    ##   .. .. .. ..- attr(*, "dimnames")=List of 2
-    ##   .. .. .. .. ..$ : chr [1:2] "gdp_growth" "aid"
-    ##   .. .. .. .. ..$ : chr "aid"
-    ##   .. .. ..- attr(*, "term.labels")= chr "aid"
-    ##   .. .. ..- attr(*, "order")= int 1
-    ##   .. .. ..- attr(*, "intercept")= int 1
-    ##   .. .. ..- attr(*, "response")= int 1
-    ##   .. .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
-    ##   .. .. ..- attr(*, "predvars")= language list(gdp_growth, aid)
-    ##   .. .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
-    ##   .. .. .. ..- attr(*, "names")= chr [1:2] "gdp_growth" "aid"
-    ##   ..- attr(*, "na.action")= 'omit' Named int [1:6] 79 80 81 296 297 298
-    ##   .. ..- attr(*, "names")= chr [1:6] "79" "80" "81" "296" ...
-    ##  - attr(*, "class")= chr "lm"
-
-### Multivariat regresjon
-
-Vi legger inn flere uavhengige variabler med `+`.
-
-``` r
-m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
-summary(m2)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = gdp_growth ~ aid + policy + region, data = aid)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -12.0602  -1.5846   0.0482   1.6046  13.0322 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)              -1.39093    0.67152  -2.071  0.03925 *  
-    ## aid                       0.04299    0.13890   0.310  0.75716    
-    ## policy                    1.18962    0.17850   6.665 1.42e-10 ***
-    ## regionEast Asia           2.53400    0.89055   2.845  0.00477 ** 
-    ## regionOther               1.59810    0.66834   2.391  0.01746 *  
-    ## regionSub-Saharan Africa  0.25936    0.73216   0.354  0.72343    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 3.177 on 278 degrees of freedom
-    ##   (47 observations deleted due to missingness)
-    ## Multiple R-squared:  0.2489, Adjusted R-squared:  0.2353 
-    ## F-statistic: 18.42 on 5 and 278 DF,  p-value: 8.51e-16
-
-``` r
-# Her kombinerer vi summary() og opprettelse av modellobjekt på samme linje
-```
-
-<!--fixme: kan vi stoppe her og flytte resten til seminar 3? Mulig vi må revurdere oppgavesettet, men seminar 2 har veldig mye innhold. -->
-
-### Samspill
-
-Hypotesen til artikkelforfatterne var følgende: *bistand fører til
-økonomisk vekst, men bare dersom de fører en god makroøkonomisk
-politikk*. Dette kan vi sjekke ved hjelp av samspill, som undersøker
-hvor vidt en effekt av en variabel er avhengig av en annen variabel. Vi
-legger inn samspill ved å sette `*` (gangetegn) mellom to variabler. De
-individuelle regresjonskoeffisientene til variablene vi spesifisere
-samspill mellom blir automatisk lagt til.
-
-``` r
-m3 <- lm(gdp_growth ~ aid*policy + region, data = aid)
-summary(m3)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = gdp_growth ~ aid * policy + region, data = aid)
-    ## 
-    ## Residuals:
-    ##      Min       1Q   Median       3Q      Max 
-    ## -12.0036  -1.5992   0.0656   1.6797  13.0322 
-    ## 
-    ## Coefficients:
-    ##                          Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)              -1.18482    0.68672  -1.725 0.085580 .  
-    ## aid                      -0.08509    0.16666  -0.511 0.610047    
-    ## policy                    0.95688    0.24488   3.908 0.000117 ***
-    ## regionEast Asia           2.89485    0.92643   3.125 0.001969 ** 
-    ## regionOther               1.62581    0.66754   2.436 0.015501 *  
-    ## regionSub-Saharan Africa  0.23426    0.73118   0.320 0.748914    
-    ## aid:policy                0.14765    0.10655   1.386 0.166951    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 3.172 on 277 degrees of freedom
-    ##   (47 observations deleted due to missingness)
-    ## Multiple R-squared:  0.254,  Adjusted R-squared:  0.2379 
-    ## F-statistic: 15.72 on 6 and 277 DF,  p-value: 1.553e-15
-
-### Andregradsledd og andre omkodinger
-
-Vi kan legge inn andregradsledd eller andre omkodinger av variabler i
-regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en
-variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske
-transformasjoner brukes gjerne for eksponentiell vekst eller for å
-minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig
-hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
-
-Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen
-`poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()`
-omkoding og et andregradsledd. Merk at dere må legge inn
-førstegradsleddet separat når dere legger inn andregradsledd. Dersom en
-variabeltransformasjon krever mer enn en enkel funksjon, er det fint å
-opprette en ny variabel i datasettet.
-
-``` r
-m4 <- lm(gdp_growth ~ log(gdp_growth) + institutional_quality + I(institutional_quality^2) + region + aid*policy +  as_factor(period), 
-         data = aid, 
-         na.action = "na.exclude")
-```
-
-    ## Warning in log(gdp_growth): NaNs produced
-
-``` r
-summary(m4)
-```
-
-    ## 
-    ## Call:
-    ## lm(formula = gdp_growth ~ log(gdp_growth) + institutional_quality + 
-    ##     I(institutional_quality^2) + region + aid * policy + as_factor(period), 
-    ##     data = aid, na.action = "na.exclude")
-    ## 
-    ## Residuals:
-    ##     Min      1Q  Median      3Q     Max 
-    ## -1.5491 -0.6381 -0.2794  0.2334  5.8063 
-    ## 
-    ## Coefficients:
-    ##                            Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)                 0.61904    1.39080   0.445    0.657    
-    ## log(gdp_growth)             2.19238    0.11384  19.259   <2e-16 ***
-    ## institutional_quality      -0.01132    0.63542  -0.018    0.986    
-    ## I(institutional_quality^2)  0.02546    0.06782   0.375    0.708    
-    ## regionEast Asia             0.40637    0.43456   0.935    0.351    
-    ## regionOther                 0.16802    0.32988   0.509    0.611    
-    ## regionSub-Saharan Africa    0.37242    0.39646   0.939    0.349    
-    ## aid                         0.16294    0.10210   1.596    0.112    
-    ## policy                      0.04088    0.13006   0.314    0.754    
-    ## as_factor(period)3         -0.26451    0.26831  -0.986    0.326    
-    ## as_factor(period)4         -0.31866    0.28853  -1.104    0.271    
-    ## as_factor(period)5         -0.29366    0.35904  -0.818    0.415    
-    ## as_factor(period)6         -0.42575    0.30639  -1.390    0.167    
-    ## as_factor(period)7         -0.40360    0.32067  -1.259    0.210    
-    ## aid:policy                 -0.03925    0.05413  -0.725    0.469    
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Residual standard error: 1.163 on 165 degrees of freedom
-    ##   (151 observations deleted due to missingness)
-    ## Multiple R-squared:  0.7714, Adjusted R-squared:  0.752 
-    ## F-statistic: 39.76 on 14 and 165 DF,  p-value: < 2.2e-16
-
-En nyttig pakke for å lage fine tabeller med resultatet fra
-regresjonsanalyser er `stargazer`.
-
-``` r
-#install.packages("stargazer")
-library(stargazer)
-stargazer(m2, m3,
-          type = "text") 
-```
-
-    ## 
-    ## ========================================================================
-    ##                                        Dependent variable:              
-    ##                          -----------------------------------------------
-    ##                                            gdp_growth                   
-    ##                                    (1)                     (2)          
-    ## ------------------------------------------------------------------------
-    ## aid                               0.043                  -0.085         
-    ##                                  (0.139)                 (0.167)        
-    ##                                                                         
-    ## policy                          1.190***                0.957***        
-    ##                                  (0.178)                 (0.245)        
-    ##                                                                         
-    ## regionEast Asia                 2.534***                2.895***        
-    ##                                  (0.891)                 (0.926)        
-    ##                                                                         
-    ## regionOther                      1.598**                 1.626**        
-    ##                                  (0.668)                 (0.668)        
-    ##                                                                         
-    ## regionSub-Saharan Africa          0.259                   0.234         
-    ##                                  (0.732)                 (0.731)        
-    ##                                                                         
-    ## aid:policy                                                0.148         
-    ##                                                          (0.107)        
-    ##                                                                         
-    ## Constant                        -1.391**                 -1.185*        
-    ##                                  (0.672)                 (0.687)        
-    ##                                                                         
-    ## ------------------------------------------------------------------------
-    ## Observations                       284                     284          
-    ## R2                                0.249                   0.254         
-    ## Adjusted R2                       0.235                   0.238         
-    ## Residual Std. Error         3.177 (df = 278)        3.172 (df = 277)    
-    ## F Statistic              18.421*** (df = 5; 278) 15.721*** (df = 6; 277)
-    ## ========================================================================
-    ## Note:                                        *p<0.1; **p<0.05; ***p<0.01
-
-``` r
-# Om du skriver i word så kan du bruke type="html", lagre i en mappe og åpne i word.
-# obs. bruk .htm og ikke .html
-stargazer(m2, m4,
-          type = "html",
-          out = "./bilder/regresjonstabell.htm") 
-
-# Om du skriver i Latex så kan du bruker type = "latex" og kopiere inn output direkte, eller lagre i en mappe og hente inn via latex
-stargazer(m2, m4,
-          type = "latex") 
-
-# Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer. 
+save(aid, file = "aid.Rdata")
 ```
 
 ## Takk for i dag!

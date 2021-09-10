@@ -1,27 +1,14 @@
 Seminar 3
 ================
 
-I dag skal vi fortsette med OLS og databehandling: 1. Hvordan plotter vi
-resultater fra OLS? 3. Hvordan slår vi sammen flere datasett?
+I dag skal vi fortsette med databehandling og jobbe med OLS:
 
-Først: er det noen spørsmål til det vi gikk gjennom i går? Dersom du
-synes manipulering av data er vanskelig så kan det hjelpe å ta en titt
-på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig på flere måter
-å omkode variabler på så kan du kikke på kapittel 5 i [**R for Data
-Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate).
-Og ikke glem: internett er din venn når du skal lære R.
+1.  Hvordan kjører vi OLS-modeller i R?
+2.  Hvordan plotter vi resultater fra OLS?
+3.  Hvordan slår vi sammen flere datasett?
 
-Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig
-viktig** å sjekke om forutsetningene for OLS og/eller logistisk modell
-er oppfylt. Dette går vi gjennom på [fordypningsseminar
-1](https://github.com/martigso/stv4020aR21/blob/main/fordypningsseminar%201/Fordypningsseminar-1-Forutsetninger.md).
-
-## Hvordan plotte resutlater fra OLS?
-
-I dag skal vi plotte resultatene og gjøre regresjonsdiagnostikk på
-modellen fra **Burnside and Dollar** - samme artikkel som vi har brukt
-tidligere i uka og samme som dere repliserte i oppgaven i går. Først
-laster vi inn pakker, data og kjører modellen.
+Det første vi skal gjøre er å laste inn pakken `tidyverse`, laste inn
+data og gjøre noen nødvendige omkodinger:
 
 ``` r
 library(tidyverse)
@@ -42,111 +29,349 @@ library(tidyverse)
 # Laster inn data
 load("./aid.RData")
 
-# Gjør de nødvendige omkodingene som dere gjorde i oppgaven
+# Omkoder regionvariabelen:
 aid <- aid %>% 
-  mutate(log_gdp_pr_capita = log(gdp_pr_capita),
-         period_fac = as.factor(period),
-         region = ifelse(fast_growing_east_asia == 1, "East Asia",
+  mutate(region = ifelse(fast_growing_east_asia == 1, "East Asia",
                          ifelse(sub_saharan_africa == 1, "Sub-Saharan Africa", "Other")),
          region = factor(region, levels = c("Other", "Sub-Saharan Africa", "East Asia")))
-
-# Kjører modellen og bevarer informasjon om missing med na.action = "na.exclude"
-m5 <- lm(data = aid, 
-         gdp_growth ~ log_gdp_pr_capita + ethnic_frac*assasinations + 
-           institutional_quality + m2_gdp_lagged + region + policy*aid +
-           period_fac, 
-         na.action = "na.exclude")
-
-# Printer resultatene i en tabell
-library(stargazer)
 ```
 
-    ## 
-    ## Please cite as:
+Før vi setter i gang, er det noen spørsmål til det vi gikk gjennom i
+går? Dersom du synes manipulering av data er vanskelig så kan det hjelpe
+å ta en titt på kapittel seks i **Lær deg R**. Dersom du er nysgjerrig
+på flere måter å omkode variabler på så kan du kikke på kapittel 5 i
+[**R for Data
+Science**](https://r4ds.had.co.nz/transform.html#add-new-variables-with-mutate).
+Og ikke glem: internett er din venn når du skal lære R.
 
-    ##  Hlavac, Marek (2018). stargazer: Well-Formatted Regression and Summary Statistics Tables.
+Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig
+viktig** å sjekke om forutsetningene for OLS og/eller logistisk modell
+er oppfylt. Dette går vi gjennom på [fordypningsseminar
+1](https://github.com/martigso/stv4020aR21/blob/main/fordypningsseminar%201/Fordypningsseminar-1-Forutsetninger.md).
 
-    ##  R package version 5.2.2. https://CRAN.R-project.org/package=stargazer
+## Lineær regresjon (OLS) <a name="ols"></a>
+
+### Syntaks
+
+For å kjøre en lineær regresjon i R, bruker vi funksjonen `lm()`, som
+har følgende syntaks:
 
 ``` r
-stargazer(m5, type = "text")
+lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
+# på mac får du ~ med alt + k + space
+```
+
+La oss se på et eksempel med `aid` datasettet vi har brukt så langt:
+
+``` r
+m1 <- lm(gdp_growth ~ aid, data = aid) # lagrer m1 som objekt
+summary(m1) # ser på resultatene med summary()
 ```
 
     ## 
-    ## =====================================================
-    ##                               Dependent variable:    
-    ##                           ---------------------------
-    ##                                   gdp_growth         
-    ## -----------------------------------------------------
-    ## log_gdp_pr_capita                   -0.600           
-    ##                                     (0.393)          
-    ##                                                      
-    ## ethnic_frac                         -0.424           
-    ##                                     (0.810)          
-    ##                                                      
-    ## assasinations                       -0.449           
-    ##                                     (0.301)          
-    ##                                                      
-    ## institutional_quality              0.687***          
-    ##                                     (0.175)          
-    ##                                                      
-    ## m2_gdp_lagged                        0.012           
-    ##                                     (0.016)          
-    ##                                                      
-    ## regionSub-Saharan Africa           -1.872***         
-    ##                                     (0.681)          
-    ##                                                      
-    ## regionEast Asia                     1.307*           
-    ##                                     (0.731)          
-    ##                                                      
-    ## policy                             0.712***          
-    ##                                     (0.244)          
-    ##                                                      
-    ## aid                                 -0.021           
-    ##                                     (0.178)          
-    ##                                                      
-    ## period_fac3                         -0.013           
-    ##                                     (0.620)          
-    ##                                                      
-    ## period_fac4                        -1.414**          
-    ##                                     (0.629)          
-    ##                                                      
-    ## period_fac5                        -3.470***         
-    ##                                     (0.641)          
-    ##                                                      
-    ## period_fac6                        -2.010***         
-    ##                                     (0.661)          
-    ##                                                      
-    ## period_fac7                        -2.256***         
-    ##                                     (0.708)          
-    ##                                                      
-    ## ethnic_frac:assasinations            0.792           
-    ##                                     (0.620)          
-    ##                                                      
-    ## policy:aid                          0.186*           
-    ##                                     (0.101)          
-    ##                                                      
-    ## Constant                             3.391           
-    ##                                     (2.945)          
-    ##                                                      
-    ## -----------------------------------------------------
-    ## Observations                          270            
-    ## R2                                   0.394           
-    ## Adjusted R2                          0.356           
-    ## Residual Std. Error            2.873 (df = 253)      
-    ## F Statistic                10.297*** (df = 16; 253)  
-    ## =====================================================
-    ## Note:                     *p<0.1; **p<0.05; ***p<0.01
+    ## Call:
+    ## lm(formula = gdp_growth ~ aid, data = aid)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -12.813  -2.181   0.144   2.153  15.443 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   1.5570     0.2730   5.704 2.64e-08 ***
+    ## aid          -0.2993     0.1036  -2.889  0.00412 ** 
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3.711 on 323 degrees of freedom
+    ##   (6 observations deleted due to missingness)
+    ## Multiple R-squared:  0.02519,    Adjusted R-squared:  0.02218 
+    ## F-statistic: 8.348 on 1 and 323 DF,  p-value: 0.004122
 
-Så plotter vi effekten av institusjonell kvalitet på vekst i BNP (GDP).
-Vi går ikke veldig nøye inn på dette nå, men les gjerne [denne guiden
-til
-regresjonsplot](https://github.com/liserodland/stv4020aR/blob/master/Materiell%20fra%20tidl%20semestre/docs/Regresjonsplot.md).
-For å plotte en regresjonslinje så oppretter vi først et datasett der vi
-holder alle uavhengige variabler, bortsett fra den vi vil plotte
-effekten til, konstante. Her velger jeg å la `institutional_quality`
-variere fra minimums- til maksimumsverdien og setter resten av
-variablene til gjennomsnitt eller modusverdi. Neste steg er å predikere
+``` r
+class(m1) # Legg merke til at vi har et objekt av en ny klasse!
+```
+
+    ## [1] "lm"
+
+``` r
+str(m1) # Gir oss informasjon om hva objektet inneholder.
+```
+
+    ## List of 13
+    ##  $ coefficients : Named num [1:2] 1.557 -0.299
+    ##   ..- attr(*, "names")= chr [1:2] "(Intercept)" "aid"
+    ##  $ residuals    : Named num [1:325] 0.149 -0.474 -2.665 -4.099 -2.652 ...
+    ##   ..- attr(*, "format.stata")= chr "%10.0g"
+    ##   ..- attr(*, "names")= chr [1:325] "1" "2" "3" "4" ...
+    ##  $ effects      : Named num [1:325] -18.73 -10.72 -2.65 -4.09 -2.64 ...
+    ##   ..- attr(*, "format.stata")= chr "%10.0g"
+    ##   ..- attr(*, "names")= chr [1:325] "(Intercept)" "aid" "" "" ...
+    ##  $ rank         : int 2
+    ##  $ fitted.values: Named num [1:325] 1.55 1.55 1.55 1.55 1.55 ...
+    ##   ..- attr(*, "format.stata")= chr "%10.0g"
+    ##   ..- attr(*, "names")= chr [1:325] "1" "2" "3" "4" ...
+    ##  $ assign       : int [1:2] 0 1
+    ##  $ qr           :List of 5
+    ##   ..$ qr   : num [1:325, 1:2] -18.0278 0.0555 0.0555 0.0555 0.0555 ...
+    ##   .. ..- attr(*, "dimnames")=List of 2
+    ##   .. .. ..$ : chr [1:325] "1" "2" "3" "4" ...
+    ##   .. .. ..$ : chr [1:2] "(Intercept)" "aid"
+    ##   .. ..- attr(*, "assign")= int [1:2] 0 1
+    ##   ..$ qraux: num [1:2] 1.06 1.05
+    ##   ..$ pivot: int [1:2] 1 2
+    ##   ..$ tol  : num 1e-07
+    ##   ..$ rank : int 2
+    ##   ..- attr(*, "class")= chr "qr"
+    ##  $ df.residual  : int 323
+    ##  $ na.action    : 'omit' Named int [1:6] 79 80 81 296 297 298
+    ##   ..- attr(*, "names")= chr [1:6] "79" "80" "81" "296" ...
+    ##  $ xlevels      : Named list()
+    ##  $ call         : language lm(formula = gdp_growth ~ aid, data = aid)
+    ##  $ terms        :Classes 'terms', 'formula'  language gdp_growth ~ aid
+    ##   .. ..- attr(*, "variables")= language list(gdp_growth, aid)
+    ##   .. ..- attr(*, "factors")= int [1:2, 1] 0 1
+    ##   .. .. ..- attr(*, "dimnames")=List of 2
+    ##   .. .. .. ..$ : chr [1:2] "gdp_growth" "aid"
+    ##   .. .. .. ..$ : chr "aid"
+    ##   .. ..- attr(*, "term.labels")= chr "aid"
+    ##   .. ..- attr(*, "order")= int 1
+    ##   .. ..- attr(*, "intercept")= int 1
+    ##   .. ..- attr(*, "response")= int 1
+    ##   .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
+    ##   .. ..- attr(*, "predvars")= language list(gdp_growth, aid)
+    ##   .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
+    ##   .. .. ..- attr(*, "names")= chr [1:2] "gdp_growth" "aid"
+    ##  $ model        :'data.frame':   325 obs. of  2 variables:
+    ##   ..$ gdp_growth: num [1:325] 1.7 1.08 -1.12 -2.55 -1.1 ...
+    ##   .. ..- attr(*, "format.stata")= chr "%10.0g"
+    ##   ..$ aid       : num [1:325] 0.0182 0.0172 0.024 0.03 0.0157 ...
+    ##   .. ..- attr(*, "format.stata")= chr "%10.0g"
+    ##   ..- attr(*, "terms")=Classes 'terms', 'formula'  language gdp_growth ~ aid
+    ##   .. .. ..- attr(*, "variables")= language list(gdp_growth, aid)
+    ##   .. .. ..- attr(*, "factors")= int [1:2, 1] 0 1
+    ##   .. .. .. ..- attr(*, "dimnames")=List of 2
+    ##   .. .. .. .. ..$ : chr [1:2] "gdp_growth" "aid"
+    ##   .. .. .. .. ..$ : chr "aid"
+    ##   .. .. ..- attr(*, "term.labels")= chr "aid"
+    ##   .. .. ..- attr(*, "order")= int 1
+    ##   .. .. ..- attr(*, "intercept")= int 1
+    ##   .. .. ..- attr(*, "response")= int 1
+    ##   .. .. ..- attr(*, ".Environment")=<environment: R_GlobalEnv> 
+    ##   .. .. ..- attr(*, "predvars")= language list(gdp_growth, aid)
+    ##   .. .. ..- attr(*, "dataClasses")= Named chr [1:2] "numeric" "numeric"
+    ##   .. .. .. ..- attr(*, "names")= chr [1:2] "gdp_growth" "aid"
+    ##   ..- attr(*, "na.action")= 'omit' Named int [1:6] 79 80 81 296 297 298
+    ##   .. ..- attr(*, "names")= chr [1:6] "79" "80" "81" "296" ...
+    ##  - attr(*, "class")= chr "lm"
+
+### Multivariat regresjon
+
+Vi legger inn flere uavhengige variabler med `+`.
+
+``` r
+m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
+summary(m2)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = gdp_growth ~ aid + policy + region, data = aid)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -12.0631  -1.6756  -0.0298   1.6239  12.9271 
+    ## 
+    ## Coefficients:
+    ##                           Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)               0.008186   0.332280   0.025   0.9804    
+    ## aid                      -0.004915   0.138609  -0.035   0.9717    
+    ## policy                    1.157168   0.179478   6.447 4.99e-10 ***
+    ## regionSub-Saharan Africa -0.961814   0.529052  -1.818   0.0701 .  
+    ## regionEast Asia           1.239202   0.712964   1.738   0.0833 .  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3.204 on 279 degrees of freedom
+    ##   (47 observations deleted due to missingness)
+    ## Multiple R-squared:  0.2334, Adjusted R-squared:  0.2224 
+    ## F-statistic: 21.24 on 4 and 279 DF,  p-value: 2.645e-15
+
+### Samspill
+
+Hypotesen til artikkelforfatterne var følgende: *bistand fører til
+økonomisk vekst, men bare dersom de fører en god makroøkonomisk
+politikk*. Dette kan vi sjekke ved hjelp av samspill, som undersøker
+hvor vidt en effekt av en variabel er avhengig av en annen variabel. Vi
+legger inn samspill ved å sette `*` (gangetegn) mellom to variabler. De
+individuelle regresjonskoeffisientene til variablene vi spesifisere
+samspill mellom blir automatisk lagt til.
+
+``` r
+m3 <- lm(gdp_growth ~ aid * policy + region, data = aid)
+summary(m3)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = gdp_growth ~ aid * policy + region, data = aid)
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -12.0096  -1.7193  -0.0145   1.6436  12.9254 
+    ## 
+    ## Coefficients:
+    ##                          Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                0.2264     0.3718   0.609 0.543033    
+    ## aid                       -0.1270     0.1672  -0.760 0.448074    
+    ## policy                     0.9362     0.2469   3.792 0.000183 ***
+    ## regionSub-Saharan Africa  -1.0056     0.5295  -1.899 0.058552 .  
+    ## regionEast Asia            1.5598     0.7535   2.070 0.039359 *  
+    ## aid:policy                 0.1399     0.1074   1.302 0.194043    
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 3.2 on 278 degrees of freedom
+    ##   (47 observations deleted due to missingness)
+    ## Multiple R-squared:  0.2381, Adjusted R-squared:  0.2244 
+    ## F-statistic: 17.37 on 5 and 278 DF,  p-value: 5.806e-15
+
+### Andregradsledd og andre omkodinger
+
+Vi kan legge inn andregradsledd eller andre omkodinger av variabler i
+regresjonsligningene våre. Annengradsledd er fine hvis vi antar at en
+variabels effekt ikke er lineær, men snarere kurvformet. Logaritmiske
+transformasjoner brukes gjerne for eksponentiell vekst eller for å
+minske skjevhet. Omkoding til kategorisk variabel (faktor) er nyttig
+hvis vi antar at variabelen inneholder et sett med distinkte kategorier.
+
+Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen
+`poly()`. Under har jeg lagt inn en `log()` omkoding, en `as.factor()`
+omkoding og et andregradsledd. Merk at dere må legge inn
+førstegradsleddet separat når dere legger inn andregradsledd. Dersom en
+variabeltransformasjon krever mer enn en enkel funksjon, er det fint å
+opprette en ny variabel i datasettet.
+
+``` r
+m4 <- lm(gdp_growth ~ log(gdp_pr_capita) + institutional_quality + I(institutional_quality^2) + region + aid * policy +  as_factor(period), 
+         data = aid,
+         na.action = "na.exclude")
+summary(m4)
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = gdp_growth ~ log(gdp_pr_capita) + institutional_quality + 
+    ##     I(institutional_quality^2) + region + aid * policy + as_factor(period), 
+    ##     data = aid, na.action = "na.exclude")
+    ## 
+    ## Residuals:
+    ##      Min       1Q   Median       3Q      Max 
+    ## -10.8607  -1.6481  -0.1053   1.6658  11.9983 
+    ## 
+    ## Coefficients:
+    ##                             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)                 1.449521   3.944521   0.367 0.713556    
+    ## log(gdp_pr_capita)         -0.608863   0.384003  -1.586 0.114030    
+    ## institutional_quality       1.628579   1.158230   1.406 0.160868    
+    ## I(institutional_quality^2) -0.096518   0.128099  -0.753 0.451839    
+    ## regionSub-Saharan Africa   -2.194598   0.555105  -3.953 9.89e-05 ***
+    ## regionEast Asia             1.544393   0.737649   2.094 0.037240 *  
+    ## aid                         0.007766   0.167085   0.046 0.962962    
+    ## policy                      0.659596   0.240154   2.747 0.006435 ** 
+    ## as_factor(period)3         -0.014105   0.598378  -0.024 0.981212    
+    ## as_factor(period)4         -1.374148   0.606235  -2.267 0.024215 *  
+    ## as_factor(period)5         -3.351240   0.615410  -5.446 1.18e-07 ***
+    ## as_factor(period)6         -1.872354   0.618005  -3.030 0.002690 ** 
+    ## as_factor(period)7         -2.282958   0.668132  -3.417 0.000733 ***
+    ## aid:policy                  0.203765   0.103415   1.970 0.049839 *  
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 2.859 on 265 degrees of freedom
+    ##   (52 observations deleted due to missingness)
+    ## Multiple R-squared:  0.3855, Adjusted R-squared:  0.3553 
+    ## F-statistic: 12.79 on 13 and 265 DF,  p-value: < 2.2e-16
+
+En nyttig pakke for å lage fine tabeller med resultatet fra
+regresjonsanalyser er `stargazer`.
+
+``` r
+#install.packages("stargazer")
+library(stargazer)
+stargazer(m2, m3,
+          type = "text") 
+```
+
+    ## 
+    ## ========================================================================
+    ##                                        Dependent variable:              
+    ##                          -----------------------------------------------
+    ##                                            gdp_growth                   
+    ##                                    (1)                     (2)          
+    ## ------------------------------------------------------------------------
+    ## aid                              -0.005                  -0.127         
+    ##                                  (0.139)                 (0.167)        
+    ##                                                                         
+    ## policy                          1.157***                0.936***        
+    ##                                  (0.179)                 (0.247)        
+    ##                                                                         
+    ## regionSub-Saharan Africa         -0.962*                 -1.006*        
+    ##                                  (0.529)                 (0.529)        
+    ##                                                                         
+    ## regionEast Asia                  1.239*                  1.560**        
+    ##                                  (0.713)                 (0.753)        
+    ##                                                                         
+    ## aid:policy                                                0.140         
+    ##                                                          (0.107)        
+    ##                                                                         
+    ## Constant                          0.008                   0.226         
+    ##                                  (0.332)                 (0.372)        
+    ##                                                                         
+    ## ------------------------------------------------------------------------
+    ## Observations                       284                     284          
+    ## R2                                0.233                   0.238         
+    ## Adjusted R2                       0.222                   0.224         
+    ## Residual Std. Error         3.204 (df = 279)        3.200 (df = 278)    
+    ## F Statistic              21.237*** (df = 4; 279) 17.371*** (df = 5; 278)
+    ## ========================================================================
+    ## Note:                                        *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+# Om du skriver i word så kan du bruke type="html", lagre i en mappe og åpne i word.
+# obs. bruk .htm og ikke .html i filnavnet
+stargazer(m2, m4,
+          type = "html",
+          out = "./bilder/regresjonstabell.htm") 
+
+# Om du skriver i Latex så kan du bruker type = "latex" og kopiere inn output direkte, eller lagre i en mappe og hente inn via latex
+stargazer(m2, m4,
+          type = "latex") 
+
+# Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer. 
+```
+
+## Hvordan plotte resutlater fra OLS?
+
+Før vi skal i gang med å plotte effekter så skal vi kjøre en litt
+enklere modell. Dette vil forhåpentligvis gjøre de neste stegene litt
+lettere å forstå:
+
+``` r
+# Kjører en redusert modell
+m6 <- lm(data = aid, 
+         gdp_growth ~ aid + policy, 
+         na.action = "na.exclude")
+```
+
+Les gjerne [denne guiden til
+regresjonsplot](https://github.com/liserodland/stv4020aR/blob/master/Materiell%20fra%20tidl%20semestre/docs/Regresjonsplot.md)
+for en grundig innføring i hva vi skal gjøre nå. For å plotte en
+regresjonslinje så oppretter vi først et datasett der vi holder alle
+uavhengige variabler, bortsett fra den vi vil plotte effekten til,
+konstante. Her velger jeg å la `policy` variere fra minimums- til
+maksimumsverdien og setter resten av de uavhengige variablene (her bare
+`aid`) til gjennomsnitt eller modusverdi. Neste steg er å predikere
 verdier for det nye datasettet basert på modellen vår ved hjelp av
 `predict()`. `predict()` tar datasettet vi har laget og gir oss blant
 annet predikerte verdier og konfidensintervaller basert på modellen vår.
@@ -156,82 +381,84 @@ likt antall observasjoner som vi har i datasettet vårt så er det viktig
 å bevare informasjon om de observasjonene som har missing. Dette gjør vi
 med argumentet `na.action = "na.exclude` i `lm()`.
 
-<!--fixme: bør vi bruke ggeffects i stedet for? Sparer mange kodelinjer, men gir kanskje mindre forståelse for hva som skjer? Dette var uansett noe mange synes var veldig vanskelig i fjor. -->
-
 ``` r
 # Lager datasettet
-snitt_data <- data.frame(log_gdp_pr_capita = mean(aid$log_gdp_pr_capita, na.rm = TRUE),
-                         ethnic_frac = mean(aid$ethnic_frac, na.rm = TRUE),
-                         assasinations = mean(aid$assasinations, na.rm = TRUE),
-                         institutional_quality = c(seq(min(aid$institutional_quality, na.rm = TRUE),
-                                                   max(aid$institutional_quality, na.rm =TRUE), by = 0.5)),
-                         m2_gdp_lagged = mean(aid$m2_gdp_lagged, na.rm = TRUE),
-                         region = "Other",
-                         policy = mean(aid$policy, na.rm = TRUE),
-                         aid = mean(aid$aid, na.rm = TRUE),
-                         period_fac = "4")
+snitt_data <- data.frame(policy = c(seq(min(aid$policy, na.rm = TRUE), 
+                                        max(aid$policy, na.rm =TRUE), by = 0.5)),
+                         aid = mean(aid$aid, na.rm = TRUE))
 
 # Bruker predict
-predict(m5, newdata = snitt_data, se = TRUE)
+predict(m6, newdata = snitt_data, se = TRUE)
 ```
 
     ## $fit
-    ##         1         2         3         4         5         6         7         8 
-    ## 0.3620244 0.7054454 1.0488664 1.3922874 1.7357084 2.0791294 2.4225504 2.7659714 
-    ##         9        10 
-    ## 3.1093924 3.4528134 
+    ##          1          2          3          4          5          6          7 
+    ## -6.4146256 -5.7494886 -5.0843517 -4.4192148 -3.7540779 -3.0889409 -2.4238040 
+    ##          8          9         10         11         12         13         14 
+    ## -1.7586671 -1.0935302 -0.4283932  0.2367437  0.9018806  1.5670175  2.2321544 
+    ##         15         16         17         18         19 
+    ##  2.8972914  3.5624283  4.2275652  4.8927021  5.5578391 
     ## 
     ## $se.fit
     ##         1         2         3         4         5         6         7         8 
-    ## 0.5780223 0.5366767 0.5071121 0.4914594 0.4910508 0.5059230 0.5348029 0.5755858 
-    ##         9        10 
-    ## 0.6259494 0.6837801 
+    ## 0.9321699 0.8533160 0.7748591 0.6969335 0.6197394 0.5435888 0.4689901 0.3968195 
+    ##         9        10        11        12        13        14        15        16 
+    ## 0.3286804 0.2676696 0.2198052 0.1950199 0.2019957 0.2379557 0.2923946 0.3569558 
+    ##        17        18        19 
+    ## 0.4270730 0.5004162 0.5757539 
     ## 
     ## $df
-    ## [1] 253
+    ## [1] 281
     ## 
     ## $residual.scale
-    ## [1] 2.872583
+    ## [1] 3.231389
 
 ``` r
 # Legger predikerte verdier inn i snitt_data
-snitt_data <- cbind(snitt_data, predict(m5, newdata = snitt_data, se = TRUE, interval = "confidence"))
+snitt_data <- cbind(snitt_data, predict(m6, newdata = snitt_data, se = TRUE, interval = "confidence"))
 snitt_data
 ```
 
-    ##    log_gdp_pr_capita ethnic_frac assasinations institutional_quality
-    ## 1           7.440955   0.4738369     0.3974164              2.270833
-    ## 2           7.440955   0.4738369     0.3974164              2.770833
-    ## 3           7.440955   0.4738369     0.3974164              3.270833
-    ## 4           7.440955   0.4738369     0.3974164              3.770833
-    ## 5           7.440955   0.4738369     0.3974164              4.270833
-    ## 6           7.440955   0.4738369     0.3974164              4.770833
-    ## 7           7.440955   0.4738369     0.3974164              5.270833
-    ## 8           7.440955   0.4738369     0.3974164              5.770833
-    ## 9           7.440955   0.4738369     0.3974164              6.270833
-    ## 10          7.440955   0.4738369     0.3974164              6.770833
-    ##    m2_gdp_lagged region   policy     aid period_fac   fit.fit     fit.lwr
-    ## 1         28.415  Other 1.160546 1.75757          4 0.3620244 -0.77632391
-    ## 2         28.415  Other 1.160546 1.75757          4 0.7054454 -0.35147747
-    ## 3         28.415  Other 1.160546 1.75757          4 1.0488664  0.05016746
-    ## 4         28.415  Other 1.160546 1.75757          4 1.3922874  0.42441462
-    ## 5         28.415  Other 1.160546 1.75757          4 1.7357084  0.76864047
-    ## 6         28.415  Other 1.160546 1.75757          4 2.0791294  1.08277224
-    ## 7         28.415  Other 1.160546 1.75757          4 2.4225504  1.36931761
-    ## 8         28.415  Other 1.160546 1.75757          4 2.7659714  1.63242141
-    ## 9         28.415  Other 1.160546 1.75757          4 3.1093924  1.87665708
-    ## 10        28.415  Other 1.160546 1.75757          4 3.4528134  2.10618737
-    ##     fit.upr    se.fit  df residual.scale
-    ## 1  1.500373 0.5780223 253       2.872583
-    ## 2  1.762368 0.5366767 253       2.872583
-    ## 3  2.047565 0.5071121 253       2.872583
-    ## 4  2.360160 0.4914594 253       2.872583
-    ## 5  2.702776 0.4910508 253       2.872583
-    ## 6  3.075487 0.5059230 253       2.872583
-    ## 7  3.475783 0.5348029 253       2.872583
-    ## 8  3.899521 0.5755858 253       2.872583
-    ## 9  4.342128 0.6259494 253       2.872583
-    ## 10 4.799439 0.6837801 253       2.872583
+    ##          policy     aid    fit.fit    fit.lwr    fit.upr    se.fit  df
+    ## 1  -4.503521919 1.75757 -6.4146256 -8.2495480 -4.5797031 0.9321699 281
+    ## 2  -4.003521919 1.75757 -5.7494886 -7.4291917 -4.0697856 0.8533160 281
+    ## 3  -3.503521919 1.75757 -5.0843517 -6.6096170 -3.5590864 0.7748591 281
+    ## 4  -3.003521919 1.75757 -4.4192148 -5.7910880 -3.0473416 0.6969335 281
+    ## 5  -2.503521919 1.75757 -3.7540779 -4.9739990 -2.5341567 0.6197394 281
+    ## 6  -2.003521919 1.75757 -3.0889409 -4.1589640 -2.0189179 0.5435888 281
+    ## 7  -1.503521919 1.75757 -2.4238040 -3.3469838 -1.5006242 0.4689901 281
+    ## 8  -1.003521919 1.75757 -1.7586671 -2.5397833 -0.9775509 0.3968195 281
+    ## 9  -0.503521919 1.75757 -1.0935302 -1.7405185 -0.4465418 0.3286804 281
+    ## 10 -0.003521919 1.75757 -0.4283932 -0.9552854  0.0984989 0.2676696 281
+    ## 11  0.496478081 1.75757  0.2367437 -0.1959302  0.6694176 0.2198052 281
+    ## 12  0.996478081 1.75757  0.9018806  0.5179952  1.2857660 0.1950199 281
+    ## 13  1.496478081 1.75757  1.5670175  1.1694006  1.9646344 0.2019957 281
+    ## 14  1.996478081 1.75757  2.2321544  1.7637525  2.7005564 0.2379557 281
+    ## 15  2.496478081 1.75757  2.8972914  2.3217295  3.4728533 0.2923946 281
+    ## 16  2.996478081 1.75757  3.5624283  2.8597815  4.2650751 0.3569558 281
+    ## 17  3.496478081 1.75757  4.2275652  3.3868967  5.0682337 0.4270730 281
+    ## 18  3.996478081 1.75757  4.8927021  3.9076618  5.8777425 0.5004162 281
+    ## 19  4.496478081 1.75757  5.5578391  4.4245009  6.6911772 0.5757539 281
+    ##    residual.scale
+    ## 1        3.231389
+    ## 2        3.231389
+    ## 3        3.231389
+    ## 4        3.231389
+    ## 5        3.231389
+    ## 6        3.231389
+    ## 7        3.231389
+    ## 8        3.231389
+    ## 9        3.231389
+    ## 10       3.231389
+    ## 11       3.231389
+    ## 12       3.231389
+    ## 13       3.231389
+    ## 14       3.231389
+    ## 15       3.231389
+    ## 16       3.231389
+    ## 17       3.231389
+    ## 18       3.231389
+    ## 19       3.231389
 
 Variabelen som heter `fit.fit` er de predikerte verdiene. `fit.lwr` og
 `fit.upr` er nedre og øvre grense for et 95 % konfidensintervall.
@@ -240,158 +467,103 @@ Variabelen som heter `fit.fit` er de predikerte verdiene. `fit.lwr` og
 Lager plot:
 
 ``` r
-library(ggplot2)
-ggplot(snitt_data, aes(x = institutional_quality, y = fit.fit)) + # Setter institusjonell kvalitet på x-aksen og predikert verdi på y-aksen
+ggplot(snitt_data, aes(x = policy, y = fit.fit)) + # Setter institusjonell kvalitet på x-aksen og predikert verdi på y-aksen
   geom_line() +                                                   # Sier at jeg vil ha et linjediagram
   scale_y_continuous(breaks = seq(-12, 12, 2)) +                  # Bestemmer verdier og mellomrom på y-aksen
   geom_ribbon(aes(ymin = fit.lwr, ymax = fit.upr, color = NULL), alpha = .2) + # Legger til konfidensintervall på plottet
-  labs(x = "Kvalitet på institusjoner", y = "Forventet GDP vekst", color = "Policy", fill = "Policy") # Setter tittel på akser og plot
+  labs(x = "Policy index", y = "Forventet GDP vekst") # Setter tittel på akser og plot
 ```
 
-![](seminar3_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](seminar3_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 Dette kan, og bør, også gjøres når det er samspill i modellen. Samspill
 er vanskelig å tolke i en tabell og jeg synes derfor det er fint å
-plotte disse. Når vi skal plotte samspill så lar vi begge variablene som
-er en del av samspillsleddet variere, mens resten er konstante. Vi lar
-den ene variabelen være `x`, mens vi bruker den andre til å fylle ut
-argumentet `color`. I tilfellet med to kontinuerlige variabler må en
-gjøre den ene om til en faktorvariabel slik jeg gjør med policy under.
+plotte disse. Først kjører vi en redusert modell med samspill:
+
+``` r
+# Kjører en redusert modell med samspill
+m7 <- lm(data = aid, 
+         gdp_growth ~ aid * policy, 
+         na.action = "na.exclude")
+```
+
+Når vi skal plotte samspill så lar vi begge variablene som er en del av
+samspillsleddet variere, mens resten er konstante. Vi lar den ene
+variabelen være `x`, mens vi bruker den andre til å fylle ut argumentet
+`color`. I tilfellet med to kontinuerlige variabler må en gjøre den ene
+om til en faktorvariabel slik jeg gjør med policy under.
 
 ``` r
 # Lager plot data
-snitt_data_sam <- data.frame(log_gdp_pr_capita = mean(aid$log_gdp_pr_capita, na.rm = TRUE),
-                         ethnic_frac = mean(aid$ethnic_frac, na.rm = TRUE),
-                         assasinations = mean(aid$assasinations, na.rm = TRUE),
-                         institutional_quality = mean(aid$institutional_quality, na.rm = TRUE),
-                         m2_gdp_lagged = mean(aid$m2_gdp_lagged, na.rm = TRUE),
-                         region = "Other",
-                         policy = c(rep(-1, 9), rep(0, 9), rep(1, 9)),
-                         aid = rep(0:8, 3),
-                         period_fac = "4")
+snitt_data_sam <- data.frame(policy = c(rep(-1, 9), rep(0, 9), rep(1, 9)), 
+                             aid = rep(0:8, 3))
 
 # Predikerer verdier (løser likningen for modellen)
-predict(m5, newdata = snitt_data_sam, se = TRUE)
+predict(m7, newdata = snitt_data_sam, se = TRUE)
 ```
 
     ## $fit
-    ##           1           2           3           4           5           6 
-    ##  0.08409744 -0.12290215 -0.32990173 -0.53690132 -0.74390091 -0.95090049 
-    ##           7           8           9          10          11          12 
-    ## -1.15790008 -1.36489967 -1.57189925  0.79654817  0.77576457  0.75498097 
-    ##          13          14          15          16          17          18 
-    ##  0.73419737  0.71341377  0.69263017  0.67184656  0.65106296  0.63027936 
-    ##          19          20          21          22          23          24 
-    ##  1.50899890  1.67443129  1.83986367  2.00529606  2.17072844  2.33616083 
-    ##          25          26          27 
-    ##  2.50159321  2.66702559  2.83245798 
+    ##            1            2            3            4            5            6 
+    ## -1.262768359 -1.559991587 -1.857214815 -2.154438043 -2.451661271 -2.748884499 
+    ##            7            8            9           10           11           12 
+    ## -3.046107727 -3.343330955 -3.640554183  0.001533281 -0.245391129 -0.492315538 
+    ##           13           14           15           16           17           18 
+    ## -0.739239948 -0.986164358 -1.233088767 -1.480013177 -1.726937586 -1.973861996 
+    ##           19           20           21           22           23           24 
+    ##  1.265834921  1.069209330  0.872583738  0.675958147  0.479332556  0.282706964 
+    ##           25           26           27 
+    ##  0.086081373 -0.110544218 -0.307169809 
     ## 
     ## $se.fit
     ##         1         2         3         4         5         6         7         8 
-    ## 0.7202650 0.6279388 0.6266786 0.7169646 0.8707719 1.0608217 1.2709582 1.4927225 
+    ## 0.5386781 0.4200143 0.4119868 0.5197476 0.6911045 0.8900542 1.1017490 1.3200714 
     ##         9        10        11        12        13        14        15        16 
-    ## 1.7216269 0.5782802 0.5284831 0.5362879 0.5994488 0.7032047 0.8325135 0.9772843 
+    ## 1.5422093 0.3664806 0.2862456 0.2723141 0.3331114 0.4385900 0.5642243 0.6992330 
     ##        17        18        19        20        21        22        23        24 
-    ## 1.1315980 1.2920401 0.5183695 0.4898167 0.5059652 0.5629815 0.6502018 0.7572607 
+    ## 0.8391032 0.9817594 0.2584699 0.2045479 0.2021002 0.2526276 0.3328190 0.4262484 
     ##        25        26        27 
-    ## 0.8769218 1.0046925 1.1378441 
+    ## 0.5259073 0.6288409 0.7336720 
     ## 
     ## $df
-    ## [1] 253
+    ## [1] 280
     ## 
     ## $residual.scale
-    ## [1] 2.872583
+    ## [1] 3.235758
 
 ``` r
 # Lagrer predikerte verdier i plot datasettet
-snitt_data_sam <- cbind(snitt_data_sam, predict(m5, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
+snitt_data_sam <- cbind(snitt_data_sam, predict(m7, newdata = snitt_data_sam, se = TRUE, interval = "confidence"))
 snitt_data_sam
 ```
 
-    ##    log_gdp_pr_capita ethnic_frac assasinations institutional_quality
-    ## 1           7.440955   0.4738369     0.3974164              4.607119
-    ## 2           7.440955   0.4738369     0.3974164              4.607119
-    ## 3           7.440955   0.4738369     0.3974164              4.607119
-    ## 4           7.440955   0.4738369     0.3974164              4.607119
-    ## 5           7.440955   0.4738369     0.3974164              4.607119
-    ## 6           7.440955   0.4738369     0.3974164              4.607119
-    ## 7           7.440955   0.4738369     0.3974164              4.607119
-    ## 8           7.440955   0.4738369     0.3974164              4.607119
-    ## 9           7.440955   0.4738369     0.3974164              4.607119
-    ## 10          7.440955   0.4738369     0.3974164              4.607119
-    ## 11          7.440955   0.4738369     0.3974164              4.607119
-    ## 12          7.440955   0.4738369     0.3974164              4.607119
-    ## 13          7.440955   0.4738369     0.3974164              4.607119
-    ## 14          7.440955   0.4738369     0.3974164              4.607119
-    ## 15          7.440955   0.4738369     0.3974164              4.607119
-    ## 16          7.440955   0.4738369     0.3974164              4.607119
-    ## 17          7.440955   0.4738369     0.3974164              4.607119
-    ## 18          7.440955   0.4738369     0.3974164              4.607119
-    ## 19          7.440955   0.4738369     0.3974164              4.607119
-    ## 20          7.440955   0.4738369     0.3974164              4.607119
-    ## 21          7.440955   0.4738369     0.3974164              4.607119
-    ## 22          7.440955   0.4738369     0.3974164              4.607119
-    ## 23          7.440955   0.4738369     0.3974164              4.607119
-    ## 24          7.440955   0.4738369     0.3974164              4.607119
-    ## 25          7.440955   0.4738369     0.3974164              4.607119
-    ## 26          7.440955   0.4738369     0.3974164              4.607119
-    ## 27          7.440955   0.4738369     0.3974164              4.607119
-    ##    m2_gdp_lagged region policy aid period_fac     fit.fit    fit.lwr   fit.upr
-    ## 1         28.415  Other     -1   0          4  0.08409744 -1.3343814 1.5025763
-    ## 2         28.415  Other     -1   1          4 -0.12290215 -1.3595553 1.1137510
-    ## 3         28.415  Other     -1   2          4 -0.32990173 -1.5640730 0.9042695
-    ## 4         28.415  Other     -1   3          4 -0.53690132 -1.9488805 0.8750779
-    ## 5         28.415  Other     -1   4          4 -0.74390091 -2.4587859 0.9709841
-    ## 6         28.415  Other     -1   5          4 -0.95090049 -3.0400666 1.1382656
-    ## 7         28.415  Other     -1   6          4 -1.15790008 -3.6609059 1.3451058
-    ## 8         28.415  Other     -1   7          4 -1.36489967 -4.3046446 1.5748453
-    ## 9         28.415  Other     -1   8          4 -1.57189925 -4.9624451 1.8186466
-    ## 10        28.415  Other      0   0          4  0.79654817 -0.3423081 1.9354044
-    ## 11        28.415  Other      0   1          4  0.77576457 -0.2650221 1.8165512
-    ## 12        28.415  Other      0   2          4  0.75498097 -0.3011763 1.8111382
-    ## 13        28.415  Other      0   3          4  0.73419737 -0.4463480 1.9147427
-    ## 14        28.415  Other      0   4          4  0.71341377 -0.6714669 2.0982945
-    ## 15        28.415  Other      0   5          4  0.69263017 -0.9469093 2.3321696
-    ## 16        28.415  Other      0   6          4  0.67184656 -1.2528022 2.5964953
-    ## 17        28.415  Other      0   7          4  0.65106296 -1.5774890 2.8796149
-    ## 18        28.415  Other      0   8          4  0.63027936 -1.9142448 3.1748035
-    ## 19        28.415  Other      1   0          4  1.50899890  0.4881299 2.5298679
-    ## 20        28.415  Other      1   1          4  1.67443129  0.7097938 2.6390688
-    ## 21        28.415  Other      1   2          4  1.83986367  0.8434235 2.8363038
-    ## 22        28.415  Other      1   3          4  2.00529606  0.8965689 3.1140232
-    ## 23        28.415  Other      1   4          4  2.17072844  0.8902308 3.4512261
-    ## 24        28.415  Other      1   5          4  2.33616083  0.8448232 3.8274984
-    ## 25        28.415  Other      1   6          4  2.50159321  0.7745967 4.2285898
-    ## 26        28.415  Other      1   7          4  2.66702559  0.6883994 4.6456518
-    ## 27        28.415  Other      1   8          4  2.83245798  0.5916051 5.0733109
-    ##       se.fit  df residual.scale
-    ## 1  0.7202650 253       2.872583
-    ## 2  0.6279388 253       2.872583
-    ## 3  0.6266786 253       2.872583
-    ## 4  0.7169646 253       2.872583
-    ## 5  0.8707719 253       2.872583
-    ## 6  1.0608217 253       2.872583
-    ## 7  1.2709582 253       2.872583
-    ## 8  1.4927225 253       2.872583
-    ## 9  1.7216269 253       2.872583
-    ## 10 0.5782802 253       2.872583
-    ## 11 0.5284831 253       2.872583
-    ## 12 0.5362879 253       2.872583
-    ## 13 0.5994488 253       2.872583
-    ## 14 0.7032047 253       2.872583
-    ## 15 0.8325135 253       2.872583
-    ## 16 0.9772843 253       2.872583
-    ## 17 1.1315980 253       2.872583
-    ## 18 1.2920401 253       2.872583
-    ## 19 0.5183695 253       2.872583
-    ## 20 0.4898167 253       2.872583
-    ## 21 0.5059652 253       2.872583
-    ## 22 0.5629815 253       2.872583
-    ## 23 0.6502018 253       2.872583
-    ## 24 0.7572607 253       2.872583
-    ## 25 0.8769218 253       2.872583
-    ## 26 1.0046925 253       2.872583
-    ## 27 1.1378441 253       2.872583
+    ##    policy aid      fit.fit    fit.lwr     fit.upr    se.fit  df residual.scale
+    ## 1      -1   0 -1.262768359 -2.3231415 -0.20239525 0.5386781 280       3.235758
+    ## 2      -1   1 -1.559991587 -2.3867781 -0.73320504 0.4200143 280       3.235758
+    ## 3      -1   2 -1.857214815 -2.6681995 -1.04623008 0.4119868 280       3.235758
+    ## 4      -1   3 -2.154438043 -3.1775470 -1.13132912 0.5197476 280       3.235758
+    ## 5      -1   4 -2.451661271 -3.8120814 -1.09124116 0.6911045 280       3.235758
+    ## 6      -1   5 -2.748884499 -4.5009317 -0.99683733 0.8900542 280       3.235758
+    ## 7      -1   6 -3.046107727 -5.2148703 -0.87734516 1.1017490 280       3.235758
+    ## 8      -1   7 -3.343330955 -5.9418552 -0.74480670 1.3200714 280       3.235758
+    ## 9      -1   8 -3.640554183 -6.6763508 -0.60475761 1.5422093 280       3.235758
+    ## 10      0   0  0.001533281 -0.7198736  0.72294018 0.3664806 280       3.235758
+    ## 11      0   1 -0.245391129 -0.8088578  0.31807556 0.2862456 280       3.235758
+    ## 12      0   2 -0.492315538 -1.0283583  0.04372726 0.2723141 280       3.235758
+    ## 13      0   3 -0.739239948 -1.3949605 -0.08351941 0.3331114 280       3.235758
+    ## 14      0   4 -0.986164358 -1.8495167 -0.12281197 0.4385900 280       3.235758
+    ## 15      0   5 -1.233088767 -2.3437488 -0.12242876 0.5642243 280       3.235758
+    ## 16      0   6 -1.480013177 -2.8564340 -0.10359234 0.6992330 280       3.235758
+    ## 17      0   7 -1.726937586 -3.3786892 -0.07518598 0.8391032 280       3.235758
+    ## 18      0   8 -1.973861996 -3.9064284 -0.04129562 0.9817594 280       3.235758
+    ## 19      1   0  1.265834921  0.7570441  1.77462572 0.2584699 280       3.235758
+    ## 20      1   1  1.069209330  0.6665625  1.47185616 0.2045479 280       3.235758
+    ## 21      1   2  0.872583738  0.4747550  1.27041251 0.2021002 280       3.235758
+    ## 22      1   3  0.675958147  0.1786676  1.17324869 0.2526276 280       3.235758
+    ## 23      1   4  0.479332556 -0.1758124  1.13447752 0.3328190 280       3.235758
+    ## 24      1   5  0.282706964 -0.5563513  1.12176527 0.4262484 280       3.235758
+    ## 25      1   6  0.086081373 -0.9491527  1.12131547 0.5259073 280       3.235758
+    ## 26      1   7 -0.110544218 -1.3484002  1.12731172 0.6288409 280       3.235758
+    ## 27      1   8 -0.307169809 -1.7513830  1.13704343 0.7336720 280       3.235758
 
 ``` r
 # Plotter
@@ -405,8 +577,10 @@ ggplot(snitt_data_sam, aes(x = aid, y = fit.fit,
   labs(x = "Bistandsnivå", y = "Forventet GDP vekst", color = "Policy", fill = "Policy")
 ```
 
-![](seminar3_files/figure-gfm/unnamed-chunk-4-1.png)<!-- --> Vi skal
-ikke bruke snitt\_data mer så jeg fjerner objektene fra environment:
+![](seminar3_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+Vi skal ikke bruke snitt\_data mer så jeg fjerner objektene fra
+environment:
 
 ``` r
 rm(snitt_data, snitt_data_sam)
@@ -423,7 +597,7 @@ Vi jobber videre med aid-datasettet.
 aid
 ```
 
-    ## # A tibble: 331 x 22
+    ## # A tibble: 331 x 20
     ##    country period periodstart periodend code  gdp_growth gdp_pr_capita
     ##    <chr>    <dbl>       <dbl>     <dbl> <chr>      <dbl>         <dbl>
     ##  1 ARG          2        1970      1973 ARG2        1.70          5637
@@ -436,12 +610,11 @@ aid
     ##  8 BOL          3        1974      1977 BOL3        2.96          1838
     ##  9 BOL          4        1978      1981 BOL4       -1.49          2015
     ## 10 BOL          5        1982      1985 BOL5       -4.32          1864
-    ## # ... with 321 more rows, and 15 more variables: economic_open <dbl>,
+    ## # ... with 321 more rows, and 13 more variables: economic_open <dbl>,
     ## #   budget_balance <dbl>, inflation <dbl>, ethnic_frac <dbl>,
     ## #   assasinations <dbl>, aid <dbl>, fast_growing_east_asia <dbl>,
     ## #   sub_saharan_africa <dbl>, central_america <dbl>, policy <dbl>,
-    ## #   m2_gdp_lagged <dbl>, institutional_quality <dbl>, log_gdp_pr_capita <dbl>,
-    ## #   period_fac <fct>, region <fct>
+    ## #   m2_gdp_lagged <dbl>, institutional_quality <dbl>, region <fct>
 
 Ser dere noen variabler her vi kunne brukt som felles nøkkel?
 
@@ -543,8 +716,6 @@ en ting vi må gjøre før vi kan slå datasettene sammen. V-dem-datasettet
 inneholder land-år-observasjoner, mens aid-datasettet inneholder
 land-periode-observasjoner. Vi må derfor lage en periode-variabel i
 equality-datasettet.
-
-<!--fixme: er dette unødvendig komplisert? -->
 
 ``` r
 # Oppretter periode-variabel i V-dem datasettet, slik at jeg er klar til å merge. Verdiene til period-variabelen går fra 1-8, jeg vil gi de samme periodene (datasettet inneholder imidlertid bare data for periode 2-7). Her bruker jeg et en egenskap ved `as.numeric` på en faktor som ofte fører til feil i kode for å gjøre dette raskt:
@@ -826,6 +997,34 @@ table(is.na(aid2$avg_eq))
 ``` r
 # 6 missing pga observasjonen som mangler
 
+
+# Sjekker hvilke land som har missing med base
+table(aid2$country[which(is.na(aid2$avg_eq))])
+```
+
+    ## 
+    ## ZAR 
+    ##   6
+
+``` r
+# Sjekker hvilke land som har missing med tidyverse
+aid2 %>% 
+  filter(is.na(avg_eq)) %>% 
+  select(country) 
+```
+
+    ## # A tibble: 6 x 1
+    ##   country
+    ##   <chr>  
+    ## 1 ZAR    
+    ## 2 ZAR    
+    ## 3 ZAR    
+    ## 4 ZAR    
+    ## 5 ZAR    
+    ## 6 ZAR
+
+``` r
+# Henter ut informasjon om variabelen i det nye datasettet
 summary(aid2$avg_eq)
 ```
 
