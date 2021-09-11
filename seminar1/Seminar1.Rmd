@@ -394,7 +394,7 @@ Et annet alternativ er å starte et nytt prosjekt i R, ved å trykke på *File* 
 Datasett kommer i mange ulike filformater. Noen vanlige formater er csv, dta (Stata-datasett), sav (SPSS-datasett) og Rdata. Hvilket format dataene dine har bestemmer hvilken funksjon du må bruke for å laste inn datasettet. Her er eksempler på noen funksjoner for å laste inn data: 
 
 ```{r, eval = FALSE}
-library(tidyverse) # read_funksjoner fra readr i tidyvsere
+library(tidyverse) # read_funksjoner fra readr i tidyverse
 datasett <- read_filtype("filnavn.filtype") # Laster inn og lagrer datasettet som et objekt
 read_csv("filnavn.csv") # for .csv, sjekk også read.table
 load("") # For filer i R-format.
