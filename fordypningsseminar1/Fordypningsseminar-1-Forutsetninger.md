@@ -13,9 +13,8 @@ restledd er utelatt, andre ganger vil dere kunne se en antagelse om at
 kurtosen ikke er uendelig stor. Noen vil kategorisere ingen
 innflytelsesrike observasjoner og ikke perfekt multikolinearitet som
 antagelser, mens andre vil kategorisere det som problemer/trusler. Dere
-forholder dere til pensum, jeg følger Cristophersens forelesning her.
-Det bør forøvrig nevnes at **Lær deg R** gir en ypperlig gjennomgang av
-regresjonsdiagnostikk.
+forholder dere til pensum. Det bør forøvrig nevnes at **Lær deg R** gir
+en fin gjennomgang av regresjonsdiagnostikk.
 
 **Kritiske aspekter i modellvurdering - OLS:**
 
@@ -28,8 +27,9 @@ regresjonsdiagnostikk.
 7.  Manglende opplysninger(missing values)
 
 Vi skal nå sjekke om forutsetningene for OLS og logistisk regresjonen
-holder. Først henter vi inn data, gjør de samme omkodingene og kjører
-modellen.
+holder. Vi skal bruke samme datasett som i forrige uke og kjører
+modellen fra oppgavesett 3a. Først henter vi inn data, gjør de samme
+omkodingene og kjører modellen.
 
 ``` r
 library(tidyverse)
@@ -37,17 +37,17 @@ library(tidyverse)
 
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
-    ## v ggplot2 3.3.3     v purrr   0.3.4
-    ## v tibble  3.1.2     v dplyr   1.0.6
+    ## v ggplot2 3.3.5     v purrr   0.3.4
+    ## v tibble  3.1.3     v dplyr   1.0.7
     ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   1.4.0     v forcats 0.5.1
+    ## v readr   2.0.0     v forcats 0.5.1
 
     ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
 ``` r
-load("./aid.RData")
+load("aid.RData")
 
 aid <- aid %>% 
   mutate(log_gdp_pr_capita = log(gdp_pr_capita),
@@ -222,7 +222,7 @@ car::durbinWatsonTest(m5b)
 ```
 
     ##  lag Autocorrelation D-W Statistic p-value
-    ##    1      0.02981496      1.939984   0.344
+    ##    1      0.02981496      1.939984   0.382
     ##  Alternative hypothesis: rho != 0
 
 I utgangspunktet burde vi her kjørt Durbin-Watson-testen fra plm fordi
@@ -704,9 +704,9 @@ rm(m1, m5, m5b, miss_mod, model5_usam)
 Mange av metodene for diagnostikk for OLS fungerer også for logistisk
 regresjon. Funksjonene `ceresplot()`, `dfbetas()`,
 `influenceIndexPlot()`, `vif()` m.m. fungerer også for logistisk
-regresjon. Husk forøvrig på at forutsetninger om homoskedastiske,
-normalfordelte restledd ikke gjelder logistisk regresjon. I tillegg
-viser jeg hvordan du kan lage ROC-kurver
+regresjon og det samme gjelder missinganalysene. Husk forøvrig på at
+forutsetninger om homoskedastiske, normalfordelte restledd ikke gjelder
+logistisk regresjon. I tillegg viser jeg hvordan du kan lage ROC-kurver
 [her](https://github.com/martigso/stv4020aR/blob/master/Gruppe%201/docs/Introduksjon_seminar4.md).
 
 Tomme celler vil føre til at modellen ikke lar seg estimere, eller at du
@@ -764,6 +764,8 @@ datamateriale enn den reduserte.
 library(ResourceSelection)
 ```
 
+    ## Warning: package 'ResourceSelection' was built under R version 4.1.1
+
     ## ResourceSelection 0.3-5   2019-07-22
 
 ``` r
@@ -810,6 +812,8 @@ den logistiske kurver eller umodellerte samspill.
 # install.packages("pscl")
 library(pscl)
 ```
+
+    ## Warning: package 'pscl' was built under R version 4.1.1
 
     ## Classes and Methods for R developed in the
     ## Political Science Computational Laboratory

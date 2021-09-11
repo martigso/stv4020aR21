@@ -194,7 +194,7 @@ ggplot(plot_data_m1) +
   ggtitle("Modell med random intercept") + 
   theme(legend.title = element_blank())
 
-ggsave("../figures/flernivaa_randomslope.jpg")
+ggsave("bilder/flernivaa_randomslope.jpg")
 ```
 
 ```{r, eval = FALSE}
@@ -219,7 +219,7 @@ ggplot(plot_data_m1) +
   theme(legend.title = element_blank())
 ```
 
-![](../figures/flernivaa_randomslope.jpg)
+![](bilder/flernivaa_randomslope.jpg)
 
 Land er våre nivå 2 variabler. Her har de ulikt skjæringspunkt på y-aksen, men linjen har lik helning
 
@@ -291,11 +291,11 @@ ggplot(plot_data_m2) +
   ggtitle("Modell med random intercept og random slopes") +
   theme(legend.title = element_blank())
 
-ggsave("../figures/flerniva_randominterceptslope.jpg")
+ggsave("bilder/flerniva_randominterceptslope.jpg")
 
 ```
 
-![](../figures/flerniva_randominterceptslope.jpg)
+![](bilder/flerniva_randominterceptslope.jpg)
 
 Her har nivå 2-enhetene, land, både forskjellig intercept og slope
 
@@ -305,7 +305,7 @@ Her har nivå 2-enhetene, land, både forskjellig intercept og slope
 Før vi ser nærmere på de andre variablene så skal vi hente inn litt informasjon på landnivå. Jeg har lastet ned informasjon fra OECD om gini-koeffisienten i ulike land i 2016. Gini-koeffisienten er et mål på inntekstulikhet. Jeg laster inn OECD-datasettet og lagrer det som `gini` i Environment.
 
 ```{r}
-gini <- read.csv("../data/OECD_gini.csv") 
+gini <- read.csv("OECD_gini.csv") 
 str(gini)
 
 # cntry i gini-dataene ligner på cntry i ess
@@ -390,11 +390,11 @@ ggplot(plot_data_m3) +
 # I denne modellen har vi åpnet for random intercept, random slopes (income_decile)
 # Men holdt effekten av gini konstant på tvers av land
 
-ggsave("../figures/flerniva_mod3.jpg")
+ggsave("bilder/flerniva_mod3.jpg")
 
 ```
 
-![](../figures/flerniva_mod3.jpg)
+![](bilder/flerniva_mod3.jpg)
 
 Så plotter vi den "faste" nivå 2-effekten:
 
@@ -439,11 +439,11 @@ ggplot(plot_data_m3b) +
 ## OBS!! Dette er bare for å illustrere, men husk at vi bare har observasjoner
 # av landfor ett år. Derfor har vi egentlig bare en observasjon av gini per land.
 
-ggsave("../figures/flernivamod3b.jpg")
+ggsave("bilder/flernivamod3b.jpg")
 
 ```
 
-![](../figures/flernivamod3b.jpg)
+![](bilder/flernivamod3b.jpg)
 
 **Flernivå med uavh. var på mikronivå med random effects, kryssnivåsamspill, og uavhengig variabel på makronivå:**
 \[Y_i = \beta_{0} + \beta_{1}X_{1ij} + \beta_{2j}Z_{2j} + \beta_{3}X_{1ij}Z_{2j} + + u_{1j}X_{1ij} + u_{0j} + e_{ij}\]
@@ -521,10 +521,10 @@ ggplot(plot_data_m4) +
 # datamaterialet vårt. I dette tilfellet har jeg gjort det først og fremst for å
 # vise dere hvordan disse slår ut.
 
-ggsave("../figures/flernivakryssnivasamspill.jpg")
+ggsave("bilder/flernivakryssnivasamspill.jpg")
 ```
 
-![](../figures/flernivakryssnivasamspill.jpg)
+![](bilder/flernivakryssnivasamspill.jpg)
 
 Med kryssnivåsamspill så lar vi nivå 2 konteksten påvirke effekten av nivå 1 variabelen på avhengig variabel. 
 
@@ -638,10 +638,10 @@ plot_model(m2, type = "re")
 
 plot <- sjPlot::plot_model(m2, type = "re")
 
-sjPlot::save_plot(plot, file = "../figures/flernivakoeffplot.jpg")
+sjPlot::save_plot(plot, file = "bilder/flernivakoeffplot.jpg")
 ```
 
-![](../figures/flernivakoeffplot.jpg)
+![](bilder/flernivakoeffplot.jpg)
 
 ## Tolke resultater
 I flernivåmodeller varierer koeffisientene på tvers av klasser. Koeffisientestimatet er derfor bare den forventede verdier på tvers av alle klasser. Følg med på forelesning om hvordan disse skal tolkes. 
@@ -651,3 +651,8 @@ I flernivåmodeller varierer koeffisientene på tvers av klasser. Koeffisientest
 Her er en mer utdypende [forklaring av lme4 pakken med eksempler](https://cran.r-project.org/web/packages/lme4/vignettes/lmer.pdf).
 Mye av teksten er teknisk, men se seksjon 5.2 dersom du tenker å kjøre en flernivåanalyse til hjemmeoppgaven for detaljer om diagnostikk for
 `lmer`.
+
+```{r generere_script, eval=FALSE, echo=FALSE}
+## knitr::purl("Fordypningsseminar 3 Flernivaa.Rmd", output = "Fordypningsseminar 3 Flernivaa.R", documentation = 0)
+```
+
