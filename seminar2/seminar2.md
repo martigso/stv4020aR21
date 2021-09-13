@@ -44,16 +44,14 @@ denne lenken:
 library(tidyverse)
 ```
 
-    ## Warning: package 'tidyverse' was built under R version 4.1.1
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+    ## ✓ ggplot2 3.3.4     ✓ purrr   0.3.4
+    ## ✓ tibble  3.1.2     ✓ dplyr   1.0.7
+    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+    ## ✓ readr   1.4.0     ✓ forcats 0.5.1
 
-    ## v ggplot2 3.3.5     v purrr   0.3.4
-    ## v tibble  3.1.3     v dplyr   1.0.7
-    ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   2.0.0     v forcats 0.5.1
-
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -162,6 +160,14 @@ informasjonen langs en rad, og forsøk å tenke gjennom hvilke sentrale
 karakteristikker som skiller en enhet fra en annen - Nordmenn kan f.eks.
 skilles med utgangspunkt i fødselsnummer, eller med utgangspunkt i navn.
 Du kan også kjøre følgende koder:
+
+``` r
+str(aid) # Gir deg infor om variabelnavn, klasse m.m.
+aid # Printer samme informasjon som `str()` gjør for en data.frame hvis det er en tibble (dvs. en spesiell type objekt fra tidyverse)
+head(aid, 10) # første 10 observasjoner
+tail(aid, 10) # siste 10 observasjoner
+sample_n(aid, 10) # Velg 10 observasjoner tilfeldig
+```
 
 2.  Hva heter variablene mine?
 
@@ -279,7 +285,7 @@ aid %>% # Spesifiserer at vi skal jobbe med datasettet aid - R vil da lete etter
     ##  8 BOL          3        1974      1977 BOL3        2.96          1838
     ##  9 BOL          4        1978      1981 BOL4       -1.49          2015
     ## 10 BOL          5        1982      1985 BOL5       -4.32          1864
-    ## # ... with 321 more rows, and 13 more variables: economic_open <dbl>,
+    ## # … with 321 more rows, and 13 more variables: economic_open <dbl>,
     ## #   budget_balance <dbl>, inflation <dbl>, ethnic_frac <dbl>,
     ## #   assasinations <dbl>, aid <dbl>, fast_growing_east_asia <dbl>,
     ## #   sub_saharan_africa <dbl>, central_america <dbl>, policy <dbl>,
@@ -626,7 +632,7 @@ endring i BNP?
 str(aid)         # sjekker hvilke variabler som er numeriske (vi kan ikke beregne korrelasjon på ikke-numeriske variabler)
 ```
 
-    ## tibble [331 x 28] (S3: tbl_df/tbl/data.frame)
+    ## tibble [331 × 28] (S3: tbl_df/tbl/data.frame)
     ##  $ country               : chr [1:331] "ARG" "ARG" "ARG" "ARG" ...
     ##   ..- attr(*, "format.stata")= chr "%-9s"
     ##  $ period                : num [1:331] 2 3 4 5 6 7 2 3 4 5 ...
@@ -840,7 +846,7 @@ ggplot(aid, aes(x = gdp_growth)) +
   geom_histogram(bins = 50) # lager histogram
 ```
 
-<img src="./bilder/seminar2_1.png" width="2100" />
+<img src="./bilder/seminar2_1.png" width="2099" />
 
 Med et boxplot får du raskt oversikt over fordelingen til variabler
 innenfor ulike grupper.
@@ -850,7 +856,7 @@ ggplot(aid, aes(x = as.factor(region), y = aid)) +
   geom_boxplot()
 ```
 
-<img src="./bilder/seminar2_2.png" width="2100" /> **Oppgave:** Lag
+<img src="./bilder/seminar2_2.png" width="2099" /> **Oppgave:** Lag
 boxplot som viser fordelingen til variablene `policy` og `gdp_growth`
 innenfor hver region.
 <!--fixme: har endret elrdgdpg til gdp_growth ettersom denne variabelen ikke finnes-->
@@ -863,7 +869,7 @@ ggplot(aid, aes(x = period, y = gdp_growth, col = country)) +
   theme(legend.key.size = unit(0.5,"line")) # Her justerer jeg størrelsen på legend for å få plass til alt
 ```
 
-<img src="./bilder/seminar2_3.png" width="2100" />
+<img src="./bilder/seminar2_3.png" width="2099" />
 
 Et problem med dette plottet, er at det blir vanskelig å se veksten til
 forskjellige land klart, det er for mye informasjon. Dersom vi har lyst
@@ -882,7 +888,7 @@ aid %>%
 # Fortsatt litt mye informasjon til å være enkelt å lese - La oss sammenligne 5 land med %in%
 ```
 
-<img src="./bilder/seminar2_4.png" width="2100" />
+<img src="./bilder/seminar2_4.png" width="2099" />
 
 ``` r
 # Velger land med %in%, fint for mindre sammenligninger
@@ -891,7 +897,7 @@ aid %>%
   ggplot() + geom_line(aes(x = period, y = gdp_growth, col = country))
 ```
 
-<img src="./bilder/seminar2_5.png" width="2100" />
+<img src="./bilder/seminar2_5.png" width="2099" />
 
 I tillegg til indekseringsmetodene for datasett fra første seminar, er
 det nyttig å lære seg `%in%`.
@@ -923,7 +929,7 @@ ggplot(aid, aes(x=aid, y=gdp_growth, col=policy, shape=as.factor(region))) +
   theme_minimal()
 ```
 
-<img src="./bilder/seminar2_6.png" width="2100" />
+<img src="./bilder/seminar2_6.png" width="2099" />
 
 Dersom du lager et plot du er fornøyd med, kan du lagre det med
 `ggsave()`, som lagrer ditt siste ggplot.
