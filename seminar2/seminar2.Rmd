@@ -112,13 +112,6 @@ table(is.na(aid$gdp_growth))  # tester hvor mange observasjoner som har missing 
 
 Legg merke til at disse funksjonene er logiske tester - de tester om noe er sant eller galt.
 
-**Hvordan kan vi teste hvor mange observasjomer som _ikke_ har missing på variabelen gdp_growth?**
-
-```{r, eval = FALSE, include = FALSE}
-table(!is.na(aid$gdp_growth)) # tester hvor mange observasjoner som _ikke_ har missing på variabelen elrdgdpg
-table(is.na(aid$gdp_growth) == FALSE) # akkurat samme resultat som over, med en annen metode
-```
-
 I noen datasett vil imidlertid missingverdier ha en fiktiv verdi som f.eks. -999, 888 o.l. Dette må avdekkes og disse verdiene må omkodes før du kan kjøre analysen din. Her er kodeboken gull verdt. 
 
 ### Noen omkodingsfunksjoner:
@@ -135,7 +128,7 @@ data$ny_var <- funksjon(data$gammel_var)
 # Vi anvender en funksjon som omarbeider informasjonen i en gammel variabel i datasettet vårt, og legger den til datasettet vårt med et nytt navn
 ```
 
-Dersom variabelen `policy` ikke allerede fantes, så måtte vi ha opprettet en ny variabel for å kunne kjøre samme analyse som Burnside og Dollar (2000). Denne variabelen som vi her kaller `policy2` er en makroøkonimisk politkk-indeks - med utgangspunkt i variablene for inflasjon (`aid$inflation`), budsjettbalanse (`aid$budget_balance`) og økonomisk åpenhet (`aid$economic_open`):
+Dersom variabelen `policy` ikke allerede fantes, så måtte vi ha opprettet en ny variabel for å kunne kjøre samme analyse som Burnside og Dollar (2000). Denne variabelen som vi her kaller `policy_index` er en makroøkonimisk politkk-indeks - med utgangspunkt i variablene for inflasjon (`aid$inflation`), budsjettbalanse (`aid$budget_balance`) og økonomisk åpenhet (`aid$economic_open`):
 
 ```{r}
 # oppretter alternativ policy-indeks variabel

@@ -44,6 +44,8 @@ denne lenken:
 library(tidyverse)
 ```
 
+    ## Warning: package 'tidyverse' was built under R version 4.1.1
+
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
     ## v ggplot2 3.3.5     v purrr   0.3.4
@@ -213,9 +215,6 @@ table(is.na(aid$gdp_growth))  # tester hvor mange observasjoner som har missing 
 Legg merke til at disse funksjonene er logiske tester - de tester om noe
 er sant eller galt.
 
-**Hvordan kan vi teste hvor mange observasjomer som *ikke* har missing
-på variabelen gdp\_growth?**
-
 I noen datasett vil imidlertid missingverdier ha en fiktiv verdi som
 f.eks. -999, 888 o.l. Dette må avdekkes og disse verdiene må omkodes før
 du kan kjøre analysen din. Her er kodeboken gull verdt.
@@ -247,7 +246,7 @@ data$ny_var <- funksjon(data$gammel_var)
 
 Dersom variabelen `policy` ikke allerede fantes, så måtte vi ha
 opprettet en ny variabel for å kunne kjøre samme analyse som Burnside og
-Dollar (2000). Denne variabelen som vi her kaller `policy2` er en
+Dollar (2000). Denne variabelen som vi her kaller `policy_index` er en
 makroøkonimisk politkk-indeks - med utgangspunkt i variablene for
 inflasjon (`aid$inflation`), budsjettbalanse (`aid$budget_balance`) og
 økonomisk åpenhet (`aid$economic_open`):
@@ -909,7 +908,7 @@ ggplot(aid, aes(x = aid, y = gdp_growth, col = policy)) +
 
     ## Warning: Removed 6 rows containing missing values (geom_point).
 
-![](seminar2_files/figure-gfm/unnamed-chunk-39-1.png)<!-- -->
+![](seminar2_files/figure-gfm/unnamed-chunk-38-1.png)<!-- -->
 
 Her er et overlesset eksempel på et scatterplot (poenget er å illustrere
 muligheter, ikke å lage et pent plot):
