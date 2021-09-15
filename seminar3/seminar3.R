@@ -1,3 +1,4 @@
+# Laster inn tidyverse-pakken
 library(tidyverse)
 
 # Laster inn data
@@ -11,6 +12,8 @@ aid <- aid %>%
 
 
 
+## ### Syntaks for lineær regresjon ###
+
 ## lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
 ## # på mac får du ~ med alt + k + space
 
@@ -19,16 +22,21 @@ summary(m1) # ser på resultatene med summary()
 class(m1) # Legg merke til at vi har et objekt av en ny klasse!
 str(m1) # Gir oss informasjon om hva objektet inneholder.
 
+# Flere uavhengige variabler:
 m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
 summary(m2)
 
+# Samspill:
 m3 <- lm(gdp_growth ~ aid * policy + region, data = aid)
 summary(m3)
 
+# Andregradsledd og andre omkodinger.
 m4 <- lm(gdp_growth ~ log(gdp_pr_capita) + institutional_quality + I(institutional_quality^2) + region + aid * policy +  as_factor(period), 
          data = aid,
          na.action = "na.exclude")
 summary(m4)
+
+## ### Lage tabeller med regresjonsresultater ###
 
 #install.packages("stargazer")
 library(stargazer)
@@ -47,6 +55,8 @@ stargazer(m2, m3,
 ##           type = "latex")
 ## 
 ## # Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer.
+
+## ### Plotte resultater fra OLS ###
 
 # Kjører en redusert modell
 m6 <- lm(data = aid, 
@@ -103,6 +113,9 @@ rm(snitt_data, snitt_data_sam)
 
 aid
 
+## ### Hvordan slå sammen datasett ###
+
+# Laster inn datasett med maktfordelingsvariabel
 equality <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv")
 
 summary(equality$v2pepwrsoc)
@@ -123,6 +136,34 @@ aid %>%
   unique()
 
 # En nyttig pakke dersom dere kommer over dette problemet kan være countrycode
+
+## ### Slå sammen datasett uten å regne periode-gjennomsnitt ###
+
+# Bruker en logisk test og %in% for å sjekke om alle år er med:
+table(aid$periodstart %in% equality$year)
+
+
+# husk: ?left_join for å forstå funksjonen
+aid2 <- aid %>% 
+  left_join(equality, by = c("country" = "country_text_id", "periodstart" = "year"))
+
+# Sjekker antall missingverdier
+table(is.na(aid2$v2pepwrsoc))
+
+# Det er seks missingverdier
+
+# Sjekker hvilke land som har missing med base
+table(aid2$country[which(is.na(aid2$v2pepwrsoc))])
+
+# Sjekker hvilke land som har missing med tidyverse
+aid2 %>% 
+  filter(is.na(v2pepwrsoc)) %>% 
+  select(country) 
+
+# Henter ut informasjon om variabelen i det nye datasettet
+summary(aid2$v2pepwrsoc)
+
+## ### Slå sammen datasett med periode-gjennomsnitt ###
 
 # Oppretter periode-variabel i V-dem datasettet, slik at jeg er klar til å merge. Verdiene til period-variabelen går fra 1-8, jeg vil gi de samme periodene (datasettet inneholder imidlertid bare data for periode 2-7). Her bruker jeg et en egenskap ved `as.numeric` på en faktor som ofte fører til feil i kode for å gjøre dette raskt:
 table(aid$periodstart, aid$period)
@@ -160,22 +201,22 @@ table(agg_equality$period, agg_equality$period_num)
 agg_equality
 
 # husk: ?left_join for å forstå funksjonen
-aid2 <- left_join(aid, agg_equality,
+aid3 <- left_join(aid, agg_equality,
                   by = c("country" = "country_text_id", "period" = "period_num")) # Spesifiserer nøkkelvariablene
 # Sjekker missing:
-table(is.na(aid2$avg_eq))
+table(is.na(aid3$avg_eq))
 # 6 missing pga observasjonen som mangler
 
 
 # Sjekker hvilke land som har missing med base
-table(aid2$country[which(is.na(aid2$avg_eq))])
+table(aid2$country[which(is.na(aid3$avg_eq))])
 
 # Sjekker hvilke land som har missing med tidyverse
-aid2 %>% 
+aid3 %>% 
   filter(is.na(avg_eq)) %>% 
   select(country) 
 
 # Henter ut informasjon om variabelen i det nye datasettet
-summary(aid2$avg_eq)
+summary(aid3$avg_eq)
 
 ## # knitr::purl("./seminar3/seminar3.Rmd", output = "./seminar3/seminar3.R", documentation = 0)

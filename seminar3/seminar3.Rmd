@@ -17,6 +17,7 @@ I dag skal vi fortsette med databehandling og jobbe med OLS:
 
 Det første vi skal gjøre er å laste inn pakken `tidyverse`, laste inn data og gjøre noen nødvendige omkodinger: 
 ```{r}
+# Laster inn tidyverse-pakken
 library(tidyverse)
 
 # Laster inn data
@@ -38,7 +39,9 @@ Dersom dere vil skrive en kvantitativ hjemmeoppgave er det **veldig viktig** å 
 ## Lineær regresjon (OLS) <a name="ols"></a>
 
 ### Syntaks
-
+```{r, eval = F, include = F}
+### Syntaks for lineær regresjon ###
+```
 For å kjøre en lineær regresjon i R, bruker vi funksjonen `lm()`, som har følgende syntaks:
 ```{r, eval = F}
 lm(avhengig.variabel ~ uavhengig.variabel, data=mitt_datasett)
@@ -54,11 +57,12 @@ str(m1) # Gir oss informasjon om hva objektet inneholder.
 ```
 
 
-### Multivariat regresjon
+### Multippel regresjon
 
 Vi legger inn flere uavhengige variabler med `+`.
 
 ```{r}
+# Flere uavhengige variabler:
 m2 <- lm(gdp_growth ~ aid + policy + region, data = aid)
 summary(m2)
 ```
@@ -70,6 +74,7 @@ Hypotesen til artikkelforfatterne var følgende: *bistand fører til økonomisk 
 
 
 ```{r}
+# Samspill:
 m3 <- lm(gdp_growth ~ aid * policy + region, data = aid)
 summary(m3)
 ```
@@ -82,6 +87,7 @@ Andregradsledd legger vi inn med `I(uavh.var^2)`, eller via funksjonen `poly()`.
 
 
 ```{r}
+# Andregradsledd og andre omkodinger.
 m4 <- lm(gdp_growth ~ log(gdp_pr_capita) + institutional_quality + I(institutional_quality^2) + region + aid * policy +  as_factor(period), 
          data = aid,
          na.action = "na.exclude")
@@ -89,6 +95,10 @@ summary(m4)
 ```
 
 En nyttig pakke for å lage fine tabeller med resultatet fra regresjonsanalyser er `stargazer`. 
+
+```{r, eval = F, include = F}
+### Lage tabeller med regresjonsresultater ###
+```
 
 ```{r, message=FALSE}
 #install.packages("stargazer")
@@ -115,6 +125,10 @@ stargazer(m2, m4,
 
 ## Hvordan plotte resutlater fra OLS? 
 Før vi skal i gang med å plotte effekter så skal vi kjøre en litt enklere modell. Dette vil forhåpentligvis gjøre de neste stegene litt lettere å forstå:
+
+```{r, eval = F, include = F}
+### Plotte resultater fra OLS ###
+```
 
 ```{r}
 # Kjører en redusert modell
@@ -209,7 +223,12 @@ Hvilken variabel vi bruker som nøkkel vil avhenge av variablene i det andre dat
 
 Jeg har lastet ned versjon ti av Varieties of democracy datasettet fra V-den sin [nettside](https://www.v-dem.net/en/data/data-version-10/). I V-dem er det en variabel som heter `v2pepwrsoc`. Denne variabelen måler hvor jevnt makt er fordelt mellom sosiale grupper. Jeg har lastet opp en redusert versjon av V-dem datasettet på github. Det kan du lese inn direkte fra [denne lenken](https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv).
 
+```{r, eval = F, include = F}
+### Hvordan slå sammen datasett ###
+```
+
 ```{r}
+# Laster inn datasett med maktfordelingsvariabel
 equality <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv")
 
 summary(equality$v2pepwrsoc)
@@ -236,7 +255,58 @@ aid %>%
 # En nyttig pakke dersom dere kommer over dette problemet kan være countrycode
 ```
 
-Vi kommer ikke til å bruke tid i seminar på å rette opp i dette, men her finner dere et eksempel på hvordan det kunne vært løst. Vi går derfor videre vel vitende om at vi ikke klarte å matche alle observasjonen (dette anbefaler jeg **ikke** å gjøre i hjemmeoppgaven). Det er fortsatt en ting vi må gjøre før vi kan slå datasettene sammen. V-dem-datasettet inneholder land-år-observasjoner, mens aid-datasettet inneholder land-periode-observasjoner. Vi må derfor lage en periode-variabel i equality-datasettet. 
+Vi kommer ikke til å bruke tid i seminar på å rette opp i dette, men i fordypningsseminaret skal vi se nærmere på pakken `countrycode` som kan være nyttig i slike tilfeller. Vi går derfor videre vel vitende om at vi ikke klarte å matche alle observasjonen (dette anbefaler jeg **ikke** å gjøre i hjemmeoppgaven). I tillegg er det sånn at datasettet fra  V-dem inneholder land-år-observasjoner, mens aid-datasettet inneholder land-periode-observasjoner. Vi skal nå se på to måter å slå sammen datasettet på. Først skal vi bruke variabelen `periodstart` i `aid` og matche den med variabelen `year` fra Vdem. I dette eksempelet bruker vi altså maktfordelingen ved periodens start. Et mer fornuftig alternativ er kanskje å regne gjennomsnittet for den aktuelle perioden, men da må vi legge til en periode-variabel i datasettet `equality` og det er litt mer jobb.
+
+### Slå sammen datasett uten å regne periode-gjennomsnitt
+
+Før vi slår sammen med utgangspunkt i variabelen `periodstart` så kan vi bruke samme kode som over for å sjekke om V-dem har informasjon for alle år i `aid` datasettet:
+
+```{r, eval = F, include = F}
+### Slå sammen datasett uten å regne periode-gjennomsnitt ###
+```
+
+```{r}
+# Bruker en logisk test og %in% for å sjekke om alle år er med:
+table(aid$periodstart %in% equality$year)
+
+```
+
+Vi kombinerer informasjonen i de to datasettene ved hjelp av funksjonen `left_join`:
+
+```{r}
+# husk: ?left_join for å forstå funksjonen
+aid2 <- aid %>% 
+  left_join(equality, by = c("country" = "country_text_id", "periodstart" = "year"))
+```
+
+For å se om sammenslåingen har gått fint kan vi sjekke hvor mange missing vi har på variabelen `v2pepwrsoc` som vi la til i datasettet:
+
+```{r}
+# Sjekker antall missingverdier
+table(is.na(aid2$v2pepwrsoc))
+
+# Det er seks missingverdier
+
+# Sjekker hvilke land som har missing med base
+table(aid2$country[which(is.na(aid2$v2pepwrsoc))])
+
+# Sjekker hvilke land som har missing med tidyverse
+aid2 %>% 
+  filter(is.na(v2pepwrsoc)) %>% 
+  select(country) 
+
+# Henter ut informasjon om variabelen i det nye datasettet
+summary(aid2$v2pepwrsoc)
+```
+
+
+### Slå sammen datasett med periode-gjennomsnitt
+
+Et alternativ til å ta utgangspunkt i maktfordelingen ved periodens start er å regne ut et gjennomsnitt basert på årene i perioden. Her viser jeg hvordan du kan gå frem for å matche år og 
+
+```{r, eval = F, include = F}
+### Slå sammen datasett med periode-gjennomsnitt ###
+```
 
 ```{r}
 # Oppretter periode-variabel i V-dem datasettet, slik at jeg er klar til å merge. Verdiene til period-variabelen går fra 1-8, jeg vil gi de samme periodene (datasettet inneholder imidlertid bare data for periode 2-7). Her bruker jeg et en egenskap ved `as.numeric` på en faktor som ofte fører til feil i kode for å gjøre dette raskt:
@@ -283,25 +353,25 @@ Nå som data fra `equality` er i samme format som i `aid`, er vi klare til å ko
 
 ```{r}
 # husk: ?left_join for å forstå funksjonen
-aid2 <- left_join(aid, agg_equality,
+aid3 <- left_join(aid, agg_equality,
                   by = c("country" = "country_text_id", "period" = "period_num")) # Spesifiserer nøkkelvariablene
 # Sjekker missing:
-table(is.na(aid2$avg_eq))
+table(is.na(aid3$avg_eq))
 # 6 missing pga observasjonen som mangler
 
 
 # Sjekker hvilke land som har missing med base
-table(aid2$country[which(is.na(aid2$avg_eq))])
+table(aid2$country[which(is.na(aid3$avg_eq))])
 
 # Sjekker hvilke land som har missing med tidyverse
-aid2 %>% 
+aid3 %>% 
   filter(is.na(avg_eq)) %>% 
   select(country) 
 
 # Henter ut informasjon om variabelen i det nye datasettet
-summary(aid2$avg_eq)
+summary(aid3$avg_eq)
 ```
 
 ```{r generere_script, eval=FALSE, echo=FALSE}
-# knitr::purl("./seminar3/seminar3.Rmd", output = "./seminar3/seminar3.R", documentation = 0)
+## knitr::purl("./seminar3/seminar3.Rmd", output = "./seminar3/seminar3.R", documentation = 0)
 ```
