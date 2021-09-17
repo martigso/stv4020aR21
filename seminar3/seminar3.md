@@ -14,6 +14,8 @@ data og gjøre noen nødvendige omkodinger:
 library(tidyverse)
 ```
 
+    ## Warning: package 'tidyverse' was built under R version 4.1.1
+
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
     ## v ggplot2 3.3.5     v purrr   0.3.4
@@ -165,7 +167,7 @@ str(m1) # Gir oss informasjon om hva objektet inneholder.
     ##   .. ..- attr(*, "names")= chr [1:6] "79" "80" "81" "296" ...
     ##  - attr(*, "class")= chr "lm"
 
-### Multivariat regresjon
+### Multippel regresjon
 
 Vi legger inn flere uavhengige variabler med `+`.
 
@@ -299,6 +301,11 @@ regresjonsanalyser er `stargazer`.
 ``` r
 #install.packages("stargazer")
 library(stargazer)
+```
+
+    ## Warning: package 'stargazer' was built under R version 4.1.1
+
+``` r
 stargazer(m2, m3,
           type = "text") 
 ```
@@ -632,6 +639,7 @@ direkte fra [denne
 lenken](https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv).
 
 ``` r
+# Laster inn datasett med maktfordelingsvariabel:
 equality <- read_csv("https://raw.githubusercontent.com/liserodland/stv4020aR/master/H20-seminarer/Innf%C3%B8ringsseminarer/data/Vdem_10_redusert.csv")
 ```
 
@@ -708,14 +716,100 @@ aid %>%
 # En nyttig pakke dersom dere kommer over dette problemet kan være countrycode
 ```
 
-Vi kommer ikke til å bruke tid i seminar på å rette opp i dette, men her
-finner dere et eksempel på hvordan det kunne vært løst. Vi går derfor
-videre vel vitende om at vi ikke klarte å matche alle observasjonen
-(dette anbefaler jeg **ikke** å gjøre i hjemmeoppgaven). Det er fortsatt
-en ting vi må gjøre før vi kan slå datasettene sammen. V-dem-datasettet
+Vi kommer ikke til å bruke tid i seminar på å rette opp i dette, men i
+fordypningsseminaret skal vi se nærmere på pakken `countrycode` som kan
+være nyttig i slike tilfeller. Vi går derfor videre vel vitende om at vi
+ikke klarte å matche alle observasjonen (dette anbefaler jeg **ikke** å
+gjøre i hjemmeoppgaven). I tillegg er det sånn at datasettet fra V-dem
 inneholder land-år-observasjoner, mens aid-datasettet inneholder
-land-periode-observasjoner. Vi må derfor lage en periode-variabel i
-equality-datasettet.
+land-periode-observasjoner.
+
+Vi skal nå se på to måter å slå sammen datasettet på. Først skal vi
+bruke variabelen `periodstart` i `aid` og matche den med variabelen
+`year` fra Vdem. I dette eksempelet bruker vi altså maktfordelingen ved
+periodens start. Et annet alternativ er å regne gjennomsnittet for den
+aktuelle perioden, men da må vi legge til en periode-variabel i
+datasettet `equality` og det er litt mer jobb. Dette ser vi på som
+løsning nummer to. Hvilken løsning som passer best kommer an på hva
+teorien din sier. Er det maktfordelingen ved periodens start eller et
+snitt over perioden som harer viktigst?
+
+### Slå sammen datasett uten å regne periode-gjennomsnitt
+
+Før vi slår sammen med utgangspunkt i variabelen `periodstart` så kan vi
+bruke samme kode som over for å sjekke om V-dem har informasjon for alle
+år i `aid` datasettet:
+
+``` r
+# Bruker en logisk test og %in% for å sjekke om alle år er med:
+table(aid$periodstart %in% equality$year)
+```
+
+    ## 
+    ## TRUE 
+    ##  331
+
+Vi kombinerer informasjonen i de to datasettene ved hjelp av funksjonen
+`left_join`:
+
+``` r
+# husk: ?left_join for å forstå funksjonen
+aid2 <- aid %>% 
+  left_join(equality, by = c("country" = "country_text_id", "periodstart" = "year"))
+```
+
+For å se om sammenslåingen har gått fint kan vi sjekke hvor mange
+missing vi har på variabelen `v2pepwrsoc` som vi la til i datasettet:
+
+``` r
+# Sjekker antall missingverdier
+table(is.na(aid2$v2pepwrsoc))
+```
+
+    ## 
+    ## FALSE  TRUE 
+    ##   325     6
+
+``` r
+# Det er seks missingverdier
+# Sjekker hvilke land som har missing med base
+table(aid2$country[which(is.na(aid2$v2pepwrsoc))])
+```
+
+    ## 
+    ## ZAR 
+    ##   6
+
+``` r
+# Sjekker hvilke land som har missing med tidyverse
+aid2 %>% 
+  filter(is.na(v2pepwrsoc)) %>% 
+  select(country) 
+```
+
+    ## # A tibble: 6 x 1
+    ##   country
+    ##   <chr>  
+    ## 1 ZAR    
+    ## 2 ZAR    
+    ## 3 ZAR    
+    ## 4 ZAR    
+    ## 5 ZAR    
+    ## 6 ZAR
+
+``` r
+# Henter ut informasjon om variabelen i det nye datasettet
+summary(aid2$v2pepwrsoc)
+```
+
+    ##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+    ## -2.21600 -0.68700  0.03600  0.08288  0.89200  2.38900        6
+
+### Slå sammen datasett med periode-gjennomsnitt
+
+Et alternativ til å ta utgangspunkt i maktfordelingen ved periodens
+start er å regne ut et gjennomsnitt basert på årene i perioden. Her
+viser jeg hvordan du kan gå frem for å matche år og
 
 ``` r
 # Oppretter periode-variabel i V-dem datasettet, slik at jeg er klar til å merge. Verdiene til period-variabelen går fra 1-8, jeg vil gi de samme periodene (datasettet inneholder imidlertid bare data for periode 2-7). Her bruker jeg et en egenskap ved `as.numeric` på en faktor som ofte fører til feil i kode for å gjøre dette raskt:
@@ -984,10 +1078,10 @@ til å kombinere informasjonen med `left_join`:
 
 ``` r
 # husk: ?left_join for å forstå funksjonen
-aid2 <- left_join(aid, agg_equality,
+aid3 <- left_join(aid, agg_equality,
                   by = c("country" = "country_text_id", "period" = "period_num")) # Spesifiserer nøkkelvariablene
 # Sjekker missing:
-table(is.na(aid2$avg_eq))
+table(is.na(aid3$avg_eq))
 ```
 
     ## 
@@ -999,7 +1093,7 @@ table(is.na(aid2$avg_eq))
 
 
 # Sjekker hvilke land som har missing med base
-table(aid2$country[which(is.na(aid2$avg_eq))])
+table(aid3$country[which(is.na(aid3$avg_eq))])
 ```
 
     ## 
@@ -1008,7 +1102,7 @@ table(aid2$country[which(is.na(aid2$avg_eq))])
 
 ``` r
 # Sjekker hvilke land som har missing med tidyverse
-aid2 %>% 
+aid3 %>% 
   filter(is.na(avg_eq)) %>% 
   select(country) 
 ```
@@ -1025,7 +1119,7 @@ aid2 %>%
 
 ``` r
 # Henter ut informasjon om variabelen i det nye datasettet
-summary(aid2$avg_eq)
+summary(aid3$avg_eq)
 ```
 
     ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
