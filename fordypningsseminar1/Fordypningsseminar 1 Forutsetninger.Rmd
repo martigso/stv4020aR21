@@ -237,7 +237,7 @@ table(aid$reg_miss) # 47 observasjoner har missing på en eller flere av de tre 
 
 
 
-Vi kan bruke variabelen `reg_miss` til plot. Både spredningsplot og boxplot kan gi god innsikt i hvordan observasjoner med missing skiller seg fra andre. Et annet alternativ, er å se på en logistisk regresjon, med den nye dummyen som avhengig variabel. Her fjerner jeg de variablene som fører til flest missing:
+Vi kan bruke variabelen `reg_miss` til plot. Både spredningsplot og boxplot kan gi god innsikt i hvordan observasjoner med missing skiller seg fra andre. Et annet alternativ, er å se på en logistisk regresjon, med den nye dummyen som avhengig variabel. 
 
 Dersom det er mange observasjoner som kastes ut pga missing, som i eksempelet over, er det lurt å danne seg et inntrykk av konsekvense dette får for analysen din.  Under skisserer jeg noen måter dere kan bruke R på for å lære mer om missingstruktur: 
 
