@@ -35,14 +35,14 @@ omkodingene og kjører modellen.
 library(tidyverse)
 ```
 
-    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
+    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
 
-    ## v ggplot2 3.3.5     v purrr   0.3.4
-    ## v tibble  3.1.3     v dplyr   1.0.7
-    ## v tidyr   1.1.3     v stringr 1.4.0
-    ## v readr   2.0.0     v forcats 0.5.1
+    ## ✓ ggplot2 3.3.4     ✓ purrr   0.3.4
+    ## ✓ tibble  3.1.2     ✓ dplyr   1.0.7
+    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
+    ## ✓ readr   1.4.0     ✓ forcats 0.5.1
 
-    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -222,7 +222,7 @@ car::durbinWatsonTest(m5b)
 ```
 
     ##  lag Autocorrelation D-W Statistic p-value
-    ##    1      0.02981496      1.939984   0.382
+    ##    1      0.02981496      1.939984    0.36
     ##  Alternative hypothesis: rho != 0
 
 I utgangspunktet burde vi her kjørt Durbin-Watson-testen fra plm fordi
@@ -401,7 +401,7 @@ aid[c(39,86), ]
     ##   <chr>    <dbl>       <dbl>     <dbl> <chr>      <dbl>         <dbl>
     ## 1 CMR          4        1978      1981 CMR4        11.1           972
     ## 2 GAB          3        1974      1977 GAB3        12.3          5030
-    ## # ... with 15 more variables: economic_open <dbl>, budget_balance <dbl>,
+    ## # … with 15 more variables: economic_open <dbl>, budget_balance <dbl>,
     ## #   inflation <dbl>, ethnic_frac <dbl>, assasinations <dbl>, aid <dbl>,
     ## #   fast_growing_east_asia <dbl>, sub_saharan_africa <dbl>,
     ## #   central_america <dbl>, policy <dbl>, m2_gdp_lagged <dbl>,
@@ -464,8 +464,7 @@ table(aid$reg_miss) # 47 observasjoner har missing på en eller flere av de tre 
 Vi kan bruke variabelen `reg_miss` til plot. Både spredningsplot og
 boxplot kan gi god innsikt i hvordan observasjoner med missing skiller
 seg fra andre. Et annet alternativ, er å se på en logistisk regresjon,
-med den nye dummyen som avhengig variabel. Her fjerner jeg de variablene
-som fører til flest missing:
+med den nye dummyen som avhengig variabel.
 
 Dersom det er mange observasjoner som kastes ut pga missing, som i
 eksempelet over, er det lurt å danne seg et inntrykk av konsekvense
@@ -764,8 +763,6 @@ datamateriale enn den reduserte.
 library(ResourceSelection)
 ```
 
-    ## Warning: package 'ResourceSelection' was built under R version 4.1.1
-
     ## ResourceSelection 0.3-5   2019-07-22
 
 ``` r
@@ -812,8 +809,6 @@ den logistiske kurver eller umodellerte samspill.
 # install.packages("pscl")
 library(pscl)
 ```
-
-    ## Warning: package 'pscl' was built under R version 4.1.1
 
     ## Classes and Methods for R developed in the
     ## Political Science Computational Laboratory
