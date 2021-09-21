@@ -35,14 +35,16 @@ omkodingene og kjører modellen.
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
+    ## Warning: package 'tidyverse' was built under R version 4.1.1
 
-    ## ✓ ggplot2 3.3.4     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.2     ✓ dplyr   1.0.7
-    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-    ## ✓ readr   1.4.0     ✓ forcats 0.5.1
+    ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+    ## v ggplot2 3.3.5     v purrr   0.3.4
+    ## v tibble  3.1.3     v dplyr   1.0.7
+    ## v tidyr   1.1.3     v stringr 1.4.0
+    ## v readr   2.0.0     v forcats 0.5.1
+
+    ## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -222,7 +224,7 @@ car::durbinWatsonTest(m5b)
 ```
 
     ##  lag Autocorrelation D-W Statistic p-value
-    ##    1      0.02981496      1.939984    0.36
+    ##    1      0.02981496      1.939984   0.358
     ##  Alternative hypothesis: rho != 0
 
 I utgangspunktet burde vi her kjørt Durbin-Watson-testen fra plm fordi
@@ -279,6 +281,11 @@ funksjonene`kurtosis()` og `skewness()` i pakken moments.
 ``` r
 #install.packages("moments")
 library(moments)
+```
+
+    ## Warning: package 'moments' was built under R version 4.1.1
+
+``` r
 kurtosis(rstandard(m5), na.rm = TRUE)
 ```
 
@@ -401,7 +408,7 @@ aid[c(39,86), ]
     ##   <chr>    <dbl>       <dbl>     <dbl> <chr>      <dbl>         <dbl>
     ## 1 CMR          4        1978      1981 CMR4        11.1           972
     ## 2 GAB          3        1974      1977 GAB3        12.3          5030
-    ## # … with 15 more variables: economic_open <dbl>, budget_balance <dbl>,
+    ## # ... with 15 more variables: economic_open <dbl>, budget_balance <dbl>,
     ## #   inflation <dbl>, ethnic_frac <dbl>, assasinations <dbl>, aid <dbl>,
     ## #   fast_growing_east_asia <dbl>, sub_saharan_africa <dbl>,
     ## #   central_america <dbl>, policy <dbl>, m2_gdp_lagged <dbl>,
@@ -448,20 +455,20 @@ informasjon du faktisk sitter igjen med i analysen din.
 Her er noen nyttige funksjoner for å jobbe missing:
 
 ``` r
-aid$reg_miss <- aid %>%
+aid$reg_complete <- aid %>%
   select(gdp_growth, aid, policy) %>%
   complete.cases()
 
 # Lager variabel som viser hvilke observasjoner som forsvinner i regresjon med de sentrale variablene
 # gdp_growth, aid og policy - fin å bruke i plot for å få et inntrykk av hva slags informasjon du mister ved å legge til flere kontrollvariabler.
-table(aid$reg_miss) # 47 observasjoner har missing på en eller flere av de tre variablene
+table(aid$reg_complete) # 47 observasjoner har missing på en eller flere av de tre variablene
 ```
 
     ## 
     ## FALSE  TRUE 
     ##    47   284
 
-Vi kan bruke variabelen `reg_miss` til plot. Både spredningsplot og
+Vi kan bruke variabelen `reg_complete` til plot. Både spredningsplot og
 boxplot kan gi god innsikt i hvordan observasjoner med missing skiller
 seg fra andre. Et annet alternativ, er å se på en logistisk regresjon,
 med den nye dummyen som avhengig variabel.
@@ -627,18 +634,19 @@ konsekvensene av å fjerne missing med listwise deletion.
 En alternativ metode å utforske missing i en analyse på, er med
 funksjonen `complete.cases()`, som gjør en logisk test av om en
 observasjon har missing. Det var denne vi brukte til å lage variabelen
-`reg_miss` i stad og kjøre en binomisk logistisk modell. Vi skal snakke
-mer om logistisk regresjon i morgen så jeg går ikke nærmere inn på dette
-i dag.
+`reg_complete` i stad og kjøre en binomisk logistisk modell. Vi skal
+snakke mer om logistisk regresjon i morgen så jeg går ikke nærmere inn
+på dette i dag.
 
 ``` r
-miss_mod <- glm(reg_miss ~ aid*policy + as.factor(period), data = aid)
+miss_mod <- glm(reg_complete ~ aid*policy + as.factor(period), data = aid)
 summary(miss_mod) # ingen store forskjeller
 ```
 
     ## 
     ## Call:
-    ## glm(formula = reg_miss ~ aid * policy + as.factor(period), data = aid)
+    ## glm(formula = reg_complete ~ aid * policy + as.factor(period), 
+    ##     data = aid)
     ## 
     ## Deviance Residuals: 
     ##      Min        1Q    Median        3Q       Max  
@@ -672,8 +680,8 @@ summary(miss_mod) # ingen store forskjeller
 ```
 
 Koeffisienten til bistand er negativ og signifikant på 5 %
-signifikansnivå.Dette indikerer at land som fjernes pga missing, får
-mindre bistand enn land som ikke fjernes.
+signifikansnivå.Dette indikerer at land som *ikke* fjernes pga missing,
+får mindre bistand enn land som fjernes.
 
 Vi kunne også definert dummy-variabler for missing på de
 enkeltvariablene vi er mest interessert i (her: `gdp_growth`, `aid` og
@@ -763,6 +771,8 @@ datamateriale enn den reduserte.
 library(ResourceSelection)
 ```
 
+    ## Warning: package 'ResourceSelection' was built under R version 4.1.1
+
     ## ResourceSelection 0.3-5   2019-07-22
 
 ``` r
@@ -809,6 +819,8 @@ den logistiske kurver eller umodellerte samspill.
 # install.packages("pscl")
 library(pscl)
 ```
+
+    ## Warning: package 'pscl' was built under R version 4.1.1
 
     ## Classes and Methods for R developed in the
     ## Political Science Computational Laboratory
