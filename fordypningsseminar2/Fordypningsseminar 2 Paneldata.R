@@ -86,8 +86,7 @@ data.complete$y_diff <- data.complete$fdi_inflow - data.complete$y.lag
 
 # Kjører modellen med differensiert avhengig variabel for å illustrere hvordan det kan gjøres
 mod1ols_diff <- plm(data = data.complete, 
-              fdi_inflow ~ y_diff + # Bytt ut "1" med ønsker antall lags dersom du vil ha mer enn 1
-                bits + ln_gdp_pr_cap + ln_population +
+               y_diff ~ bits + ln_gdp_pr_cap + ln_population +
                 economic_growth + inflation + resource_rent + 
                 bilateral_trade_agreements + wto_member + polcon3,
               na.action = "na.exclude", model = "pooling")
@@ -96,16 +95,16 @@ summary(mod1ols_diff)
 
 stargazer(mod1ols, mod1ols_lag, mod1ols_diff, 
           type = "text",
-          column.labels = c("Pooles OLS", "Lagget AVAR som UVAR", "Differensiert AVAR som UVAR"))
+          column.labels = c("Pooles OLS", "Lagget AVAR som UVAR", "Differensiert AVAR som AVAR"))
 
-# Henter ut predikerte verdier
-ols.predict <- predict(mod1ols)
+# Vi bruke durbin watson testen til å sjekke om dette har hjulpet mot autokorrelasjon:
+pdwtest(mod1ols_lag)
+pdwtest(mod1ols_diff)
 
 # Legger predikerte verdier og residualer inn i datasettet
 data.complete <- data.complete %>% 
   mutate(resid = resid(mod1ols),
-         resid_lag = lag(resid),
-         fdi_inflow_pred = ols.predict)
+         fdi_inflow_pred = predict(mod1ols))
 
 # Eye ball test av heteroskedastisitet
 ggplot(data.complete %>% 
@@ -140,7 +139,7 @@ plm.fe.two <- plm(data = data.complete,
                 bilateral_trade_agreements + wto_member + polcon3,
               na.action = "na.exclude", model = "within", effect = "twoways")
 
-# Viser resultatene i en tabell
+# Viser resultatene i en tabell uten koeffisientene til de faste effektene
 
 stargazer(plm.fe.ind, plm.fe.time, plm.fe.two, type = "text",
           column.labels = c("Tversnitts FE", "Tids FE", "Tversnitts og tids FE"),
@@ -163,13 +162,13 @@ ggplot(data.complete %>%
          filter(country %in% c("Bagladesh", "Lesotho", "India", "Chile",
                                "China", "Lithuania", "Mozambique", "Togo", 
                                "Zambia", "Fiji", "Belize", "Peru", "Guyana"))) +
-  geom_point(aes(x = as.numeric(as.character(year)), y = as.factor(wto_member))) +
+  geom_point(aes(x = as.numeric(as.character(year)), y = ln_population)) +
   facet_wrap(~country) +
   theme_bw() +
-  xlab("Year") + ylab("WTO membership")
+  xlab("Year") + ylab("ln population")
   
 
-ggsave("bilder/paneldata_wtomember_land.jpg")
+ggsave("bilder/paneldata_lnpop_land.jpg")
 
 
 table(data.complete$year)
@@ -178,10 +177,10 @@ table(data.complete$year)
 ##          filter(country %in% c("Bagladesh", "Lesotho", "India", "Chile",
 ##                                "China", "Lithuania", "Mozambique", "Togo",
 ##                                "Zambia", "Fiji", "Belize", "Peru", "Guyana"))) + # Velger ut utvalg av land
-##   geom_point(aes(x = as.numeric(as.character(year)), y = as.factor(wto_member))) + # Bruker as.numeric(as.character(year)) fordi year er en faktor
+##   geom_point(aes(x = as.numeric(as.character(year)), y = ln_population)) + # Bruker as.numeric(as.character(year)) fordi year er en faktor
 ##   facet_wrap(~country) +
 ##   theme_bw() +
-##   xlab("Year") + ylab("WTO membership") # Legger til aksetitler
+##   xlab("Year") + ylab("ln population") # Legger til aksetitler
 
 ggplot(data.complete%>% 
          filter(country %in% c("Bagladesh", "Lesotho", "India", "Chile",
@@ -202,6 +201,15 @@ ggsave("bilder/paneldata_bits_land.jpg")
 ##   facet_wrap(~country) +
 ##   theme_bw() +
 ##   xlab("Year") + ylab("Antall BITs")
+
+ols.fe.pooled <- mod1ols <- plm(data = data.complete, 
+              fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population +
+                economic_growth + inflation + resource_rent + 
+                bilateral_trade_agreements + wto_member + polcon3 + 
+                country + year,
+              na.action = "na.exclude", model = "pooling")
+
+car::vif(ols.fe.pooled)
 
 plm.re.ind <- plm(data = data.complete, 
               fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population +
@@ -337,18 +345,6 @@ head(plot_data, 10)
 ##   xlab("Year") + ylab("FDI inflow") +
 ##   theme(legend.position = "right", legend.title = element_blank())
 ## 
-
-plmtest(mod1ols, effect = "twoways")
-plmtest(mod1ols, effect = "time")
-plmtest(mod1ols, effect = "individual")
-
-
-pFtest(plm.fe.ind, mod1ols)
-pFtest(plm.fe.two, mod1ols)
-
-pdwtest(plm.fe.ind)
-pdwtest(plm.fe.two)
-pdwtest(plm.fe.time)
 
 # Gjennom PLM kan vi kjøre en hausman test
 # Modellene med både tverrsnitts- og tidsfaste effekter

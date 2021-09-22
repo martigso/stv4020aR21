@@ -13,7 +13,7 @@ Dataverse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/
 Jeg har bearbeidet datasettet litt før dette seminaret for at variablene
 skal ha litt mer intuitive navn. Du kan laste det bearbeidede datasettet
 ned fra
-[github](https://github.com/liserodland/stv4020aR/tree/master/H20-seminarer/Fordypningsseminarer/data/Paneldata).
+[github](https://github.com/martigso/stv4020aR21/tree/main/fordypningsseminar2).
 
 ``` r
 # Laster inn nødvendige pakker
@@ -21,6 +21,8 @@ ned fra
 library(haven) # For å kunne lese inn .dta-filer
 library(tidyverse) # For å kunne bruke ggplot, dplyr og liknende
 ```
+
+    ## Warning: package 'tidyverse' was built under R version 4.1.1
 
     ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 
@@ -36,6 +38,8 @@ library(tidyverse) # For å kunne bruke ggplot, dplyr og liknende
 ``` r
 library(stargazer) # For å kunne lage pene tabeller
 ```
+
+    ## Warning: package 'stargazer' was built under R version 4.1.1
 
     ## 
     ## Please cite as:
@@ -347,8 +351,7 @@ data.complete$y_diff <- data.complete$fdi_inflow - data.complete$y.lag
 
 # Kjører modellen med differensiert avhengig variabel for å illustrere hvordan det kan gjøres
 mod1ols_diff <- plm(data = data.complete, 
-              fdi_inflow ~ y_diff + # Bytt ut "1" med ønsker antall lags dersom du vil ha mer enn 1
-                bits + ln_gdp_pr_cap + ln_population +
+               y_diff ~ bits + ln_gdp_pr_cap + ln_population +
                 economic_growth + inflation + resource_rent + 
                 bilateral_trade_agreements + wto_member + polcon3,
               na.action = "na.exclude", model = "pooling")
@@ -359,7 +362,7 @@ summary(mod1ols_diff)
     ## Pooling Model
     ## 
     ## Call:
-    ## plm(formula = fdi_inflow ~ y_diff + bits + ln_gdp_pr_cap + ln_population + 
+    ## plm(formula = y_diff ~ bits + ln_gdp_pr_cap + ln_population + 
     ##     economic_growth + inflation + resource_rent + bilateral_trade_agreements + 
     ##     wto_member + polcon3, data = data.complete, na.action = "na.exclude", 
     ##     model = "pooling")
@@ -368,87 +371,104 @@ summary(mod1ols_diff)
     ## 
     ## Residuals:
     ##     Min.  1st Qu.   Median  3rd Qu.     Max. 
-    ## -9.22566 -0.91577  0.29858  1.12945  5.10545 
+    ## -8.47949 -0.46959 -0.01156  0.46419 10.05579 
     ## 
     ## Coefficients:
-    ##                               Estimate  Std. Error  t-value  Pr(>|t|)    
-    ## (Intercept)                -1.5872e+01  5.3256e-01 -29.8024 < 2.2e-16 ***
-    ## y_diff                      4.9022e-01  2.2001e-02  22.2818 < 2.2e-16 ***
-    ## bits                        1.7146e-02  1.3834e-03  12.3937 < 2.2e-16 ***
-    ## ln_gdp_pr_cap               1.2554e+00  4.7899e-02  26.2091 < 2.2e-16 ***
-    ## ln_population               5.7055e-01  1.9506e-02  29.2495 < 2.2e-16 ***
-    ## economic_growth             1.9579e+00  5.1107e-01   3.8309 0.0001307 ***
-    ## inflation                  -9.0667e-05  4.7601e-05  -1.9047 0.0569265 .  
-    ## resource_rent               1.4359e-02  3.5647e-03   4.0282 5.782e-05 ***
-    ## bilateral_trade_agreements -2.5085e-01  1.3770e-01  -1.8218 0.0686068 .  
-    ## wto_member                  1.9287e-01  7.3690e-02   2.6173 0.0089153 ** 
-    ## polcon3                     1.2516e+00  1.8618e-01   6.7224 2.188e-11 ***
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ##                               Estimate  Std. Error t-value Pr(>|t|)
+    ## (Intercept)                 3.4552e-02  4.7409e-01  0.0729   0.9419
+    ## bits                       -5.8993e-04  1.2315e-03 -0.4790   0.6320
+    ## ln_gdp_pr_cap              -1.9391e-02  4.2638e-02 -0.4548   0.6493
+    ## ln_population               1.3544e-02  1.7362e-02  0.7801   0.4354
+    ## economic_growth             5.6522e-01  4.5482e-01  1.2427   0.2141
+    ## inflation                   1.5300e-05  4.2374e-05  0.3611   0.7181
+    ## resource_rent               1.0250e-03  3.1732e-03  0.3230   0.7467
+    ## bilateral_trade_agreements  3.2943e-03  1.2258e-01  0.0269   0.9786
+    ## wto_member                 -6.8323e-02  6.5585e-02 -1.0417   0.2976
+    ## polcon3                     1.5661e-01  1.6571e-01  0.9451   0.3447
     ## 
-    ## Total Sum of Squares:    16417
-    ## Residual Sum of Squares: 7501
-    ## R-Squared:      0.54311
-    ## Adj. R-Squared: 0.54136
-    ## F-statistic: 309.778 on 10 and 2606 DF, p-value: < 2.22e-16
+    ## Total Sum of Squares:    5956.3
+    ## Residual Sum of Squares: 5946.5
+    ## R-Squared:      0.0016453
+    ## Adj. R-Squared: -0.0018012
+    ## F-statistic: 0.477386 on 9 and 2607 DF, p-value: 0.89068
 
 ``` r
 stargazer(mod1ols, mod1ols_lag, mod1ols_diff, 
           type = "text",
-          column.labels = c("Pooles OLS", "Lagget AVAR som UVAR", "Differensiert AVAR som UVAR"))
+          column.labels = c("Pooles OLS", "Lagget AVAR som UVAR", "Differensiert AVAR som AVAR"))
 ```
 
     ## 
     ## ===========================================================================================================
     ##                                                          Dependent variable:                               
     ##                            --------------------------------------------------------------------------------
-    ##                                                               fdi_inflow                                   
-    ##                                   Pooles OLS            Lagget AVAR som UVAR    Differensiert AVAR som UVAR
+    ##                                                 fdi_inflow                                y_diff           
+    ##                                   Pooles OLS            Lagget AVAR som UVAR    Differensiert AVAR som AVAR
     ##                                       (1)                       (2)                         (3)            
     ## -----------------------------------------------------------------------------------------------------------
     ## lag(fdi_inflow, 1)                                            0.665***                                     
     ##                                                               (0.014)                                      
     ##                                                                                                            
-    ## y_diff                                                                                   0.490***          
-    ##                                                                                           (0.022)          
-    ##                                                                                                            
-    ## bits                               0.018***                   0.005***                   0.017***          
+    ## bits                               0.018***                   0.005***                    -0.001           
     ##                                     (0.001)                   (0.001)                     (0.001)          
     ##                                                                                                            
-    ## ln_gdp_pr_cap                      1.236***                   0.405***                   1.255***          
-    ##                                     (0.051)                   (0.043)                     (0.048)          
+    ## ln_gdp_pr_cap                      1.236***                   0.405***                    -0.019           
+    ##                                     (0.051)                   (0.043)                     (0.043)          
     ##                                                                                                            
-    ## ln_population                      0.567***                   0.202***                   0.571***          
-    ##                                     (0.021)                   (0.018)                     (0.020)          
+    ## ln_population                      0.567***                   0.202***                     0.014           
+    ##                                     (0.021)                   (0.018)                     (0.017)          
     ##                                                                                                            
-    ## economic_growth                    2.238***                   1.125***                   1.958***          
-    ##                                     (0.539)                   (0.415)                     (0.511)          
+    ## economic_growth                    2.238***                   1.125***                     0.565           
+    ##                                     (0.539)                   (0.415)                     (0.455)          
     ##                                                                                                            
-    ## inflation                           -0.0001                   -0.00002                   -0.0001*          
-    ##                                    (0.0001)                  (0.00004)                   (0.00005)         
+    ## inflation                           -0.0001                   -0.00002                    0.00002          
+    ##                                    (0.0001)                  (0.00004)                   (0.00004)         
     ##                                                                                                            
-    ## resource_rent                      0.015***                    0.006*                    0.014***          
-    ##                                     (0.004)                   (0.003)                     (0.004)          
+    ## resource_rent                      0.015***                    0.006*                      0.001           
+    ##                                     (0.004)                   (0.003)                     (0.003)          
     ##                                                                                                            
-    ## bilateral_trade_agreements          -0.244                     -0.081                     -0.251*          
-    ##                                     (0.150)                   (0.112)                     (0.138)          
+    ## bilateral_trade_agreements          -0.244                     -0.081                      0.003           
+    ##                                     (0.150)                   (0.112)                     (0.123)          
     ##                                                                                                            
-    ## wto_member                          0.179**                    0.008                     0.193***          
-    ##                                     (0.078)                   (0.060)                     (0.074)          
+    ## wto_member                          0.179**                    0.008                      -0.068           
+    ##                                     (0.078)                   (0.060)                     (0.066)          
     ##                                                                                                            
-    ## polcon3                            1.359***                   0.549***                   1.252***          
-    ##                                     (0.200)                   (0.152)                     (0.186)          
+    ## polcon3                            1.359***                   0.549***                     0.157           
+    ##                                     (0.200)                   (0.152)                     (0.166)          
     ##                                                                                                            
-    ## Constant                          -15.672***                 -5.290***                  -15.872***         
-    ##                                     (0.566)                   (0.489)                     (0.533)          
+    ## Constant                          -15.672***                 -5.290***                     0.035           
+    ##                                     (0.566)                   (0.489)                     (0.474)          
     ##                                                                                                            
     ## -----------------------------------------------------------------------------------------------------------
     ## Observations                         2,767                     2,617                       2,617           
-    ## R2                                   0.453                     0.700                       0.543           
-    ## Adjusted R2                          0.451                     0.699                       0.541           
-    ## F Statistic                253.958*** (df = 9; 2757) 607.110*** (df = 10; 2606) 309.778*** (df = 10; 2606) 
+    ## R2                                   0.453                     0.700                       0.002           
+    ## Adjusted R2                          0.451                     0.699                      -0.002           
+    ## F Statistic                253.958*** (df = 9; 2757) 607.110*** (df = 10; 2606)    0.477 (df = 9; 2607)    
     ## ===========================================================================================================
     ## Note:                                                                           *p<0.1; **p<0.05; ***p<0.01
+
+``` r
+# Vi bruke durbin watson testen til å sjekke om dette har hjulpet mot autokorrelasjon:
+pdwtest(mod1ols_lag)
+```
+
+    ## 
+    ##  Durbin-Watson test for serial correlation in panel models
+    ## 
+    ## data:  fdi_inflow ~ lag(fdi_inflow, 1) + bits + ln_gdp_pr_cap + ln_population +     economic_growth + inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
+    ## DW = 2.2785, p-value = 1
+    ## alternative hypothesis: serial correlation in idiosyncratic errors
+
+``` r
+pdwtest(mod1ols_diff)
+```
+
+    ## 
+    ##  Durbin-Watson test for serial correlation in panel models
+    ## 
+    ## data:  y_diff ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +     inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
+    ## DW = 2.6561, p-value = 1
+    ## alternative hypothesis: serial correlation in idiosyncratic errors
 
 Ved å inkludere en lagget variabel så kontrollerer vi for alle relevante
 variabler til og med tidspunktet t-antall lags (i vårt tilfelle t-1).
@@ -460,18 +480,14 @@ substansiell interesse.
 OLS forutsetter at residualenes varians er konstant på tvers av enheter.
 Med paneldata er det risiko for at restleddene har ulik varians for
 ulike tversnittsenheter. En måte å undersøke heterskedastisitet på er å
-plotte residualene mot predikerte verdier og bruke
-`facet_wrap(~country)`.
+plotte residualene mot predikerte verdier og spesifisere
+`aes(col = country)` i `geom_point()`.
 
 ``` r
-# Henter ut predikerte verdier
-ols.predict <- predict(mod1ols)
-
 # Legger predikerte verdier og residualer inn i datasettet
 data.complete <- data.complete %>% 
   mutate(resid = resid(mod1ols),
-         resid_lag = lag(resid),
-         fdi_inflow_pred = ols.predict)
+         fdi_inflow_pred = predict(mod1ols))
 
 # Eye ball test av heteroskedastisitet
 ggplot(data.complete %>% 
@@ -489,7 +505,7 @@ ggplot(data.complete %>%
 
 #### Samtidig korrelasjon
 
-Om en hendelse har prefet samtlige enheter på et bestemt tidspunkt så
+Om en hendelse har preget samtlige enheter på et bestemt tidspunkt så
 har vi samtidig korrelasjon. Da vil restleddene være korrelert på tvers
 av paneler innenfor samme tidsperiode. PCSE hjelper mot dette.
 
@@ -534,7 +550,7 @@ plm.fe.two <- plm(data = data.complete,
                 bilateral_trade_agreements + wto_member + polcon3,
               na.action = "na.exclude", model = "within", effect = "twoways")
 
-# Viser resultatene i en tabell
+# Viser resultatene i en tabell uten koeffisientene til de faste effektene
 
 stargazer(plm.fe.ind, plm.fe.time, plm.fe.two, type = "text",
           column.labels = c("Tversnitts FE", "Tids FE", "Tversnitts og tids FE"),
@@ -586,7 +602,7 @@ stargazer(plm.fe.ind, plm.fe.time, plm.fe.two, type = "text",
 
 `plm()` rapporterer ikke koeffisientene for enheter eller tidsperioder
 automatisk, og du får heller ikke oppgitt noe konstantledd. For å få
-oppgitt de faste effektene bruker vi funksjonen `fixed`.
+oppgitt de faste effektene bruker vi funksjonen `fixef`.
 
 ``` r
 fixef(plm.fe.ind)[1:5] # Henter ut de fem første tversnittsfaste effektene
@@ -827,13 +843,13 @@ ggplot(data.complete%>%
          filter(country %in% c("Bagladesh", "Lesotho", "India", "Chile",
                                "China", "Lithuania", "Mozambique", "Togo", 
                                "Zambia", "Fiji", "Belize", "Peru", "Guyana"))) + # Velger ut utvalg av land
-  geom_point(aes(x = as.numeric(as.character(year)), y = as.factor(wto_member))) + # Bruker as.numeric(as.character(year)) fordi year er en faktor
+  geom_point(aes(x = as.numeric(as.character(year)), y = ln_population)) + # Bruker as.numeric(as.character(year)) fordi year er en faktor
   facet_wrap(~country) + 
   theme_bw() +
-  xlab("Year") + ylab("WTO membership") # Legger til aksetitler
+  xlab("Year") + ylab("ln population") # Legger til aksetitler
 ```
 
-![](bilder/paneldata_wtomember_land.jpg)
+![](bilder/paneldata_lnpop_land.jpg)
 
 ``` r
 ggplot(data.complete%>% 
@@ -847,6 +863,40 @@ ggplot(data.complete%>%
 ```
 
 ![](bilder/paneldata_bits_land.jpg)
+
+Samme typen plot kan brukes for å vurdere om avhengig variabel varierer
+over tid.
+
+`plm`-modellobjektene skiller seg litt fra `lm`-modellobjektene og ikke
+alle funksjoner vil fungere. For å sjekke multikolinearitet med
+funksjonen `vif()` fra pakken `car` så kan man kjøre en pooled ols der
+man legger til country og year som uavhengige variabler for å få en
+modell med tids- og enhetsfaste effekter. Deretter kan du bruke `vif()`
+på dette objektet.
+
+``` r
+ols.fe.pooled <- mod1ols <- plm(data = data.complete, 
+              fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population +
+                economic_growth + inflation + resource_rent + 
+                bilateral_trade_agreements + wto_member + polcon3 + 
+                country + year,
+              na.action = "na.exclude", model = "pooling")
+
+car::vif(ols.fe.pooled)
+```
+
+    ##                                    GVIF  Df GVIF^(1/(2*Df))
+    ## bits                       4.940590e+00   1        2.222744
+    ## ln_gdp_pr_cap              2.356929e+01   1        4.854822
+    ## ln_population              9.484949e+02   1       30.797645
+    ## economic_growth            1.180368e+00   1        1.086447
+    ## inflation                  1.130101e+00   1        1.063062
+    ## resource_rent              5.076527e+00   1        2.253115
+    ## bilateral_trade_agreements 3.360116e+00   1        1.833062
+    ## wto_member                 3.956866e+00   1        1.989187
+    ## polcon3                    2.624316e+00   1        1.619974
+    ## country                    7.552245e+06 119        1.068807
+    ## year                       2.935767e+01  31        1.056022
 
 ### Modeller med random effects
 
@@ -951,12 +1001,14 @@ library(sjPlot)
     ##   summary.parameters_kurtosis      datawizard
     ##   summary.parameters_skewness      datawizard
 
+    ## #refugeeswelcome
+
 ``` r
 # Plotter koeffisientene og 95 % KI fra modellen med enhetsfaste effekter 
 plot_model(plm.fe.ind, sort.est = TRUE)
 ```
 
-![](Fordypningsseminar-2-Paneldata_files/figure-gfm/unnamed-chunk-21-1.png)<!-- -->
+![](Fordypningsseminar-2-Paneldata_files/figure-gfm/unnamed-chunk-22-1.png)<!-- -->
 
 ## Plotte faktisk verdi opp mot predikert verdi
 
@@ -988,11 +1040,11 @@ head(plot_data, 10)
     ##    <fct>   <fct> <chr>               <pseries> 
     ##  1 Albania 1993  fdi_inflow           4.0123649
     ##  2 Albania 1993  pred_fdi_inflow_fe  -0.8140128
-    ##  3 Albania 1993  pred_fdi_inflow_ols  3.4457156
+    ##  3 Albania 1993  pred_fdi_inflow_ols  2.8926934
     ##  4 Albania 1993  pred_fdi_inflow_re   3.2392312
     ##  5 Albania 1994  fdi_inflow           4.2700253
     ##  6 Albania 1994  pred_fdi_inflow_fe  -0.4873869
-    ##  7 Albania 1994  pred_fdi_inflow_ols  3.8844340
+    ##  7 Albania 1994  pred_fdi_inflow_ols  3.4912352
     ##  8 Albania 1994  pred_fdi_inflow_re   3.7014500
     ##  9 Albania 1995  fdi_inflow           4.5009203
     ## 10 Albania 1995  pred_fdi_inflow_fe   0.2083384
@@ -1017,101 +1069,6 @@ effects ganske nærme hverandre, mens estimatene med faste effekter
 skiller seg betydelig fra disse.
 
 ## Hvilken modell skal vi bruke?
-
-### Er de faste effektene signifikante?
-
-Pakken plm tilbyr flere funksjoner for å sjekke om de faste
-koeffisientene er signifikante. Det modellen gjør er å sammenligne en
-model med faste effekter med en pooled OLS-modell.
-
-``` r
-plmtest(mod1ols, effect = "twoways")
-```
-
-    ## 
-    ##  Lagrange Multiplier Test - two-ways effects (Honda) for unbalanced
-    ##  panels
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
-    ## normal = 42.453, p-value < 2.2e-16
-    ## alternative hypothesis: significant effects
-
-``` r
-plmtest(mod1ols, effect = "time")
-```
-
-    ## 
-    ##  Lagrange Multiplier Test - time effects (Honda) for unbalanced panels
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
-    ## normal = 7.0443, p-value = 9.319e-13
-    ## alternative hypothesis: significant effects
-
-``` r
-plmtest(mod1ols, effect = "individual")
-```
-
-    ## 
-    ##  Lagrange Multiplier Test - (Honda) for unbalanced panels
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
-    ## normal = 52.994, p-value < 2.2e-16
-    ## alternative hypothesis: significant effects
-
-``` r
-pFtest(plm.fe.ind, mod1ols)
-```
-
-    ## 
-    ##  F test for individual effects
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
-    ## F = 10.848, df1 = 119, df2 = 2638, p-value < 2.2e-16
-    ## alternative hypothesis: significant effects
-
-``` r
-pFtest(plm.fe.two, mod1ols)
-```
-
-    ## 
-    ##  F test for twoways effects
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
-    ## F = 9.8231, df1 = 150, df2 = 2607, p-value < 2.2e-16
-    ## alternative hypothesis: significant effects
-
-``` r
-pdwtest(plm.fe.ind)
-```
-
-    ## 
-    ##  Durbin-Watson test for serial correlation in panel models
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +     inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
-    ## DW = 1.0479, p-value < 2.2e-16
-    ## alternative hypothesis: serial correlation in idiosyncratic errors
-
-``` r
-pdwtest(plm.fe.two)
-```
-
-    ## 
-    ##  Durbin-Watson test for serial correlation in panel models
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +     inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
-    ## DW = 1.079, p-value < 2.2e-16
-    ## alternative hypothesis: serial correlation in idiosyncratic errors
-
-``` r
-pdwtest(plm.fe.time)
-```
-
-    ## 
-    ##  Durbin-Watson test for serial correlation in panel models
-    ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +     inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
-    ## DW = 0.75204, p-value < 2.2e-16
-    ## alternative hypothesis: serial correlation in idiosyncratic errors
 
 ### Random eller fixed effects: Hausman-testen
 
