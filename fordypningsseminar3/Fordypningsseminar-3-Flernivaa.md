@@ -131,7 +131,7 @@ library(lmtest) # For å kjøre likelihood ratio test
 library(countrycode) # For å endre landkoder
 ```
 
-I dag og på torsdag/fredag skal vi bruke et datasett fra European Social Survey. Observasjonene i datasettet er individer og disse er nøstet innad i land. Nivå 1-enhetene vår er altså individer, mens nivå 2-enhetene er land i Europa. Datasettet ligger på github. Last ned datasettet og last det inn i Rstudio. 
+I dag skal vi bruke et datasett fra European Social Survey. Observasjonene i datasettet er individer og disse er nøstet innad i land. Nivå 1-enhetene vår er altså individer, mens nivå 2-enhetene er land i Europa. Datasettet ligger på github. Last ned datasettet og last det inn i Rstudio. 
 
 
 ```r
@@ -260,35 +260,60 @@ Først må vi imidlertid si noe om fixed effects. I flernivåanalyse referer en 
 
 **Flernivå med kun random intercept:**
 
+<center>
+
 ![](bilder/random_intercept.JPG)
 
 `lmer(y ~ 1 + (1|group_var), data = data)`
+
+</center>
+
 
 Denne kalles også ofte for en nullmodell. 
 
 **Flernivå med uavh. variabel på nivå 1, fixed effects, random intercept:** 
 
+<center>
+
 ![](bilder/likning2.JPG)
 
 `lmer(y ~ (1|group_var) + x1, data = data)` 
 
-**Flernivå med uavh. variabel på nivå1, random slopes:**
+</center>
+
+
+**Flernivå med uavh. variabel på nivå 1, random slopes:**
+
+<center>
 
 ![](bilder/likning3.JPG)
 
 `lmer(y ~ x1 + (x1|group_var), data=data)`
 
-**Flernivå med uavh. var på mikronivå med random effects, og uavhengig variabel på makronivå:**
+</center>
+
+
+**Flernivå med uavh. var på nivå 1 med random effects, og uavhengig variabel på nivå 2:**
+
+<center>
 
 ![](bilder/likning4.JPG)
 
 `lmer(y ~ x1 + (x1|group_var) + z2, data=data)`
 
-**Flernivå med uavh. var på mikronivå med random effects, kryssnivåsamspill, og uavhengig variabel på makronivå:**
+</center>
+
+
+**Flernivå med uavh. var på nivå 1 med random effects, kryssnivåsamspill, og uavhengig variabel på nivå 2:**
+
+<center>
 
 ![](bilder/ligning5.JPG)
 
 `lmer(y ~ x1*z2 + x1 + (x1|group_var) + z2, data=data)`
+
+</center>
+
 
 ### Beregne intraklassekorrelasjon
 I forelesning kommer dere til å snakke om noe som heter intra-class correlation. Intra-class correlation forteller oss hvor stor andel av total varians som ligger på nivå 2, i vårt tilfelle på landnivå. Nivå 2 varians betyr at konstantleddet varierer mellom land (eller andre nivå 2 enheter). Resten av variansen skyldes at nivå 1-enhetene, i vårt tilfelle personer, avviker fra nivå 2-gjennomsnittet. Intra-class correlation kan tolkes som graden av avhengighet mellom enhetene. 
@@ -306,7 +331,11 @@ random intercept, får vi outputen vi trenger til å regne ut ICC etter
 denne formelen med `summary()`. For å finne intra-class correlation så deler vi
 varians på nivå 2 på summen av varians på nivå en og nivå 2:
 
-\[var(u_j)/(var(u_j) + var(e_{ij}))\]
+<center>
+
+![](bilder/varians_formel.JPG)
+
+</center>
 
 I vårt eksempel blir det: 
 
@@ -434,8 +463,6 @@ ggplot(plot_data_m1) +
 Land er våre nivå 2 variabler. Her har de ulikt skjæringspunkt på y-aksen, men linjen har lik helning
 
 **Flernivå med uavh. variabel på nivå 1, random slopes:**
-\[Y_i = \beta_{0} + \beta_{1}X_{1ij} + u_{1j}X_{1ij} + u_{0j} +  e_{ij}\]
-`lmer(y ~ x1 + (x1|group_var), data=data)`
 
 
 ```r
@@ -538,7 +565,7 @@ ggplot(plot_data_m2) +
 Her har nivå 2-enhetene, land, både forskjellig intercept og slope
 
 
-**Kort om å merge datasett** 
+**Kort om å slå sammen datasett** 
 
 Før vi ser nærmere på de andre variablene så skal vi hente inn litt informasjon på landnivå. Jeg har lastet ned informasjon fra OECD om gini-koeffisienten i ulike land i 2016. Gini-koeffisienten er et mål på inntekstulikhet. Jeg laster inn OECD-datasettet og lagrer det som `gini` i Environment.
 
@@ -702,9 +729,7 @@ ggplot(plot_data_m3b) +
 
 ![](bilder/flernivamod3b.jpg)
 
-**Flernivå med uavh. var på mikronivå med random effects, kryssnivåsamspill, og uavhengig variabel på makronivå:**
-\[Y_i = \beta_{0} + \beta_{1}X_{1ij} + \beta_{2j}Z_{2j} + \beta_{3}X_{1ij}Z_{2j} + + u_{1j}X_{1ij} + u_{0j} + e_{ij}\]
-`lmer(y ~ x1*z2 + x1 + (x1|group_var) + z2, data=data)`
+**Flernivå med uavh. var på nivå 1 med random effects, kryssnivåsamspill, og uavhengig variabel på nivå 2:**
 
 
 ```r
@@ -968,67 +993,6 @@ summary(ess_nolabel$income_decile_sent)
 # Gjennomsnittet er lik null 
 ```
 
-
-
-Dere kan hente ut random slopes/intercepts med
-`ranef()`, mens faste effekter kan hentes ut med `coef()`.
-
-
-```r
-# Ser på model 1
-ranef(m1)
-```
-
-```
-## $country
-##             (Intercept)
-## Austria     -0.38324377
-## Belgium      0.15119379
-## Czechia     -0.56839244
-## Denmark      0.98709834
-## Finland      0.65084570
-## France      -1.07564661
-## Germany     -0.08463074
-## Ireland     -0.45991209
-## Netherlands  0.88482265
-## Norway       1.35804838
-## Poland      -1.82581072
-## Slovenia    -1.96206366
-## Sweden       0.97613504
-## Switzerland  1.35155614
-## 
-## with conditional variances for "country"
-```
-
-```r
-coef(m1)
-```
-
-```
-## $country
-##             (Intercept) income_decile
-## Austria        3.012573    0.09361888
-## Belgium        3.547010    0.09361888
-## Czechia        2.827424    0.09361888
-## Denmark        4.382915    0.09361888
-## Finland        4.046662    0.09361888
-## France         2.320170    0.09361888
-## Germany        3.311186    0.09361888
-## Ireland        2.935904    0.09361888
-## Netherlands    4.280639    0.09361888
-## Norway         4.753865    0.09361888
-## Poland         1.570006    0.09361888
-## Slovenia       1.433753    0.09361888
-## Sweden         4.371951    0.09361888
-## Switzerland    4.747373    0.09361888
-## 
-## attr(,"class")
-## [1] "coef.mer"
-```
-
-```r
-# Random slopes i ranef() tilsvarer differensansen mellom interceptene vi får med coef()
-```
 
 ## Plotte koeffisienter
 Det er også mulig å plotte koeffisienter direkte, bl.a. ved hjelp av `plot_model()` funksjonen i pakken sjPlot. 
