@@ -193,8 +193,10 @@ ggplot(plot_data_m3b) +
 # og uavhengig variabel på makronivå:
 
 # Her har vi random intercept (land), random slopes (income_feel) og kryssnivåsamspill
-# mellom en variabel på nivå 1 (income_feel) og en variabel på nivå (2). Det betyr at
-# vi lar effekten av income_feel variere mellom land og med ulike nivåer på gini
+# mellom en variabel på nivå 1 (income_feel) og en variabel på nivå (2).
+# Med kryssnivåsamspill så lar vi nivå 2 konteksten påvirke effekten av nivå 1 
+# variabelen på avhengig variabel. 
+
 m4 <- lmer(data = ess2, 
            trust_politicians ~ (income_feel|country) + income_feel*gini, 
            na.action = "na.exclude")
