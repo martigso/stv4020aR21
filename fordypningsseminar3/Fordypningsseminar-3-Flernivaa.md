@@ -36,6 +36,10 @@ library(tidyverse) # Bl.a. for å preppe data
 ```
 
 ```
+## Warning: package 'tidyverse' was built under R version 4.1.1
+```
+
+```
 ## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --
 ```
 
@@ -57,6 +61,10 @@ library(tidyverse) # Bl.a. for å preppe data
 
 ```r
 library(stargazer) # For pene tabeller
+```
+
+```
+## Warning: package 'stargazer' was built under R version 4.1.1
 ```
 
 ```
@@ -251,37 +259,39 @@ lettere og oversette til **R**).
 Først må vi imidlertid si noe om fixed effects. I flernivåanalyse referer en til en variabel som vi antar at har samme effekt i alle nivå 2-enheter som fixed effects. Dette er noe annet enn å innføre enhetsspesifikke konstantledd eller dummies som vi gjorde i paneldata. 
 
 **Flernivå med kun random intercept:**
-\[Y_i = \beta_{0} + u_{0j} + e_{ij}\] 
+
+![](bilder/random_intercept.JPG)
+
 `lmer(y ~ 1 + (1|group_var), data = data)`
 
 Denne kalles også ofte for en nullmodell. 
 
 **Flernivå med uavh. variabel på nivå 1, fixed effects, random intercept:** 
 
-\[Y_i = \beta_{0} + \beta_{1}X_{1ij} +  u_{0j} + e_{ij}\]
+![](bilder/likning2.JPG)
 
 `lmer(y ~ (1|group_var) + x1, data = data)` 
 
 **Flernivå med uavh. variabel på nivå1, random slopes:**
 
-\[Y_i = \beta_{0} + \beta_{1}X_{1ij} + u_{1j}X_{1ij} + u_{0j} +  e_{ij}\]
+![](bilder/likning3.JPG)
 
 `lmer(y ~ x1 + (x1|group_var), data=data)`
 
 **Flernivå med uavh. var på mikronivå med random effects, og uavhengig variabel på makronivå:**
 
-\[Y_i = \beta_{0} + \beta_{1}X_{1ij} + \beta_{2j} Z_{2j} + + u_{1j}X_{1ij} + u_{0j} + e_{ij}\]
+![](bilder/likning4.JPG)
 
 `lmer(y ~ x1 + (x1|group_var) + z2, data=data)`
 
 **Flernivå med uavh. var på mikronivå med random effects, kryssnivåsamspill, og uavhengig variabel på makronivå:**
 
-\[Y_i = \beta_{0} + \beta_{1}X_{1ij} + \beta_{2j}Z_{2j} + \beta_{3}X_{1ij}Z_{2j} + + u_{1j}X_{1ij} + u_{0j} + e_{ij}\]
+![](bilder/ligning5.JPG)
 
 `lmer(y ~ x1*z2 + x1 + (x1|group_var) + z2, data=data)`
 
 ### Beregne intraklassekorrelasjon
-I forelesning kommer dere til å snakke om noe som heter intra-class correlation. Intra-class correlation forteller oss hvor stor andel av total varians som ligger på nivå 2, i vårt tilfelle på landnivå. Resten av variansen skyldes at nivå 1-enhetene, i vårt tilfelle personer, avviker fra nivå 2-gjennomsnittet. Intra-class correlation kan tolkes som graden av avhengighet mellom enhetene. 
+I forelesning kommer dere til å snakke om noe som heter intra-class correlation. Intra-class correlation forteller oss hvor stor andel av total varians som ligger på nivå 2, i vårt tilfelle på landnivå. Nivå 2 varians betyr at konstantleddet varierer mellom land (eller andre nivå 2 enheter). Resten av variansen skyldes at nivå 1-enhetene, i vårt tilfelle personer, avviker fra nivå 2-gjennomsnittet. Intra-class correlation kan tolkes som graden av avhengighet mellom enhetene. 
 
 For å finne intra-class correlation så kan vi bruke modellen med kun random intercept. Vi kjører først modellen:
 
