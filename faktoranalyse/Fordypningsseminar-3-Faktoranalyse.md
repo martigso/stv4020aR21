@@ -1,5 +1,9 @@
-R fordypningsseminar 3: Faktoranalyse
+Bonus: Faktoranalyse
 ================
+
+Dette ble gjennomgått på R fordypningsseminarene i STV4020A høsten 2020.
+Vi har ikke gjennomgått dette i år, men laster det opp som inspirasjon
+dersom noen vil bruke faktoranalyse i hjemmeoppgaven sin.
 
 La oss tenke oss at våre tillitsvariabler sammen måler et (eller flere)
 underliggende konsep – for eksempel politisk tillit.
