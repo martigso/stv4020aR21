@@ -43,10 +43,14 @@ m0 <- lmer(data = ess_nolabel,
 # Henter ut info:
 summary(m0)
 
-# Deler nivå 2 varians på total varians for å finne nivå 2s andel av variansen til AVAR:
+# Deler nivå 2 varians (her intercept) på total varians (intercept + residual) 
+# for å finne nivå 2s andel av variansen til AVAR:
 1.294/(1.294 + 4.642)
 # Bør kjøre flernivåanalyse ved ICC >= 0.05 
+# Residual variansen skyldes av nivå 1 enhetene, her individer, avviker fra nivå 2
+# gjennomsnittet, her land
 
+# Alternativ for å lagre informasjon om varians:
 # Vi lagrer først et element med de estimerte variansene
 m0var <- VarCorr(m0)
 
@@ -85,16 +89,18 @@ ggplot(plot_data_m1) +
 
 
 # Flernivå med uavh. variabel på nivå 1, random intercept og slopes ----
-# Random slopes betyr at vi lar effekten av nivå 2 variabelen, her inntektsdesil, 
+# Random slopes betyr at vi lar effekten av nivå 1 variabelen, her inntektsdesil, 
 # variere mellom nivå 2 enheter
 m2 <- lmer(data = ess_nolabel, 
            trust_politicians ~ (income_decile|country) + income_decile,
            na.action = "na.exclude")
 
 summary(m2)
-# Vi skal se mer på hvordan vi kan tolke varians etterpå
+# Dersom varians er lav indikerer det at effekten av inntektsdesil er lik
+# i alle land. Hvis det er tilfelle er kanskje fixed slope bedre egnet.  
 
-stargazer(m0, m1, m2, type = "text")
+stargazer(m0, m1, m2, type = "text",
+          column.labels = c("Nullmodell", "Fixed slope", "Random slope"))
 
 # Plotter effekter
 # 1. Kjører modellen
@@ -201,6 +207,8 @@ m4 <- lmer(data = ess2,
            trust_politicians ~ (income_feel|country) + income_feel*gini, 
            na.action = "na.exclude")
 
+summary(m4)
+
 # Plotter effekten av income_feel for ulike nivåer av gini
 plot_data_m4 <- data.frame(income_feel = rep(1:4, 4),
                             country = c(rep("Sweden", 8), rep("Switzerland", 8)),
@@ -240,7 +248,7 @@ fixef(m2)
 ranef(m2)
 
 # Koeffisienter
-test <- coef(m2)
+coef(m2)
 # Random slopes i ranef() tilsvarer differensansen mellom konstantleddet vi 
 # henter ut med fixef() og interceptene vi får med coef()
 
@@ -269,12 +277,16 @@ BIC(m0,m1,m2,m3)
 
 # Tar en LR-test
 lrtest(m1, m2)
-
+# Positiv og signifikant LR-test betyr at den fullstendige modellen er signifikant
+# bedre tilpaset datamaterialet enn den reduserte. NB! må være nøstede modeller.
 
 # Sentrerering ----
+# I flernivåanalyse er hovedregelen at uavhengige variabler bør sentreres:
 ess_nolabel$income_decile_sent <- ess_nolabel$income_decile - mean(ess_nolabel$income_decile, na.rm = TRUE)
 summary(ess_nolabel$income_decile_sent)
 # Gjennomsnittet er lik null 
+# NB! I flernivåanalyse kan man sentrere på snitt for alle nivå 1-enhetene eller
+# på grupperte gjennomsnitt for hver nivå 2 enhet. 
 
 
 # Plotte koeffisienter ----- 
