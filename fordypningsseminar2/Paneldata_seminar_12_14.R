@@ -3,14 +3,14 @@
 ### OLS forutsetninger: ###
 ###########################
 
-# 1. Ingen utelatt variabelskjevhet
-# 2. Lineær sammenheng mellom variablene
-# 3. Ingen autokorrelasjon/Uavhengige observasjoner
-# 4. Normalfordelte residualer
-# 5. Homoskedastiske residualer
-# 6. Ingen perfekt multikollinearitet
-# 7. Ingen outliers eller innflytelsesrike observasjoner
-# 8. Manglende opplysninger(missing values)
+# 1. Ingen utelatt variabelskjevhet - Faste effekter adresserer dette!
+# 2. Lineær sammenheng mellom variablene - Fortsatt en forutsetning
+# 3. Ingen autokorrelasjon/Uavhengige observasjoner - Brytes
+# 4. Normalfordelte residualer - Fortsatt en forutsetning
+# 5. Homoskedastiske residualer - Brytes
+# 6. Ingen perfekt multikollinearitet - Større sjanse for at brytes
+# 7. Ingen outliers eller innflytelsesrike observasjoner - Fortsatt en forutsetning
+# 8. Manglende opplysninger(missing values) - Fortsatt en forutsetning 
 
 
 ####################################
