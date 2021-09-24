@@ -1,0 +1,329 @@
+---
+title: "R fordypningsseminar 3: Faktoranalyse"
+output: github_document
+---
+
+La oss tenke oss at våre tillitsvariabler sammen måler et (eller flere) underliggende konsep – for eksempel politisk tillit. 
+
+```{r}
+## HUSK install.packages("pakkenavn") FØRST OM DU IKKE HAR BRUKT PAKKEN FØR ##
+# install.packages("psych")
+library(psych) # Nyttig for faktoranalyse
+library(tidyverse) # Dataprepping e.l.
+library(sjlabelled) # Undersøke labels
+# install.packages("REdaS")
+library(REdaS) # For å gjøre Bartletts test
+# install.packages("FactorMineR")
+library(FactoMineR) # Alternativ pakke for faktoranalyse
+# install.packages("factoextra")
+library(factoextra) # Litt mer intuitive varianter av. bla scree plot
+# install.packages("GPArotation")
+library(GPArotation) # For rotasjon
+# install.pckages("ggcorrplot")
+library(ggcorrplot) # For korrelasjonsplot
+library(stargazer)
+
+## Start med data fra European Social Survey bare for norge (ess9no). 
+## Last ned fra data-mappen på github, lagre data i prosjektmappen din (working ## directory) og kjør den nødvendige koden for å laste inn data (funksjonen
+## avhenger av filtypen du valgte). Jeg laster inn .Rdata:
+
+load("ess9no.Rdata")
+```
+
+
+## Steg 1: Forberede data
+Det første vi gjør er å kontrollere data. Hvilket målenivå har variablene? Går skalene i samme retning? For å undersøke dette kan vi begynne med litt deksriptiv statistikk: 
+
+```{r}
+ess_no %>%
+  select(starts_with("trust")) %>% 
+  summary()
+
+# Undersøker missing-verdier
+table(complete.cases(ess_no))
+
+```
+
+Dersom vi har labelled data så kan vi bruke pakken `sjlabelled` til å se nærmere på retningen på variabler. Om ikke er kodeboken alltid en viktig ressurs i dette arbeidet. 
+```{r}
+summary(ess_no$trust_police)
+get_labels(ess_no$trust_police)
+```
+
+Det neste vi vil gjøre er å bare sjekke korrelasjonen mellom disse variablene. Jeg bruker `cor.plot()` for å visualisere kjapt hvordan korrelasjonsmatrisen ser ut. Vi kunne brukt `ggplot()` også her, men det tar litt lenger tid (når dere skriver oppgaver: pass på å gjøre figurer/tabeller finere enn dette). Et alternativ som jeg viser under er å bruke pakken `ggcorrplot` som bygger på `ggplot`, men gir oss noen snarveier. 
+
+```{r}
+korrel <- ess_no %>%
+  select(starts_with("trust")) %>%
+  cor(, use = "complete.obs")
+korrel
+```
+
+```{r, include = FALSE}
+# Plotter korrelasjon:
+cor.plot(korrel, numbers = TRUE)
+
+
+# Alternativ metode ved hjelp av ggcorrplot som tar utgangspunkt
+# i ggplot  fra pakken ggcorrplot
+ggcorrplot(korrel, show.diag = FALSE, lab = TRUE,
+           hc.order =  TRUE, type = "upper",
+           ggtheme = theme_void())
+
+ggsave("bilder/korrplottfaktoranalyse2.jpg")
+```
+
+```{r, eval = FALSE}
+# Plotter korrelasjon:
+cor.plot(korrel, numbers = TRUE)
+
+```
+
+![](bilder/korrplotfaktor1.png)
+
+Alternativ metode ved hjelp av ggcorrplot som tar utgangspunkt i ggplot  fra pakken `ggcorrplot`:
+
+```{r, eval = FALSE}
+ggcorrplot(korrel, show.diag = FALSE, lab = TRUE,
+           hc.order =  TRUE, type = "upper",
+           ggtheme = theme_void())
+```
+
+![](bilder/korrplottfaktoranalyse2.jpg)
+
+Vi kan også kjøre en slå opp Kaiser, Meyer, Olkin Measure of Sampling Adequacy ved hjelp av funksjonen `KMO()` i pakken psych, og ta en Bartletts test ved hjelp av funksjonen `bart_spher` i REdaS-pakken. 
+
+```{r}
+KMO(korrel) 
+bart_spher(korrel)
+```
+
+KMO måler i hvilken grad hver variabel i analysen kan predikeres uten målefeil av de andre variablene. Vi ønsker at "overall MSA" skal være minst 0.5. Samtidig ønsker vi en signifikant Bartletts test. Bartletts test kan imidlertid også bli signifikant selv om KMO-verdiene ikke er høye nok. 
+
+Korrelasjonene er altså ganskehøye mellom alle variablene – de laveste er rundt 0.40. I tillegg har vi en KMO-verdi på godt over 0.5 og en signifikant Bartletts test. La oss kjøre på med faktoranalysene. Vi gjør først en prinsipal komponentanalyse. Denne er eksplorerende, i at vi ikke bestemmer på forhånd hvor mange faktorer variablene deler seg inn i. Funksjonen vi bruker er princomp(), som kan spesifiseres på flere måter. Jeg har lagt opp en formel som sier at vi skal bruke alle variablene i data-argumentet (ess) – her trekker jeg (som i korrelasjonene over) ut bare trust-variablene. Jeg tar også
+vare på scores.
+
+```{r}
+trust_prin <- princomp(~.,    # Her skal vi ha en formel uten AVAR. Med "." sier vi at vi vil ta med alt i datasettet
+                       ess_no %>%
+                         select(starts_with("trust")),
+                       scores = TRUE, na.action = "na.omit")
+
+loadings(trust_prin)
+```
+
+Ladningene vist under, viser ikke veldig sterke mønster (for meg hvertfall). Legg merke til at denne type faktoranalyse går fra 1 faktor til antall variabler du putter inn (her 7). Heldigvis finnes det andre hjelpemidler vi kan ta i bruke for å vurdere hvor mange faktorer vi bør velge. 
+
+### Kaisers kriterium
+
+Kaisers kriterium tar utgangspunkt i eigenvalues og sier at de faktorene som har eigenvalue større enn eller lik 1, skal tas med. Vi kan hente ut eigenvalues til korrelasjonsmatrisen ved hjelp av `eigen`.
+
+```{r}
+eigen <- eigen(korrel)
+names(eigen)
+
+# Summen av alle eigen-verdiene er lik antall indikatorer:
+sum(eigen$values)
+
+# Henter ut eigen-verdiene
+eigen$values
+```
+
+### Andel forklart varians
+Vi kan sette oss et mål om at vi ved hjelp av faktorene våre skal forklare en viss prosentandel av variansen i indikatorene våre. Da må vi hente ut informasjon om kumulativ forklart varians til faktorene. 
+
+```{r}
+## Kumulativ forklart varians kan hentes ut herfra:
+summary(trust_prin)
+```
+
+```{r, eval = FALSE}
+# Eller plottes:
+fviz_screeplot(trust_prin,
+               addlabels = TRUE) +
+  theme_classic()
+```
+
+```{r, include = FALSE}
+# Eller plottes:
+fviz_screeplot(trust_prin,
+               addlabels = TRUE) +
+  theme_classic()
+ggsave("bilder/scree_forklartvarians.jpg")
+```
+
+![](bilder/scree_forklartvarians.jpg)
+
+### Scree-test
+Et tredje alternativ er å bruke et Scree-plot. Tanken bak et scree-plot er å illustrere hvor den unike variansen blir dominerende, altså den variansen variablene ikke deler med hverandre. Den blir dominerende når eigenverdien flater ut i plottet.
+
+```{r, include=FALSE}
+screeplot(trust_prin, type = "lines")
+save.image("bilder/screeplot1.jpg")
+```
+
+```{r, eval = FALSE}
+screeplot(trust_prin, type = "lines")
+```
+
+![](bilder/screeplot1.jpg)
+
+```{r, include=FALSE}
+fviz_screeplot(trust_prin,
+               addlabels = TRUE,
+               choice = "eigenvalue") +
+  theme_classic()
+ggsave("bilder/screeplot2.jpg")
+
+```
+
+```{r, eval = FALSE}
+fviz_screeplot(trust_prin,
+               addlabels = TRUE,
+               choice = "eigenvalue") +
+  theme_classic()
+```
+
+![](bilder/screeplot2.jpg)
+
+Ser vi på screeplotet derimot, er det tydelig at èn faktor forklarer mye. Likevel kan vi ikke ignorere faktor 2 og 3 heller.
+
+## Faktoranalyse med bestemt antall faktorer
+
+Vi kan ha en ganske tydelig, men uhøytidelig, teoretisk antagelse om hvorfor våre variabler deler seg i tre faktorer: 
+
+* en faktor handler om nasjonal politikk (parlament, politiske partier, politikere)
+* en faktor handler om rettsvesen (rettssystem,politi) 
+* en faktor handler om internasjonale institusjoner (EU, FN). 
+
+Videre så skal vi bruke vi funksjonen factanal() som er satt opp ganske likt som princomp(). Forskjellen er at vi setter akkurat hvor mange faktorer vi skal ha i analysen (3).
+
+```{r}
+trust_factor3 <- factanal(~., 3, ess_no %>%
+                            select(starts_with("trust")))
+
+names(trust_factor3)
+```
+
+Faktorobjektet inneholder informasjon om blant annet variablene/indikatorenes lading på de ulike faktorene og uniqueness (den delen av variansen til variablene som ikke er felles). 
+
+Faktorladningene kan vi hente ut ved hjelp av denne funksjonen. Her sier jeg at jeg bare vil vise faktorladninger som er høyere enn 0.4.
+```{r}
+print(loadings(trust_factor3), cutoff = .4)
+```
+
+Fra faktorbjektet kan vi også hente ut uniqueness.
+
+```{r}
+trust_factor3$uniquenesses
+```
+
+Dersom du ønsker en tabell med både faktorladinger og uniqueness så kan det enkelt kombineres. Her lagrer jeg elementene jeg vil hente ut i et objekt og bruker `stargazer()` til å printe en tabell. 
+
+```{r}
+uniqueness <- cbind(trust_factor3$loadings, 
+                    Uniqueness = trust_factor3$uniquenesses)
+
+stargazer::stargazer(uniqueness, type = "text")
+```
+
+## Rotasjon
+
+For å gjøre faktorene lettere å tolke kan vi bruke rotasjon. Her kommer noen eksempler på ulike typer rotasjon. Rotasjon påvirker ladningen til indikatorene/variablene på de ulike faktorene. Når vi roterer så omfordeler vi varians mellom faktorene. 
+
+### Ortogonal rotasjon
+
+Ved ortogonal rotasjon forbli faktorene ukorrelerte. 
+
+```{r}
+# Ortogonal rotasjon (ikke korrelert)
+varimax(loadings(trust_factor3), normalize = TRUE)
+# Hver indikator lader enten høyt eller lavt på en faktor, 
+# men kan lade høyt/lavt på flere faktorer
+
+quartimax(loadings(trust_factor3), normalize = TRUE)
+# Hver indikator lader høyt på bare en faktor, men kan lade
+# moderat også på andre
+```
+
+### Oblique rotasjon
+
+Ved oblique rotasjon så tillater vi at faktorene korrelrer seg imellom. 
+
+```{r}
+# Oblique (korrelert)
+oblimin(loadings(trust_factor3))
+promax(loadings(trust_factor3))
+```
+
+For å få en oversikt over mulige rotasjonmuligheter så kan du skrive `?quartimax`.
+
+## Opprette indekser
+
+Målet med faktoranalyse er ofte å kunne oppsumere flere variabler/indikatorer i færre faktorer. Det siste vi gjør er derfor å opprette indekser. 
+
+### Additive indekser
+
+Det finnes mange muligheter for additive indekser, og her vises bare et eksempel der hver variabel er vektet like mye. 
+
+```{r}
+ess_no$political_trust <- (ess_no$trust_parliament + ess_no$trust_politicians + ess_no$trust_polparties) / 3
+ess_no$legal_trust <- (ess_no$trust_legal + ess_no$trust_police) / 2
+ess_no$international_trust <- (ess_no$trust_un + ess_no$trust_ep) / 2
+
+```
+
+### Faktorskårer
+
+Et alternativ til å la hver variabel/indikator veie like mye er å bruke faktorskårer som vekter variablenes verdi ihht ladningen på faktoren. For å hente ut faktorskårer så bruker jeg `factanal()` en gang til, men denne gangen spesifiserer jeg `scores = "regression`. En kan velge mellom regression og Bartlett, men her må dere undersøke nærmere selv eller spørre foreleser hva som gir mest mening. 
+
+```{r}
+## Opprette faktorindekser
+trust_factor3score <- factanal(~., 3, ess_no %>%
+                            select(starts_with("trust")),
+                          scores = "regression", # Her kan vi velge mellom regression og Bartlett
+                          na.action = "na.exclude")
+
+loadings(trust_factor3score)
+
+# Ser hva som er lagret i modellen:
+names(trust_factor3score)
+
+# Sjekker ut de fem første radene i scores-elementet
+trust_factor3score$scores[1:5, ]
+
+# Lagrer faktor-skår i data
+# Husk na.action = "na.exclude" i modellen over.
+ess_no$politicaltrust_score <- trust_factor3score$scores[, 1]
+ess_no$legaltrust_score <- trust_factor3score$scores[, 2]
+ess_no$inttrust_score <- trust_factor3score$scores[, 3]
+summary(ess_no$politicaltrust_score)
+summary(ess_no$legaltrust_score)
+
+cor(ess_no$trust_legal, ess_no$legaltrust_score, use = "complete") 
+cor(ess_no$trust_polparties, ess_no$legaltrust_score, use = "complete")
+
+```
+
+## Bonus 
+
+Alternativ kode i pakken FactoMineR som gir et interessant plot: 
+
+```{r, include = FALSE}
+trust_prin_alt <- PCA(ess_no%>%
+                        select(starts_with("trust")))
+## OBS!! Merk dere advarselen som kommer når dere kjører denne koden og har missing i datasettet .. 
+
+
+```
+
+```{r, eval = FALSE}
+trust_prin_alt <- PCA(ess_no%>%
+                        select(starts_with("trust")))
+## OBS!! Merk dere advarselen som kommer når dere kjører denne koden og har missing i datasettet .. 
+
+```
+
+![](bilder/pcagraphofvariables.png)
+
+Gå evnt. gjennom den gratis introen i web-kurset [Dimensionality reduction in R på Datacamp](https://learn.datacamp.com/courses/dimensionality-reduction-in-r) for innsikt i hvordan det kan tolkes. 
