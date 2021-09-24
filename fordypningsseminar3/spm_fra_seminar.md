@@ -11,4 +11,4 @@ c(rep("Sweden", 8)) er tilsvarende å skrive c("Sweden", Sweden", Sweden", Swede
 Vi (1) Lager et oppsett, et scenario (eller fiktiv verden), og (2) bruker modellen for å predikere avhengig variabel på dette scenarioet. Output blir prediksjoner gitt at du holder visse variabler konstant og lar andre variere.
 
 ### Hva bestemmer om vi velger fixed eller random intercept?
-Vi har stort sett (kanskje alltid) random intercept med flernivå, men vi må bestemme om effektene (også kalt koeffisienter, eller slopes) skal variere mellom enhetene (random) eller om effekten være den samme for alle enhetene (fixed).
+Vi har stort sett (kanskje alltid) random intercept med flernivå (nivå 2-enhetene forventes å ha forskjellige skjæringspunkt), men vi må bestemme om effektene (også kalt koeffisienter, eller slopes) skal variere mellom enhetene (random) eller om effekten være den samme for alle enhetene (fixed). Det finnes også ett felles skjæringspunkt (konstantledd) for populasjonen av nivå 2-enheter.
