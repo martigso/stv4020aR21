@@ -6,3 +6,6 @@ Det er to forskjellige standarder for å kode forkortelser på land. Den ene bru
 
 ### Hva betyr rep(), hvorfor bruker vi det i plot_data?
 c(rep("Sweden", 8)) er tilsvarende å skrive c("Sweden", Sweden", Sweden", Sweden", Sweden", Sweden", Sweden", Sweden"). Vi må sette flere verdier for å få alle verdikombinasjoner som er relevant å predikere på, og for å få like lange kolonner slik at de kan slås sammen til en dataframe.
+
+### Hva forteller egentlig plot_data oss (dvs. dataframen vi lager når vi bruker predict() ) ?
+Vi (1) Lager et oppsett, et scenario (eller fiktiv verden), og (2) bruker modellen for å predikere avhengig variabel på dette scenarioet. Output blir prediksjoner gitt at du holder visse variabler konstant og lar andre variere.
