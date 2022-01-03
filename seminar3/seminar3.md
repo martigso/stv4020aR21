@@ -354,9 +354,10 @@ stargazer(m2, m4,
 # Om du skriver i Latex så kan du bruker type = "latex" og kopiere inn output direkte, eller lagre i en mappe og hente inn via latex
 stargazer(m2, m4,
           type = "latex") 
-
-# Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer. 
 ```
+
+Flere tips om tabeller finner dere i [dette
+dokumentet](https://github.com/langoergen/stv4020aR/blob/master/docs/Eksportere_tabeller_og_figurer.md).
 
 ## Hvordan plotte resutlater fra OLS?
 
@@ -586,7 +587,7 @@ ggplot(snitt_data_sam, aes(x = aid, y = fit.fit,
 
 ![](seminar3_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
-Vi skal ikke bruke snitt\_data mer så jeg fjerner objektene fra
+Vi skal ikke bruke snitt_data mer så jeg fjerner objektene fra
 environment:
 
 ``` r

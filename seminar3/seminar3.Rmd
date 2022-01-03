@@ -109,9 +109,9 @@ stargazer(m2, m4,
 stargazer(m2, m4,
           type = "latex") 
 
-# Flere tips om tabeller finner dere i dokumentet Eksportere_tabeller_og_figurer. 
 ```
 
+Flere tips om tabeller finner dere i [dette dokumentet](https://github.com/langoergen/stv4020aR/blob/master/docs/Eksportere_tabeller_og_figurer.md).
 
 ## Hvordan plotte resutlater fra OLS? 
 Før vi skal i gang med å plotte effekter så skal vi kjøre en litt enklere modell. Dette vil forhåpentligvis gjøre de neste stegene litt lettere å forstå:

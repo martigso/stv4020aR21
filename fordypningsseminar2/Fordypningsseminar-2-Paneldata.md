@@ -325,7 +325,7 @@ pdwtest(mod1ols)
     ## 
     ##  Durbin-Watson test for serial correlation in panel models
     ## 
-    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +     inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
+    ## data:  fdi_inflow ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
     ## DW = 0.74071, p-value < 2.2e-16
     ## alternative hypothesis: serial correlation in idiosyncratic errors
 
@@ -455,7 +455,7 @@ pdwtest(mod1ols_lag)
     ## 
     ##  Durbin-Watson test for serial correlation in panel models
     ## 
-    ## data:  fdi_inflow ~ lag(fdi_inflow, 1) + bits + ln_gdp_pr_cap + ln_population +     economic_growth + inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
+    ## data:  fdi_inflow ~ lag(fdi_inflow, 1) + bits + ln_gdp_pr_cap + ln_population +  ...
     ## DW = 2.2785, p-value = 1
     ## alternative hypothesis: serial correlation in idiosyncratic errors
 
@@ -466,7 +466,7 @@ pdwtest(mod1ols_diff)
     ## 
     ##  Durbin-Watson test for serial correlation in panel models
     ## 
-    ## data:  y_diff ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +     inflation + resource_rent + bilateral_trade_agreements +     wto_member + polcon3
+    ## data:  y_diff ~ bits + ln_gdp_pr_cap + ln_population + economic_growth +  ...
     ## DW = 2.6561, p-value = 1
     ## alternative hypothesis: serial correlation in idiosyncratic errors
 
@@ -617,8 +617,8 @@ fixef(plm.fe.ind)[1:5] # Henter ut de fem første tversnittsfaste effektene
 fixef(plm.fe.time)[1:5] # Henter ut de fem første tidsfaste effektene
 ```
 
-    ##      1993      1994      1995      1996      1997 
-    ## -15.85832 -15.66020 -15.50446 -15.34385 -15.30234
+    ##      1970      1971      1972      1973      1974 
+    ## -15.72773 -16.05330 -15.78942 -15.80233 -15.31956
 
 ``` r
 # I modeller med både tversnitts- og tidsfaste effekter må du spesifiser effect = "time" 
@@ -627,7 +627,7 @@ fixef(plm.fe.two)[1:5] # Henter ut de fem første tversnittssfaste effektene
 ```
 
     ##             Albania             Algeria              Angola Antigua and Barbuda 
-    ##            20.87123            21.31038            23.11889            12.98824 
+    ##            19.82390            21.31038            24.15526            13.69855 
     ##           Argentina 
     ##            25.39257
 
@@ -1001,7 +1001,7 @@ library(sjPlot)
     ##   summary.parameters_kurtosis      datawizard
     ##   summary.parameters_skewness      datawizard
 
-    ## #refugeeswelcome
+    ## Learn more about sjPlot with 'browseVignettes("sjPlot")'.
 
 ``` r
 # Plotter koeffisientene og 95 % KI fra modellen med enhetsfaste effekter 
@@ -1123,8 +1123,8 @@ phtest(plm.fe.time, plm.re.time)
 
 ## Andre tester
 
-I [vignetten til
-plm](https://cran.r-project.org/web/packages/plm/vignettes/plmPackage.html)
+I [denne introduksjonen til
+plm](https://cran.r-project.org/web/packages/plm/vignettes/A_plmPackage.html)
 kan du lese om andre tester du kan gjøre for å sjekke forutsetninger og
 modelltilpasning.
 

@@ -528,7 +528,7 @@ phtest(plm.fe.time, plm.re.time)
 *Hvordan tolker vi hausman-testen?* 
 
 ## Andre tester
-I [vignetten til plm](https://cran.r-project.org/web/packages/plm/vignettes/plmPackage.html) kan du lese om andre tester du kan gjøre for å sjekke forutsetninger og modelltilpasning.  
+I [denne introduksjonen til plm](https://cran.r-project.org/web/packages/plm/vignettes/A_plmPackage.html) kan du lese om andre tester du kan gjøre for å sjekke forutsetninger og modelltilpasning.  
 
 ## Paneldata og ikke-lineære modeller
 Det er relativt greit å kjøre ikke-lineære modeller med fixed effects. Du legger bare til variabelene som angir enheter og/eller tid som uavhengige variabler i f.eks. `glm()`. Skal du kjøre en logistisk modell med random effects så kan du se nærmere på pakken `glmer`, men merk at dette ligger utenfor pensum i 4020A. 
